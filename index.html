@@ -684,19 +684,7 @@
             border-left-color: rgba(0, 0, 0, 0.8);
         }
 
-        .fab-mini {
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
 
-        /* Navigation FABs */
-        .fab-nav-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
 
         /* Help Modal Styles */
         .help-modal-overlay {
@@ -989,8 +977,8 @@
             padding: 0 20px;
         }
 
-        /* Search and Filter Styles */
-        .search-filter-section {
+        /* Search Styles */
+        .search-section {
             padding: 0 20px;
             margin-bottom: 15px;
         }
@@ -1054,35 +1042,7 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        .filter-buttons, .rating-filter-buttons {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-        }
 
-        .filter-btn, .rating-filter-btn {
-            padding: 6px 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .filter-btn:hover, .rating-filter-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .filter-btn.active, .rating-filter-btn.active {
-            background: #00AFD7;
-            border-color: #00AFD7;
-            color: white;
-        }
 
         .employee-dropdown {
             width: 100%;
@@ -2920,7 +2880,6 @@
 
             // Update navigation
             updateNavigation();
-            updateFabNavigation();
             
             // Update progress indicator
             updateProgressIndicator();
@@ -3699,26 +3658,12 @@
                     <div class="employee-list">
                         <h4>Direct Reports (${employees.length})</h4>
                         
-                        <!-- Search and Filter Section -->
-                        <div class="search-filter-section">
+                        <!-- Search Section -->
+                        <div class="search-section">
                             <div class="search-container">
                                 <input type="text" class="employee-search" placeholder="Search employees..." oninput="filterEmployees()" id="employeeSearch">
                                 <span class="search-icon">🔍</span>
                                 <button class="clear-search" onclick="clearSearch()" title="Clear search" style="display: none;">×</button>
-                            </div>
-                            
-                            <div class="filter-buttons">
-                                <button class="filter-btn active" onclick="setFilter('all')" data-filter="all">All</button>
-                                <button class="filter-btn" onclick="setFilter('completed')" data-filter="completed">Complete</button>
-                                <button class="filter-btn" onclick="setFilter('in-progress')" data-filter="in-progress">In Progress</button>
-                                <button class="filter-btn" onclick="setFilter('not-started')" data-filter="not-started">Not Started</button>
-                            </div>
-                            
-                            <div class="rating-filter-buttons">
-                                <button class="rating-filter-btn active" onclick="setRatingFilter('all')" data-rating="all">All Ratings</button>
-                                <button class="rating-filter-btn" onclick="setRatingFilter('exemplary')" data-rating="exemplary">Exemplary</button>
-                                <button class="rating-filter-btn" onclick="setRatingFilter('successful')" data-rating="successful">Successful</button>
-                                <button class="rating-filter-btn" onclick="setRatingFilter('opportunity')" data-rating="opportunity">Opportunity</button>
                             </div>
                         </div>
                         
@@ -3947,16 +3892,6 @@
                 <!-- Floating Action Buttons -->
                 <div class="floating-action-container" id="floatingActions">
                     <div class="floating-actions">
-                        <div class="fab-nav-group">
-                            <button class="fab fab-mini secondary" onclick="previousStep()" id="fabPrev" title="Previous Section">
-                                ←
-                                <div class="fab-tooltip">Previous</div>
-                            </button>
-                            <button class="fab fab-mini secondary" onclick="nextStep()" id="fabNext" title="Next Section">
-                                →
-                                <div class="fab-tooltip">Next</div>
-                            </button>
-                        </div>
                         <button class="fab primary" onclick="saveEvaluation()" title="Save Progress">
                             💾
                             <div class="fab-tooltip">Save Progress</div>
@@ -4717,10 +4652,7 @@
             }
         }
 
-        // Search and Filter Functions
-        let currentStatusFilter = 'all';
-        let currentRatingFilter = 'all';
-
+        // Search Functions
         function filterEmployees() {
             const searchInput = document.getElementById('employeeSearch');
             const searchTerm = searchInput?.value.toLowerCase() || '';
@@ -4744,21 +4676,19 @@
                 }
                 
                 const name = option.getAttribute('data-name') || '';
-                const status = option.getAttribute('data-status') || '';
-                const rating = option.getAttribute('data-rating') || 'not-set';
+                const matchesSearch = !searchTerm || name.includes(searchTerm);
                 
-                const matchesSearch = name.includes(searchTerm);
-                const matchesStatus = currentStatusFilter === 'all' || status === currentStatusFilter;
-                const matchesRating = currentRatingFilter === 'all' || rating === currentRatingFilter;
-                
-                const isVisible = matchesSearch && matchesStatus && matchesRating;
-                option.style.display = isVisible ? 'block' : 'none';
-                if (isVisible) visibleCount++;
+                option.style.display = matchesSearch ? 'block' : 'none';
+                if (matchesSearch) visibleCount++;
             });
 
-            // Update the first option to show count
+            // Update the first option to show count only if searching
             if (options[0]) {
-                options[0].textContent = visibleCount > 0 ? `Select an employee... (${visibleCount} found)` : 'No employees match filters';
+                if (searchTerm) {
+                    options[0].textContent = visibleCount > 0 ? `Select an employee... (${visibleCount} found)` : 'No employees found';
+                } else {
+                    options[0].textContent = 'Select an employee...';
+                }
             }
         }
 
@@ -4776,7 +4706,6 @@
             const fabContainer = document.getElementById('floatingActions');
             if (fabContainer) {
                 fabContainer.style.display = 'block';
-                updateFabNavigation();
             }
         }
 
@@ -4787,18 +4716,7 @@
             }
         }
 
-        function updateFabNavigation() {
-            const fabPrev = document.getElementById('fabPrev');
-            const fabNext = document.getElementById('fabNext');
-            
-            if (fabPrev && fabNext) {
-                fabPrev.disabled = (currentStep === 0);
-                fabPrev.style.opacity = (currentStep === 0) ? '0.5' : '1';
-                
-                fabNext.innerHTML = (currentStep === totalSteps - 1) ? '✓' : '→';
-                fabNext.querySelector('.fab-tooltip').textContent = (currentStep === totalSteps - 1) ? 'Complete' : 'Next';
-            }
-        }
+
 
         function showContextualHelp() {
             const helpContent = getContextualHelp(currentStep);
@@ -4909,29 +4827,7 @@
             }
         }
 
-        function setFilter(status) {
-            currentStatusFilter = status;
-            
-            // Update button states
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-filter="${status}"]`).classList.add('active');
-            
-            filterEmployees();
-        }
 
-        function setRatingFilter(rating) {
-            currentRatingFilter = rating;
-            
-            // Update button states
-            document.querySelectorAll('.rating-filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-rating="${rating}"]`).classList.add('active');
-            
-            filterEmployees();
-        }
 
         function downloadSelectedEmployeePDF() {
             if (selectedEmployeeId) {
