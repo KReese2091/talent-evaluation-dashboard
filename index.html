@@ -1865,6 +1865,135 @@
             margin-top: 2px;
         }
 
+        /* Anomaly Detection Styles */
+        .anomaly-detection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .anomaly-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .anomaly-card.high {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .anomaly-card.medium {
+            border-left-color: #fd7e14;
+            background: #fff8f0;
+        }
+
+        .anomaly-card.low {
+            border-left-color: #28a745;
+            background: #f8fff8;
+        }
+
+        .anomaly-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .anomaly-icon {
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .anomaly-info {
+            flex: 1;
+        }
+
+        .anomaly-title {
+            font-weight: 600;
+            color: #11224B;
+            margin-bottom: 3px;
+        }
+
+        .anomaly-severity {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .anomaly-card.high .anomaly-severity {
+            color: #dc3545;
+        }
+
+        .anomaly-card.medium .anomaly-severity {
+            color: #fd7e14;
+        }
+
+        .anomaly-card.low .anomaly-severity {
+            color: #28a745;
+        }
+
+        .anomaly-description {
+            color: #495057;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .anomaly-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .anomaly-count {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .anomaly-recommendation {
+            font-size: 13px;
+            color: #0073CE;
+            font-style: italic;
+        }
+
+        .anomaly-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .risk-indicator {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .risk-indicator.low {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .risk-indicator.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .risk-indicator.high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         /* Team Report Modal Styles */
         .team-report-overlay {
             position: fixed;
@@ -5357,6 +5486,35 @@
                                 </div>
                             </div>
                             
+                            <!-- Anomaly Detection -->
+                            <div class="insights-section">
+                                <h3>🔍 Anomaly Pattern Detection</h3>
+                                <div class="anomaly-detection-grid">
+                                    ${insights.anomalyDetection.map(anomaly => `
+                                        <div class="anomaly-card ${anomaly.severity}">
+                                            <div class="anomaly-header">
+                                                <div class="anomaly-icon">${anomaly.icon}</div>
+                                                <div class="anomaly-info">
+                                                    <div class="anomaly-title">${anomaly.title}</div>
+                                                    <div class="anomaly-severity">Severity: ${anomaly.severity.toUpperCase()}</div>
+                                                </div>
+                                            </div>
+                                            <div class="anomaly-description">${anomaly.description}</div>
+                                            <div class="anomaly-details">
+                                                <div class="anomaly-count">Affected: ${anomaly.affectedCount} employees</div>
+                                                <div class="anomaly-recommendation">${anomaly.recommendation}</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="anomaly-summary">
+                                    <strong>Anomaly Risk Score:</strong> ${insights.anomalyRiskScore}/100
+                                    <div class="risk-indicator ${insights.anomalyRiskLevel}">
+                                        Risk Level: ${insights.anomalyRiskLevel.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <!-- AI Recommendations -->
                             <div class="insights-section">
                                 <h3>🤖 AI Recommendations</h3>
@@ -5475,6 +5633,9 @@
                 ratingInsight = 'Balanced performance distribution across the team.';
             }
             
+            // Anomaly Detection Analysis
+            const anomalyDetection = analyzeAnomalyPatterns(employees, completedEmployees, ratingDistribution, biasAnalysis);
+            
             return {
                 performancePatterns,
                 ratingDistribution,
@@ -5482,6 +5643,9 @@
                 biasAnalysis,
                 contentQuality,
                 recommendations,
+                anomalyDetection: anomalyDetection.anomalies,
+                anomalyRiskScore: anomalyDetection.riskScore,
+                anomalyRiskLevel: anomalyDetection.riskLevel,
                 overallBiasScore: Math.round(biasAnalysis.reduce((sum, bias) => sum + bias.score, 0) / biasAnalysis.length)
             };
         }
@@ -5563,6 +5727,171 @@
                 specificityTrend: avgSpecificity > 70 ? '📈 Detailed' : avgSpecificity > 50 ? '📊 Adequate' : '📉 Too Generic',
                 completionTrend: completionRate > 80 ? '✅ Complete' : completionRate > 60 ? '⚠️ Partial' : '❌ Incomplete'
             };
+        }
+
+        function analyzeAnomalyPatterns(allEmployees, completedEmployees, ratingDistribution, biasAnalysis) {
+            const anomalies = [];
+            let riskScore = 0;
+            
+            // 1. Rating Distribution Anomalies
+            const totalWithRatings = completedEmployees.filter(emp => emp.evaluationData?.overallRating).length;
+            
+            // Easy Rater Detection
+            if (ratingDistribution.exemplary.percentage > 70 && totalWithRatings >= 3) {
+                anomalies.push({
+                    title: 'Easy Rater Pattern',
+                    severity: 'high',
+                    icon: '🎯',
+                    description: 'Unusually high concentration of exemplary ratings may indicate rating inflation or lack of differentiation.',
+                    affectedCount: ratingDistribution.exemplary.count,
+                    recommendation: 'Review calibration standards and consider more detailed performance criteria.'
+                });
+                riskScore += 25;
+            }
+            
+            // Harsh Rater Detection
+            if (ratingDistribution.opportunity.percentage > 50 && totalWithRatings >= 3) {
+                anomalies.push({
+                    title: 'Harsh Rater Pattern',
+                    severity: 'high',
+                    icon: '⚡',
+                    description: 'High percentage of opportunity ratings may indicate overly strict evaluation criteria.',
+                    affectedCount: ratingDistribution.opportunity.count,
+                    recommendation: 'Review rating standards and ensure fair, balanced evaluation approach.'
+                });
+                riskScore += 25;
+            }
+            
+            // 2. Completion Pattern Anomalies
+            const completionRate = (completedEmployees.length / allEmployees.length) * 100;
+            if (completionRate < 30 && allEmployees.length > 2) {
+                anomalies.push({
+                    title: 'Low Completion Rate',
+                    severity: 'medium',
+                    icon: '⏰',
+                    description: 'Significantly low evaluation completion rate may indicate process issues or time constraints.',
+                    affectedCount: allEmployees.length - completedEmployees.length,
+                    recommendation: 'Investigate barriers to completion and streamline evaluation process.'
+                });
+                riskScore += 15;
+            }
+            
+            // 3. Content Length Anomalies
+            let shortFeedbackCount = 0;
+            let totalFeedbackLength = 0;
+            
+            completedEmployees.forEach(emp => {
+                if (emp.evaluationData?.sections) {
+                    const sections = ['keyPriorities', 'resultsImpact', 'collaboration', 'growthDevelopment', 'lookingAhead'];
+                    sections.forEach(section => {
+                        const content = emp.evaluationData.sections[section]?.feedback || '';
+                        totalFeedbackLength += content.length;
+                        if (content.length < 50) {
+                            shortFeedbackCount++;
+                        }
+                    });
+                }
+            });
+            
+            const avgFeedbackLength = totalFeedbackLength / (completedEmployees.length * 5) || 0;
+            if (avgFeedbackLength < 100 && completedEmployees.length > 0) {
+                anomalies.push({
+                    title: 'Minimal Feedback Pattern',
+                    severity: 'medium',
+                    icon: '📝',
+                    description: 'Average feedback length is unusually short, potentially lacking sufficient detail for meaningful evaluation.',
+                    affectedCount: Math.round(shortFeedbackCount / 5),
+                    recommendation: 'Encourage more detailed, specific feedback with examples and actionable insights.'
+                });
+                riskScore += 10;
+            }
+            
+            // 4. Time-based Anomalies
+            const recentEvaluations = completedEmployees.filter(emp => {
+                if (!emp.evaluationData?.lastModified) return false;
+                const evalDate = new Date(emp.evaluationData.lastModified);
+                const daysSince = (new Date() - evalDate) / (1000 * 60 * 60 * 24);
+                return daysSince < 1; // Completed within last 24 hours
+            });
+            
+            if (recentEvaluations.length > completedEmployees.length * 0.8 && completedEmployees.length > 3) {
+                anomalies.push({
+                    title: 'Rush Completion Pattern',
+                    severity: 'medium',
+                    icon: '🚀',
+                    description: 'Large number of evaluations completed in short timeframe may indicate rushed process.',
+                    affectedCount: recentEvaluations.length,
+                    recommendation: 'Consider spacing out evaluations for more thoughtful assessment.'
+                });
+                riskScore += 15;
+            }
+            
+            // 5. Consistency Anomalies
+            const ratingVariance = calculateRatingVariance(completedEmployees);
+            if (ratingVariance < 0.1 && completedEmployees.length > 4) {
+                anomalies.push({
+                    title: 'Low Rating Variance',
+                    severity: 'low',
+                    icon: '📊',
+                    description: 'Very similar ratings across team members may indicate lack of differentiation.',
+                    affectedCount: completedEmployees.length,
+                    recommendation: 'Ensure evaluations capture individual performance differences and unique contributions.'
+                });
+                riskScore += 8;
+            }
+            
+            // 6. Bias Pattern Anomalies
+            const highBiasCount = biasAnalysis.filter(bias => bias.score > 70).length;
+            if (highBiasCount > 2) {
+                anomalies.push({
+                    title: 'Multiple Bias Patterns',
+                    severity: 'high',
+                    icon: '⚖️',
+                    description: 'Multiple types of evaluation bias detected, potentially compromising assessment fairness.',
+                    affectedCount: highBiasCount,
+                    recommendation: 'Review evaluation training and implement structured assessment guidelines.'
+                });
+                riskScore += 20;
+            }
+            
+            // Default case - no anomalies detected
+            if (anomalies.length === 0) {
+                anomalies.push({
+                    title: 'No Significant Anomalies',
+                    severity: 'low',
+                    icon: '✅',
+                    description: 'Evaluation patterns appear normal and balanced across standard metrics.',
+                    affectedCount: 0,
+                    recommendation: 'Continue current evaluation practices and monitor for emerging patterns.'
+                });
+            }
+            
+            // Calculate risk level
+            let riskLevel = 'low';
+            if (riskScore > 50) riskLevel = 'high';
+            else if (riskScore > 25) riskLevel = 'medium';
+            
+            return {
+                anomalies,
+                riskScore: Math.min(riskScore, 100),
+                riskLevel
+            };
+        }
+        
+        function calculateRatingVariance(employees) {
+            const ratings = employees
+                .filter(emp => emp.evaluationData?.overallRating)
+                .map(emp => {
+                    const rating = emp.evaluationData.overallRating;
+                    return rating === 'exemplary' ? 3 : rating === 'successful' ? 2 : 1;
+                });
+            
+            if (ratings.length < 2) return 0;
+            
+            const mean = ratings.reduce((sum, r) => sum + r, 0) / ratings.length;
+            const variance = ratings.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / ratings.length;
+            
+            return variance;
         }
         
         function generateRecommendations(employees, ratingDistribution, biasAnalysis, contentQuality) {
