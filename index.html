@@ -3417,7 +3417,7 @@
                                 <div class="action-buttons">
                                     <button class="btn btn-primary" onclick="viewTeamReport()">View Team Report</button>
                                     <button class="btn btn-primary" onclick="showAnalyticsInsights()">Analytics & Insights</button>
-                                    <button class="btn btn-outline" onclick="exportEvaluations()">Export All Evaluations</button>
+                                    <button class="btn btn-outline" onclick="exportEvaluations()">Export All Evaluations (PDF)</button>
                                     <button class="btn btn-outline" onclick="addNewEmployee()">Add New Employee</button>
                                 </div>
                             </div>
@@ -4442,7 +4442,7 @@
                             
                             <div class="report-actions">
                                 <button class="btn btn-primary" onclick="downloadTeamReport()">Download Report</button>
-                                <button class="btn btn-outline" onclick="exportEvaluations()">Export CSV</button>
+                                <button class="btn btn-outline" onclick="exportEvaluations()">Export All (PDF)</button>
                                 <button class="btn btn-outline" onclick="closeTeamReport()">Close</button>
                             </div>
                         </div>
@@ -4465,32 +4465,154 @@
             const reviewer = reviewerData[currentReviewer];
             const employees = Object.values(reviewer.employees || {}).filter(emp => !emp.archived);
             
-            let reportContent = `TEAM PERFORMANCE REPORT\n`;
-            reportContent += `Reviewer: ${reviewer.name}\n`;
-            reportContent += `Generated: ${new Date().toLocaleDateString()}\n`;
-            reportContent += `Total Team Members: ${employees.length}\n\n`;
+            // Create PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
             
-            reportContent += `EVALUATION STATUS:\n`;
-            reportContent += `Completed: ${employees.filter(emp => emp.status === 'completed').length}\n`;
-            reportContent += `In Progress: ${employees.filter(emp => emp.status === 'in-progress').length}\n`;
-            reportContent += `Not Started: ${employees.filter(emp => emp.status === 'not-started').length}\n\n`;
+            // Set up the document
+            let yPos = 20;
+            const pageWidth = doc.internal.pageSize.width;
+            const marginX = 20;
+            const contentWidth = pageWidth - (marginX * 2);
             
-            reportContent += `TEAM MEMBERS:\n`;
-            reportContent += `Name\t\t\tPosition\t\t\tStatus\t\t\tRating\n`;
-            reportContent += `${'='.repeat(80)}\n`;
+            // Header with logo space
+            doc.setFillColor(0, 67, 160);
+            doc.rect(0, 0, pageWidth, 35, 'F');
             
+            // Title
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('TEAM PERFORMANCE REPORT', marginX, 25);
+            
+            // Report info
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            yPos = 50;
+            
+            doc.text(`Reviewer: ${reviewer.name}`, marginX, yPos);
+            yPos += 8;
+            doc.text(`Generated: ${new Date().toLocaleDateString()}`, marginX, yPos);
+            yPos += 8;
+            doc.text(`Total Team Members: ${employees.length}`, marginX, yPos);
+            yPos += 15;
+            
+            // Evaluation Status Section
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('EVALUATION STATUS SUMMARY', marginX, yPos);
+            yPos += 10;
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            
+            const completedCount = employees.filter(emp => emp.status === 'completed').length;
+            const inProgressCount = employees.filter(emp => emp.status === 'in-progress').length;
+            const notStartedCount = employees.filter(emp => emp.status === 'not-started').length;
+            
+            doc.text(`• Completed Evaluations: ${completedCount}`, marginX + 10, yPos);
+            yPos += 7;
+            doc.text(`• In Progress: ${inProgressCount}`, marginX + 10, yPos);
+            yPos += 7;
+            doc.text(`• Not Started: ${notStartedCount}`, marginX + 10, yPos);
+            yPos += 15;
+            
+            // Rating Distribution
+            const ratingsCount = { exemplary: 0, successful: 0, opportunity: 0, 'not-rated': 0 };
             employees.forEach(emp => {
-                const rating = emp.evaluationData?.overallRating || 'Not Rated';
-                reportContent += `${emp.name.padEnd(20)}\t${emp.position.padEnd(20)}\t${emp.status.padEnd(15)}\t${rating}\n`;
+                const rating = emp.evaluationData?.overallRating || 'not-rated';
+                ratingsCount[rating] = (ratingsCount[rating] || 0) + 1;
             });
             
-            const blob = new Blob([reportContent], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${reviewer.name.replace(/\s+/g, '_')}_Team_Report_${new Date().toISOString().split('T')[0]}.txt`;
-            a.click();
-            window.URL.revokeObjectURL(url);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('PERFORMANCE RATING DISTRIBUTION', marginX, yPos);
+            yPos += 10;
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text(`• Exemplary: ${ratingsCount.exemplary}`, marginX + 10, yPos);
+            yPos += 7;
+            doc.text(`• Successful: ${ratingsCount.successful}`, marginX + 10, yPos);
+            yPos += 7;
+            doc.text(`• Opportunity: ${ratingsCount.opportunity}`, marginX + 10, yPos);
+            yPos += 7;
+            doc.text(`• Not Rated: ${ratingsCount['not-rated']}`, marginX + 10, yPos);
+            yPos += 20;
+            
+            // Team Members Table
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('TEAM MEMBERS DETAILS', marginX, yPos);
+            yPos += 10;
+            
+            // Table header
+            doc.setFillColor(240, 240, 240);
+            doc.rect(marginX, yPos - 5, contentWidth, 12, 'F');
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'bold');
+            doc.text('Name', marginX + 5, yPos + 3);
+            doc.text('Position', marginX + 60, yPos + 3);
+            doc.text('Status', marginX + 120, yPos + 3);
+            doc.text('Rating', marginX + 155, yPos + 3);
+            yPos += 12;
+            
+            // Table rows
+            doc.setFont(undefined, 'normal');
+            employees.forEach((emp, index) => {
+                // Check if we need a new page
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                // Alternating row colors
+                if (index % 2 === 0) {
+                    doc.setFillColor(248, 249, 250);
+                    doc.rect(marginX, yPos - 3, contentWidth, 10, 'F');
+                }
+                
+                const rating = emp.evaluationData?.overallRating || 'Not Rated';
+                const status = emp.status.charAt(0).toUpperCase() + emp.status.slice(1).replace('-', ' ');
+                
+                doc.setTextColor(0, 0, 0);
+                doc.text(emp.name.substring(0, 22), marginX + 5, yPos + 3);
+                doc.text(emp.position.substring(0, 18), marginX + 60, yPos + 3);
+                
+                // Status with color coding
+                if (emp.status === 'completed') doc.setTextColor(40, 167, 69);
+                else if (emp.status === 'in-progress') doc.setTextColor(0, 175, 215);
+                else doc.setTextColor(108, 117, 125);
+                
+                doc.text(status, marginX + 120, yPos + 3);
+                
+                // Rating with color coding
+                if (rating === 'exemplary') doc.setTextColor(40, 167, 69);
+                else if (rating === 'successful') doc.setTextColor(0, 175, 215);
+                else if (rating === 'opportunity') doc.setTextColor(255, 193, 7);
+                else doc.setTextColor(108, 117, 125);
+                
+                doc.text(rating.charAt(0).toUpperCase() + rating.slice(1), marginX + 155, yPos + 3);
+                doc.setTextColor(0, 0, 0);
+                
+                yPos += 10;
+            });
+            
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(128, 128, 128);
+                doc.text(`Sam's Club Talent Evaluation Dashboard - Page ${i} of ${pageCount}`, marginX, doc.internal.pageSize.height - 10);
+                doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - 80, doc.internal.pageSize.height - 10);
+            }
+            
+            // Download the PDF
+            const fileName = `${reviewer.name.replace(/\s+/g, '_')}_Team_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
         }
 
         // Analytics & Insights Function
@@ -4999,22 +5121,142 @@
 
         function exportEvaluations() {
             const reviewer = reviewerData[currentReviewer];
-            const employees = Object.values(reviewer.employees || {});
+            const employees = Object.values(reviewer.employees || {}).filter(emp => !emp.archived);
             
-            let csvContent = "Employee Name,Position,Status,Overall Rating,Last Updated\n";
+            if (employees.length === 0) {
+                alert('No evaluations to export.');
+                return;
+            }
             
-            employees.forEach(emp => {
-                const rating = emp.evaluationData?.overallRating || 'Not Set';
-                csvContent += `"${emp.name}","${emp.position}","${emp.status}","${rating}","${new Date(emp.lastUpdated).toLocaleDateString()}"\n`;
+            // Create PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yPos = 20;
+            const pageWidth = doc.internal.pageSize.width;
+            const marginX = 20;
+            
+            // Header
+            doc.setFillColor(0, 67, 160);
+            doc.rect(0, 0, pageWidth, 35, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('ALL TEAM EVALUATIONS EXPORT', marginX, 25);
+            
+            // Report info
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            yPos = 50;
+            
+            doc.text(`Reviewer: ${reviewer.name}`, marginX, yPos);
+            yPos += 8;
+            doc.text(`Export Date: ${new Date().toLocaleDateString()}`, marginX, yPos);
+            yPos += 8;
+            doc.text(`Total Evaluations: ${employees.length}`, marginX, yPos);
+            yPos += 20;
+            
+            // Process each employee
+            employees.forEach((employee, index) => {
+                // Check if we need a new page
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                // Employee header
+                doc.setFillColor(240, 248, 255);
+                doc.rect(marginX - 5, yPos - 8, pageWidth - (marginX * 2) + 10, 20, 'F');
+                
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(0, 67, 160);
+                doc.text(`${index + 1}. ${employee.name}`, marginX, yPos);
+                
+                doc.setFontSize(11);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Position: ${employee.position}`, marginX, yPos + 8);
+                
+                // Status and rating
+                const status = employee.status.charAt(0).toUpperCase() + employee.status.slice(1).replace('-', ' ');
+                const rating = employee.evaluationData?.overallRating || 'Not Rated';
+                doc.text(`Status: ${status} | Rating: ${rating.charAt(0).toUpperCase() + rating.slice(1)}`, marginX + 100, yPos + 8);
+                
+                yPos += 25;
+                
+                // Evaluation details if completed
+                if (employee.evaluationData && employee.status === 'completed') {
+                    const sections = [
+                        { key: 'keyPriorities', title: 'Key Priorities' },
+                        { key: 'resultsImpact', title: 'Results & Impact' },
+                        { key: 'collaboration', title: 'Collaboration & Influence' },
+                        { key: 'growth', title: 'Growth & Development' },
+                        { key: 'lookingAhead', title: 'Looking Ahead' }
+                    ];
+                    
+                    sections.forEach(section => {
+                        const content = employee.evaluationData[section.key];
+                        if (content && content.trim()) {
+                            // Check page break
+                            if (yPos > 260) {
+                                doc.addPage();
+                                yPos = 20;
+                            }
+                            
+                            doc.setFontSize(10);
+                            doc.setFont(undefined, 'bold');
+                            doc.text(`${section.title}:`, marginX + 5, yPos);
+                            yPos += 6;
+                            
+                            doc.setFont(undefined, 'normal');
+                            
+                            // Split long text into multiple lines
+                            const lines = doc.splitTextToSize(content, pageWidth - marginX - 30);
+                            lines.forEach(line => {
+                                if (yPos > 280) {
+                                    doc.addPage();
+                                    yPos = 20;
+                                }
+                                doc.text(line, marginX + 10, yPos);
+                                yPos += 5;
+                            });
+                            yPos += 3;
+                        }
+                    });
+                } else if (employee.status === 'in-progress') {
+                    doc.setFontSize(10);
+                    doc.setTextColor(255, 193, 7);
+                    doc.text('⚠️ Evaluation in progress - partial data only', marginX + 5, yPos);
+                    yPos += 8;
+                    doc.setTextColor(0, 0, 0);
+                } else {
+                    doc.setFontSize(10);
+                    doc.setTextColor(220, 53, 69);
+                    doc.text('❌ Evaluation not started', marginX + 5, yPos);
+                    yPos += 8;
+                    doc.setTextColor(0, 0, 0);
+                }
+                
+                yPos += 15;
             });
             
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${reviewer.name.replace(/\s+/g, '_')}_Team_Evaluations.csv`;
-            a.click();
-            window.URL.revokeObjectURL(url);
+            // Footer on all pages
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(128, 128, 128);
+                doc.text(`Sam's Club Talent Evaluation Dashboard - All Evaluations Export`, marginX, doc.internal.pageSize.height - 15);
+                doc.text(`Page ${i} of ${pageCount}`, pageWidth - 40, doc.internal.pageSize.height - 15);
+                doc.text(`Generated: ${new Date().toLocaleString()}`, marginX, doc.internal.pageSize.height - 8);
+            }
+            
+            // Download the PDF
+            const fileName = `${reviewer.name.replace(/\s+/g, '_')}_All_Evaluations_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
         }
 
         // Intelligent Navigation System with Auto-save
