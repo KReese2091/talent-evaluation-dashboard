@@ -1263,44 +1263,6 @@
             width: calc(100% - 40px);
         }
 
-        /* Undo/Redo Notification */
-        .undo-redo-notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100%);
-            background: rgba(33, 37, 41, 0.95);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .undo-redo-notification.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .notification-content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .notification-icon {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-
-        .notification-text {
-            white-space: nowrap;
-        }
-
         /* Undo/Redo Button Styles */
         .undo-redo-btn {
             background: rgba(255, 255, 255, 0.1);
@@ -4668,7 +4630,6 @@
                 executeUndoAction(action);
                 historyIndex--;
                 updateUndoRedoUI();
-                showUndoRedoNotification('Undo', action.description);
             }
         }
 
@@ -4678,7 +4639,6 @@
                 const action = actionHistory[historyIndex];
                 executeRedoAction(action);
                 updateUndoRedoUI();
-                showUndoRedoNotification('Redo', action.description);
             }
         }
 
@@ -4784,27 +4744,7 @@
             }
         }
 
-        function showUndoRedoNotification(type, description) {
-            const notification = document.createElement('div');
-            notification.className = 'undo-redo-notification';
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <span class="notification-icon">${type === 'Undo' ? '↶' : '↷'}</span>
-                    <span class="notification-text">${type}: ${description}</span>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => notification.classList.add('show'), 10);
-            
-            // Remove after 2 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 2000);
-        }
+
 
         // Enhanced text change tracking for undo/redo
         function setupUndoRedoForTextFields() {
