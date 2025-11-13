@@ -1496,6 +1496,166 @@
             opacity: 1;
         }
 
+        /* Analytics & Insights Styles */
+        .analytics-container {
+            display: grid;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .insights-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .insights-section h3 {
+            margin: 0 0 15px 0;
+            color: #11224B;
+            font-size: 18px;
+            border-bottom: 2px solid #00AFD7;
+            padding-bottom: 8px;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .pattern-card {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+            border-left: 4px solid #00AFD7;
+        }
+
+        .pattern-card.warning {
+            border-left-color: #ffc107;
+            background: #fff9e6;
+        }
+
+        .pattern-card.alert {
+            border-left-color: #dc3545;
+            background: #ffeaea;
+        }
+
+        .pattern-title {
+            font-weight: 600;
+            color: #11224B;
+            margin-bottom: 8px;
+        }
+
+        .pattern-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .pattern-data {
+            font-size: 13px;
+            color: #444;
+        }
+
+        .insight-metric {
+            display: inline-block;
+            background: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 2px;
+            font-weight: 500;
+        }
+
+        .rating-distribution {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .rating-bar {
+            flex: 1;
+            text-align: center;
+        }
+
+        .rating-bar-fill {
+            height: 40px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .rating-bar-fill.exemplary { background: #28a745; }
+        .rating-bar-fill.successful { background: #00AFD7; }
+        .rating-bar-fill.opportunity { background: #ffc107; color: #333; }
+
+        .bias-heatmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .bias-indicator {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .bias-indicator.high {
+            border-color: #dc3545;
+            background: #ffeaea;
+        }
+
+        .bias-indicator.medium {
+            border-color: #ffc107;
+            background: #fff9e6;
+        }
+
+        .bias-indicator.low {
+            border-color: #28a745;
+            background: #eafaf1;
+        }
+
+        .trend-chart {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .recommendations-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .recommendation-icon {
+            background: #00AFD7;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
         /* Team Report Modal Styles */
         .team-report-overlay {
             position: fixed;
@@ -3256,6 +3416,7 @@
                                 <h3>Quick Actions</h3>
                                 <div class="action-buttons">
                                     <button class="btn btn-primary" onclick="viewTeamReport()">View Team Report</button>
+                                    <button class="btn btn-primary" onclick="showAnalyticsInsights()">Analytics & Insights</button>
                                     <button class="btn btn-outline" onclick="exportEvaluations()">Export All Evaluations</button>
                                     <button class="btn btn-outline" onclick="addNewEmployee()">Add New Employee</button>
                                 </div>
@@ -4330,6 +4491,357 @@
             a.download = `${reviewer.name.replace(/\s+/g, '_')}_Team_Report_${new Date().toISOString().split('T')[0]}.txt`;
             a.click();
             window.URL.revokeObjectURL(url);
+        }
+
+        // Analytics & Insights Function
+        function showAnalyticsInsights() {
+            const reviewer = reviewerData[currentReviewer];
+            const employees = Object.values(reviewer.employees || {});
+            const activeEmployees = employees.filter(emp => !emp.archived);
+            
+            if (activeEmployees.length === 0) {
+                alert('No evaluation data available for analysis. Please complete some evaluations first.');
+                return;
+            }
+            
+            const insights = generateInsights(activeEmployees);
+            
+            const analyticsHTML = `
+                <div class="team-report-overlay" onclick="closeAnalytics(event)">
+                    <div class="team-report-modal" onclick="event.stopPropagation()" style="max-width: 1200px;">
+                        <div class="report-header">
+                            <h2>📊 Analytics & Insights Dashboard</h2>
+                            <p>AI-Powered Analysis for ${reviewer.name}'s Team | ${activeEmployees.length} Team Members</p>
+                            <button class="close-btn" onclick="closeAnalytics()">&times;</button>
+                        </div>
+                        
+                        <div class="analytics-container">
+                            <!-- Performance Patterns -->
+                            <div class="insights-section">
+                                <h3>🎯 Performance Patterns</h3>
+                                <div class="pattern-grid">
+                                    ${insights.performancePatterns.map(pattern => `
+                                        <div class="pattern-card ${pattern.type}">
+                                            <div class="pattern-title">${pattern.title}</div>
+                                            <div class="pattern-description">${pattern.description}</div>
+                                            <div class="pattern-data">${pattern.data}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- Rating Distribution -->
+                            <div class="insights-section">
+                                <h3>📈 Rating Distribution Analysis</h3>
+                                <div class="rating-distribution">
+                                    ${Object.entries(insights.ratingDistribution).map(([rating, data]) => `
+                                        <div class="rating-bar">
+                                            <div class="rating-bar-fill ${rating}" style="height: ${Math.max(20, data.percentage)}px;">
+                                                ${data.count}
+                                            </div>
+                                            <div>${rating.charAt(0).toUpperCase() + rating.slice(1)}</div>
+                                            <div>${data.percentage}%</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <p><strong>Insight:</strong> ${insights.ratingInsight}</p>
+                            </div>
+                            
+                            <!-- Bias Detection Heatmap -->
+                            <div class="insights-section">
+                                <h3>⚠️ Bias Detection Analysis</h3>
+                                <div class="bias-heatmap">
+                                    ${insights.biasAnalysis.map(bias => `
+                                        <div class="bias-indicator ${bias.level}">
+                                            <div><strong>${bias.type}</strong></div>
+                                            <div>Risk: ${bias.level.toUpperCase()}</div>
+                                            <div>${bias.count} instances</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <p><strong>Overall Bias Score:</strong> ${insights.overallBiasScore}/100 (Lower is better)</p>
+                            </div>
+                            
+                            <!-- Content Quality Trends -->
+                            <div class="insights-section">
+                                <h3>📝 Content Quality Trends</h3>
+                                <div class="pattern-grid">
+                                    <div class="pattern-card">
+                                        <div class="pattern-title">Average Objectivity</div>
+                                        <div class="pattern-description">Across all evaluation sections</div>
+                                        <div class="pattern-data">
+                                            <span class="insight-metric">${insights.contentQuality.avgObjectivity}%</span>
+                                            ${insights.contentQuality.objectivityTrend}
+                                        </div>
+                                    </div>
+                                    <div class="pattern-card">
+                                        <div class="pattern-title">Average Specificity</div>
+                                        <div class="pattern-description">Detail level in evaluations</div>
+                                        <div class="pattern-data">
+                                            <span class="insight-metric">${insights.contentQuality.avgSpecificity}%</span>
+                                            ${insights.contentQuality.specificityTrend}
+                                        </div>
+                                    </div>
+                                    <div class="pattern-card">
+                                        <div class="pattern-title">Completion Rate</div>
+                                        <div class="pattern-description">Fully completed sections</div>
+                                        <div class="pattern-data">
+                                            <span class="insight-metric">${insights.contentQuality.completionRate}%</span>
+                                            ${insights.contentQuality.completionTrend}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Recommendations -->
+                            <div class="insights-section">
+                                <h3>🤖 AI Recommendations</h3>
+                                <ul class="recommendations-list">
+                                    ${insights.recommendations.map(rec => `
+                                        <li>
+                                            <div class="recommendation-icon">${rec.priority}</div>
+                                            <div>
+                                                <strong>${rec.title}</strong><br>
+                                                ${rec.description}
+                                            </div>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', analyticsHTML);
+        }
+        
+        function closeAnalytics(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const overlay = document.querySelector('.team-report-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+        
+        function generateInsights(employees) {
+            const completedEmployees = employees.filter(emp => emp.status === 'completed' && emp.evaluationData);
+            
+            // Rating Distribution Analysis
+            const ratingDistribution = { exemplary: {count: 0, percentage: 0}, successful: {count: 0, percentage: 0}, opportunity: {count: 0, percentage: 0} };
+            completedEmployees.forEach(emp => {
+                const rating = emp.evaluationData?.overallRating;
+                if (rating && ratingDistribution[rating]) {
+                    ratingDistribution[rating].count++;
+                }
+            });
+            
+            const total = completedEmployees.length || 1;
+            Object.keys(ratingDistribution).forEach(rating => {
+                ratingDistribution[rating].percentage = Math.round((ratingDistribution[rating].count / total) * 100);
+            });
+            
+            // Performance Patterns Detection
+            const performancePatterns = [];
+            
+            // High Performers Pattern
+            const highPerformers = completedEmployees.filter(emp => emp.evaluationData?.overallRating === 'exemplary');
+            if (highPerformers.length > 0) {
+                performancePatterns.push({
+                    type: 'info',
+                    title: 'High Performers Identified',
+                    description: `${highPerformers.length} team members rated as Exemplary`,
+                    data: `Names: ${highPerformers.map(emp => emp.name).join(', ')}`
+                });
+            }
+            
+            // Improvement Opportunities
+            const improvementCases = completedEmployees.filter(emp => emp.evaluationData?.overallRating === 'opportunity');
+            if (improvementCases.length > 0) {
+                performancePatterns.push({
+                    type: 'warning',
+                    title: 'Development Opportunities',
+                    description: `${improvementCases.length} team members need focused development`,
+                    data: `Consider additional training and mentoring support`
+                });
+            }
+            
+            // Completion Pattern
+            const completionRate = Math.round((completedEmployees.length / employees.length) * 100);
+            performancePatterns.push({
+                type: completionRate < 50 ? 'alert' : 'info',
+                title: 'Evaluation Progress',
+                description: `${completionRate}% of evaluations completed`,
+                data: `${completedEmployees.length} of ${employees.length} evaluations finished`
+            });
+            
+            // Bias Analysis
+            const biasAnalysis = analyzeBiasPatterns(completedEmployees);
+            
+            // Content Quality Analysis
+            const contentQuality = analyzeContentQuality(completedEmployees);
+            
+            // AI Recommendations
+            const recommendations = generateRecommendations(employees, ratingDistribution, biasAnalysis, contentQuality);
+            
+            // Rating Distribution Insight
+            let ratingInsight = '';
+            if (ratingDistribution.exemplary.percentage > 50) {
+                ratingInsight = 'High concentration of top performers - consider stretch assignments and leadership development.';
+            } else if (ratingDistribution.opportunity.percentage > 30) {
+                ratingInsight = 'Significant development needs identified - focus on targeted improvement plans.';
+            } else {
+                ratingInsight = 'Balanced performance distribution across the team.';
+            }
+            
+            return {
+                performancePatterns,
+                ratingDistribution,
+                ratingInsight,
+                biasAnalysis,
+                contentQuality,
+                recommendations,
+                overallBiasScore: Math.round(biasAnalysis.reduce((sum, bias) => sum + bias.score, 0) / biasAnalysis.length)
+            };
+        }
+        
+        function analyzeBiasPatterns(employees) {
+            const biasTypes = {
+                'Length Bias': 0,
+                'Recency Bias': 0,
+                'Subjective Language': 0,
+                'Generic Feedback': 0
+            };
+            
+            employees.forEach(emp => {
+                if (!emp.evaluationData) return;
+                
+                // Analyze each section for bias patterns
+                ['keyPriorities', 'resultsImpact', 'collaboration', 'growth', 'lookingAhead'].forEach(section => {
+                    const content = emp.evaluationData[section];
+                    if (!content) return;
+                    
+                    // Length bias (too short/long)
+                    if (content.length < 50 || content.length > 1000) biasTypes['Length Bias']++;
+                    
+                    // Subjective language
+                    const subjectiveWords = ['good', 'bad', 'great', 'poor', 'nice', 'awesome', 'terrible', 'amazing'];
+                    if (subjectiveWords.some(word => content.toLowerCase().includes(word))) {
+                        biasTypes['Subjective Language']++;
+                    }
+                    
+                    // Generic feedback
+                    const genericPhrases = ['did well', 'good job', 'met expectations', 'performed as expected'];
+                    if (genericPhrases.some(phrase => content.toLowerCase().includes(phrase))) {
+                        biasTypes['Generic Feedback']++;
+                    }
+                });
+            });
+            
+            return Object.entries(biasTypes).map(([type, count]) => ({
+                type,
+                count,
+                level: count > 5 ? 'high' : count > 2 ? 'medium' : 'low',
+                score: count * 10
+            }));
+        }
+        
+        function analyzeContentQuality(employees) {
+            let totalObjectivity = 0, totalSpecificity = 0, totalSections = 0;
+            let completedSections = 0;
+            
+            employees.forEach(emp => {
+                if (!emp.evaluationData) return;
+                
+                ['keyPriorities', 'resultsImpact', 'collaboration', 'growth', 'lookingAhead'].forEach(section => {
+                    const content = emp.evaluationData[section];
+                    totalSections++;
+                    
+                    if (content && content.length > 20) {
+                        completedSections++;
+                        
+                        // Simulate objectivity/specificity calculation
+                        const objectivity = calculateObjectivity(content, section);
+                        const specificity = calculateSpecificity(content, section);
+                        
+                        totalObjectivity += objectivity;
+                        totalSpecificity += specificity;
+                    }
+                });
+            });
+            
+            const avgObjectivity = Math.round(totalObjectivity / (completedSections || 1));
+            const avgSpecificity = Math.round(totalSpecificity / (completedSections || 1));
+            const completionRate = Math.round((completedSections / totalSections) * 100);
+            
+            return {
+                avgObjectivity,
+                avgSpecificity,
+                completionRate,
+                objectivityTrend: avgObjectivity > 70 ? '📈 Excellent' : avgObjectivity > 50 ? '📊 Good' : '📉 Needs Improvement',
+                specificityTrend: avgSpecificity > 70 ? '📈 Detailed' : avgSpecificity > 50 ? '📊 Adequate' : '📉 Too Generic',
+                completionTrend: completionRate > 80 ? '✅ Complete' : completionRate > 60 ? '⚠️ Partial' : '❌ Incomplete'
+            };
+        }
+        
+        function generateRecommendations(employees, ratingDistribution, biasAnalysis, contentQuality) {
+            const recommendations = [];
+            
+            // Based on completion rate
+            const completionRate = Math.round((employees.filter(emp => emp.status === 'completed').length / employees.length) * 100);
+            if (completionRate < 70) {
+                recommendations.push({
+                    priority: '1',
+                    title: 'Complete Remaining Evaluations',
+                    description: `${100 - completionRate}% of evaluations are still incomplete. Set a deadline to finish all assessments.`
+                });
+            }
+            
+            // Based on bias analysis
+            const highBiasCount = biasAnalysis.filter(bias => bias.level === 'high').length;
+            if (highBiasCount > 0) {
+                recommendations.push({
+                    priority: '2',
+                    title: 'Address Evaluation Bias',
+                    description: 'High bias detected in multiple areas. Review feedback for objectivity and add specific examples with measurable outcomes.'
+                });
+            }
+            
+            // Based on content quality
+            if (contentQuality.avgObjectivity < 60) {
+                recommendations.push({
+                    priority: '3',
+                    title: 'Improve Objectivity',
+                    description: 'Add more factual, measurable examples in evaluations. Replace subjective opinions with concrete achievements and data.'
+                });
+            }
+            
+            if (contentQuality.avgSpecificity < 60) {
+                recommendations.push({
+                    priority: '4',
+                    title: 'Increase Specificity',
+                    description: 'Include more detailed examples, dates, numbers, and specific project names in your evaluations.'
+                });
+            }
+            
+            // Based on rating distribution
+            if (ratingDistribution.exemplary.percentage > 70) {
+                recommendations.push({
+                    priority: '5',
+                    title: 'Challenge High Performers',
+                    description: 'Consider stretch assignments, leadership roles, or cross-functional projects for your top performers.'
+                });
+            }
+            
+            if (ratingDistribution.opportunity.percentage > 20) {
+                recommendations.push({
+                    priority: '6',
+                    title: 'Development Planning',
+                    description: 'Create detailed improvement plans with specific goals, timelines, and support resources for team members needing development.'
+                });
+            }
+            
+            return recommendations;
         }
 
         // Individual Evaluation Download Function
