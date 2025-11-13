@@ -1860,14 +1860,29 @@
 
         .employee-name {
             font-weight: 600;
-            color: #11224B;
+            color: #11224B !important;
             font-size: 16px;
             margin-bottom: 4px;
         }
 
+        .team-report-modal .employee-name {
+            color: #11224B !important;
+            font-weight: 600;
+        }
+
+        .employee-status-list .employee-name {
+            color: #11224B !important;
+            font-weight: 600;
+        }
+
         .employee-position {
-            color: #666;
+            color: #495057 !important;
             font-size: 14px;
+            font-weight: 500;
+        }
+
+        .team-report-modal .employee-position {
+            color: #495057 !important;
         }
 
         .status-info {
@@ -4430,6 +4445,7 @@
                                         <div class="employee-status-item">
                                             <div class="employee-info">
                                                 <div class="employee-name">${emp.name}</div>
+                                                <div class="employee-position">${emp.position}</div>
                                             </div>
                                             <div class="status-info">
                                                 <div class="status-badge ${emp.status}">${emp.status.replace('-', ' ').toUpperCase()}</div>
