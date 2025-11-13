@@ -2661,13 +2661,42 @@
             const urlParams = new URLSearchParams(window.location.search);
             const reviewerId = urlParams.get('reviewer');
             
-            if (reviewerId) {
+            if (reviewerId && reviewerData[reviewerId]) {
                 currentReviewer = reviewerId;
                 loadReviewerDashboard();
             } else {
                 showReviewerLogin();
             }
         }
+
+        // Force dashboard reload function
+        function forceDashboardReload() {
+            if (currentReviewer && reviewerData[currentReviewer]) {
+                loadReviewerDashboard();
+            } else {
+                showReviewerLogin();
+            }
+        }
+
+        // Debug function to check current state
+        function checkSystemState() {
+            console.log('Current Reviewer:', currentReviewer);
+            console.log('Reviewer Data:', reviewerData);
+            console.log('Container HTML:', document.querySelector('.container')?.innerHTML.substring(0, 200) + '...');
+            return { currentReviewer, reviewerData, containerExists: !!document.querySelector('.container') };
+        }
+
+        // Emergency reload function accessible from browser console
+        window.emergencyReload = function() {
+            console.log('Emergency reload triggered');
+            if (currentReviewer) {
+                loadReviewerDashboard();
+                console.log('Dashboard reloaded');
+            } else {
+                showReviewerLogin();
+                console.log('Showing login');
+            }
+        };
 
         function showReviewerLogin() {
             document.querySelector('.container').innerHTML = `
@@ -5356,6 +5385,14 @@
             const overlay = document.querySelector('.team-report-overlay');
             if (overlay) {
                 overlay.remove();
+            }
+            // Ensure the main dashboard is still visible
+            if (currentReviewer && reviewerData[currentReviewer]) {
+                // Force dashboard visibility if needed
+                const container = document.querySelector('.container');
+                if (container && (!container.innerHTML.includes('sidebar') || !container.innerHTML.includes('Direct Reports'))) {
+                    loadReviewerDashboard();
+                }
             }
         }
         
