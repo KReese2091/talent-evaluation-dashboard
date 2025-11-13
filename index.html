@@ -1257,61 +1257,6 @@
             font-weight: 400 !important;
         }
 
-        /* Drag and Drop Styles */
-        .employee-item[draggable="true"] {
-            cursor: move;
-        }
-
-        .employee-item.drag-over {
-            border: 2px dashed #00AFD7 !important;
-            background: rgba(0, 175, 215, 0.1) !important;
-            transform: scale(1.02);
-        }
-
-        .employee-item.dragging {
-            opacity: 0.5;
-            transform: rotate(2deg);
-        }
-
-        .drag-handle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 12px;
-            margin-right: 8px;
-            cursor: move;
-            transition: color 0.2s ease;
-        }
-
-        .employee-item:hover .drag-handle {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .sort-controls {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            padding: 0 15px;
-        }
-
-        .sort-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .sort-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .sort-btn.active {
-            background: #00AFD7;
-            border-color: #0067A0;
-        }
-
         .btn-add-employee {
             width: 100%;
             margin: 15px 20px 0 20px;
@@ -1356,36 +1301,59 @@
             white-space: nowrap;
         }
 
-        /* Undo/Redo Button Styles (for future use) */
+        /* Undo/Redo Button Styles */
         .undo-redo-btn {
-            background: #6c757d;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: none;
-            padding: 6px 12px;
-            margin: 0 2px;
-            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+            min-height: 32px;
         }
 
         .undo-redo-btn:hover:not(:disabled) {
-            background: #5a6268;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
         }
 
         .undo-redo-btn:disabled {
-            background: #e9ecef;
-            color: #6c757d;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
             cursor: not-allowed;
+            transform: none;
         }
 
         .undo-redo-btn:focus {
             outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(0, 175, 215, 0.25);
         }
 
-        /* Shortcuts Info Panel */
-        .shortcuts-info {
+        .undo-redo-btn .btn-icon {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .undo-redo-btn .btn-text {
+            font-weight: 500;
+        }
+
+        .undo-redo-btn:disabled .btn-icon,
+        .undo-redo-btn:disabled .btn-text {
+            opacity: 0.5;
+        }
+
+        /* Undo/Redo Controls Panel */
+        .undo-redo-controls {
             margin-top: 20px;
             padding: 15px;
             background: rgba(255, 255, 255, 0.05);
@@ -1393,41 +1361,22 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .shortcuts-info h5 {
+        .undo-redo-controls h5 {
             color: white;
             font-size: 14px;
             font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .undo-redo-buttons {
+            display: flex;
+            gap: 8px;
             margin-bottom: 10px;
         }
 
-        .shortcut-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-            font-size: 12px;
-        }
-
-        .shortcut-item kbd {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            min-width: 80px;
-            text-align: center;
-        }
-
-        .shortcut-item span {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .shortcut-note {
+        .undo-redo-note {
             font-size: 10px;
             color: rgba(255, 255, 255, 0.6);
-            margin-top: 8px;
             font-style: italic;
             line-height: 1.3;
         }
@@ -3724,47 +3673,6 @@
                             </div>
                         </div>
                         
-                        <!-- Sort Controls -->
-                        <div class="sort-controls">
-                            <button class="sort-btn active" onclick="setSortMode('alphabetical')" id="sort-alphabetical">A-Z</button>
-                            <button class="sort-btn" onclick="setSortMode('status')" id="sort-status">Status</button>
-                            <button class="sort-btn" onclick="setSortMode('custom')" id="sort-custom">Custom</button>
-                        </div>
-                        
-                        <!-- Draggable Employee List -->
-                        <div class="draggable-employee-list" id="draggableEmployeeList">
-                            ${getSortedEmployees(employees).map(emp => `
-                                <div class="employee-item ${emp.status}" 
-                                     draggable="true" 
-                                     data-employee-id="${emp.id}"
-                                     ondragstart="handleDragStart(event)"
-                                     ondragover="handleDragOver(event)"
-                                     ondrop="handleDrop(event)"
-                                     ondragend="handleDragEnd(event)"
-                                     onclick="startEvaluation('${emp.id}')">
-                                    <div class="employee-content">
-                                        <span class="drag-handle">⋮⋮</span>
-                                        <div class="employee-details">
-                                            <div class="employee-name">${emp.name}</div>
-                                            <div class="employee-position">${emp.position}</div>
-                                            <div class="employee-status status-${emp.status}">
-                                                ${emp.status === 'completed' ? '✓ Complete' : 
-                                                  emp.status === 'in-progress' ? '⏱ In Progress' : '○ Not Started'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="employee-actions">
-                                        <button class="btn btn-download ${emp.evaluationData && Object.keys(emp.evaluationData).length > 0 ? '' : 'disabled'}" 
-                                                onclick="downloadIndividualEvaluationPDF('${emp.id}', event)" 
-                                                title="Download Evaluation PDF" 
-                                                ${emp.evaluationData && Object.keys(emp.evaluationData).length > 0 ? '' : 'disabled'}>📄</button>
-                                        <button class="btn btn-archive" onclick="archiveEmployee('${emp.id}', event)" title="Archive Employee">📁</button>
-                                        <button class="btn btn-delete" onclick="deleteEmployee('${emp.id}', event)" title="Delete Employee">×</button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        
                         <select class="employee-dropdown" onchange="handleEmployeeSelection(this.value)" id="employeeDropdown">
                             <option value="">Select an employee...</option>
                             ${employees
@@ -3914,17 +3822,21 @@
                         </button>
                     </div>
                     
-                    <!-- Undo/Redo Shortcuts Info -->
-                    <div class="shortcuts-info">
-                        <h5>Quick Actions</h5>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl+Z</kbd> <span>Undo</span>
+                    <!-- Undo/Redo Controls -->
+                    <div class="undo-redo-controls">
+                        <h5>Actions</h5>
+                        <div class="undo-redo-buttons">
+                            <button class="undo-redo-btn" id="undoBtn" onclick="undo()" disabled title="Nothing to undo">
+                                <span class="btn-icon">↶</span>
+                                <span class="btn-text">Undo</span>
+                            </button>
+                            <button class="undo-redo-btn" id="redoBtn" onclick="redo()" disabled title="Nothing to redo">
+                                <span class="btn-icon">↷</span>
+                                <span class="btn-text">Redo</span>
+                            </button>
                         </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl+Shift+Z</kbd> <span>Redo</span>
-                        </div>
-                        <div class="shortcut-note">
-                            Changes to text, ratings, and navigation can be undone
+                        <div class="undo-redo-note">
+                            Undo/redo text changes, ratings, and navigation
                         </div>
                     </div>
                     
@@ -4724,144 +4636,7 @@
             loadReviewerDashboard();
         }
 
-        // Drag-and-Drop Employee Reordering
-        let currentSortMode = localStorage.getItem('employeeSortMode') || 'alphabetical';
-        let customEmployeeOrder = JSON.parse(localStorage.getItem('customEmployeeOrder') || '{}');
-        let draggedElement = null;
 
-        function getSortedEmployees(employees) {
-            const reviewerOrder = customEmployeeOrder[currentReviewer] || [];
-            
-            switch(currentSortMode) {
-                case 'alphabetical':
-                    return employees.sort((a, b) => {
-                        const lastNameA = a.name.split(' ').pop().toLowerCase();
-                        const lastNameB = b.name.split(' ').pop().toLowerCase();
-                        return lastNameA.localeCompare(lastNameB);
-                    });
-                    
-                case 'status':
-                    const statusOrder = { 'in-progress': 1, 'not-started': 2, 'completed': 3 };
-                    return employees.sort((a, b) => {
-                        const statusDiff = statusOrder[a.status] - statusOrder[b.status];
-                        if (statusDiff !== 0) return statusDiff;
-                        // Secondary sort by name
-                        return a.name.localeCompare(b.name);
-                    });
-                    
-                case 'custom':
-                    if (reviewerOrder.length === 0) {
-                        // If no custom order exists, fall back to alphabetical
-                        return employees.sort((a, b) => a.name.localeCompare(b.name));
-                    }
-                    return employees.sort((a, b) => {
-                        const indexA = reviewerOrder.indexOf(a.id);
-                        const indexB = reviewerOrder.indexOf(b.id);
-                        
-                        // If both items are in custom order
-                        if (indexA !== -1 && indexB !== -1) {
-                            return indexA - indexB;
-                        }
-                        // If only A is in custom order, it comes first
-                        if (indexA !== -1) return -1;
-                        // If only B is in custom order, it comes first
-                        if (indexB !== -1) return 1;
-                        // Neither in custom order, sort alphabetically
-                        return a.name.localeCompare(b.name);
-                    });
-                    
-                default:
-                    return employees;
-            }
-        }
-
-        function setSortMode(mode) {
-            currentSortMode = mode;
-            localStorage.setItem('employeeSortMode', mode);
-            
-            // Update active button
-            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`sort-${mode}`).classList.add('active');
-            
-            // Refresh the dashboard to apply new sorting
-            loadReviewerDashboard();
-        }
-
-        function handleDragStart(event) {
-            draggedElement = event.target;
-            event.target.classList.add('dragging');
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('text/html', event.target.outerHTML);
-            
-            // Automatically switch to custom sort mode when dragging starts
-            if (currentSortMode !== 'custom') {
-                setSortMode('custom');
-            }
-        }
-
-        function handleDragOver(event) {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = 'move';
-            
-            const target = event.target.closest('.employee-item');
-            if (target && target !== draggedElement) {
-                target.classList.add('drag-over');
-            }
-        }
-
-        function handleDrop(event) {
-            event.preventDefault();
-            const target = event.target.closest('.employee-item');
-            
-            if (target && draggedElement && target !== draggedElement) {
-                const container = target.parentNode;
-                const draggedId = draggedElement.dataset.employeeId;
-                const targetId = target.dataset.employeeId;
-                
-                // Get current order of all employee items
-                const allItems = Array.from(container.children);
-                const newOrder = [];
-                
-                // Create new order array
-                allItems.forEach(item => {
-                    if (item === draggedElement) return; // Skip dragged element
-                    
-                    if (item === target) {
-                        // Insert dragged element before target
-                        newOrder.push(draggedId);
-                    }
-                    newOrder.push(item.dataset.employeeId);
-                });
-                
-                // If dragged to the end, add it at the end
-                if (!newOrder.includes(draggedId)) {
-                    newOrder.push(draggedId);
-                }
-                
-                // Save custom order
-                if (!customEmployeeOrder[currentReviewer]) {
-                    customEmployeeOrder[currentReviewer] = [];
-                }
-                customEmployeeOrder[currentReviewer] = newOrder;
-                localStorage.setItem('customEmployeeOrder', JSON.stringify(customEmployeeOrder));
-                
-                // Refresh dashboard to show new order
-                loadReviewerDashboard();
-            }
-            
-            // Clean up drag states
-            document.querySelectorAll('.employee-item').forEach(item => {
-                item.classList.remove('drag-over');
-            });
-        }
-
-        function handleDragEnd(event) {
-            event.target.classList.remove('dragging');
-            document.querySelectorAll('.employee-item').forEach(item => {
-                item.classList.remove('drag-over');
-            });
-            draggedElement = null;
-        }
 
         // Undo/Redo Functionality
         let actionHistory = [];
@@ -5079,20 +4854,7 @@
             });
         }
 
-        // Keyboard shortcuts for undo/redo
-        document.addEventListener('keydown', function(event) {
-            // Only work in evaluation mode
-            if (!currentEmployee) return;
-            
-            if ((event.ctrlKey || event.metaKey) && !event.shiftKey && event.key === 'z') {
-                event.preventDefault();
-                undo();
-            } else if (((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'Z') || 
-                       ((event.ctrlKey || event.metaKey) && event.key === 'y')) {
-                event.preventDefault();
-                redo();
-            }
-        });
+
 
         // Dropdown-related functions
         let selectedEmployeeId = null;
