@@ -833,6 +833,101 @@
             padding: 0 20px;
         }
 
+        /* Search and Filter Styles */
+        .search-filter-section {
+            padding: 0 20px;
+            margin-bottom: 15px;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .employee-search {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .employee-search::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .employee-search:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00AFD7;
+            box-shadow: 0 0 0 2px rgba(0, 175, 215, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .clear-search:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .filter-buttons, .rating-filter-buttons {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn, .rating-filter-btn {
+            padding: 6px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover, .rating-filter-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .filter-btn.active, .rating-filter-btn.active {
+            background: #00AFD7;
+            border-color: #00AFD7;
+            color: white;
+        }
+
         .employee-dropdown {
             width: 100%;
             padding: 12px 15px;
@@ -3443,10 +3538,34 @@
                     
                     <div class="employee-list">
                         <h4>Direct Reports (${employees.length})</h4>
-                        <select class="employee-dropdown" onchange="handleEmployeeSelection(this.value)">
+                        
+                        <!-- Search and Filter Section -->
+                        <div class="search-filter-section">
+                            <div class="search-container">
+                                <input type="text" class="employee-search" placeholder="Search employees..." oninput="filterEmployees()" id="employeeSearch">
+                                <span class="search-icon">🔍</span>
+                                <button class="clear-search" onclick="clearSearch()" title="Clear search" style="display: none;">×</button>
+                            </div>
+                            
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" onclick="setFilter('all')" data-filter="all">All</button>
+                                <button class="filter-btn" onclick="setFilter('completed')" data-filter="completed">Complete</button>
+                                <button class="filter-btn" onclick="setFilter('in-progress')" data-filter="in-progress">In Progress</button>
+                                <button class="filter-btn" onclick="setFilter('not-started')" data-filter="not-started">Not Started</button>
+                            </div>
+                            
+                            <div class="rating-filter-buttons">
+                                <button class="rating-filter-btn active" onclick="setRatingFilter('all')" data-rating="all">All Ratings</button>
+                                <button class="rating-filter-btn" onclick="setRatingFilter('exemplary')" data-rating="exemplary">Exemplary</button>
+                                <button class="rating-filter-btn" onclick="setRatingFilter('successful')" data-rating="successful">Successful</button>
+                                <button class="rating-filter-btn" onclick="setRatingFilter('opportunity')" data-rating="opportunity">Opportunity</button>
+                            </div>
+                        </div>
+                        
+                        <select class="employee-dropdown" onchange="handleEmployeeSelection(this.value)" id="employeeDropdown">
                             <option value="">Select an employee...</option>
                             ${employees.map(emp => `
-                                <option value="${emp.id}" data-status="${emp.status}">
+                                <option value="${emp.id}" data-status="${emp.status}" data-rating="${emp.evaluationData?.overallRating || 'not-set'}" data-name="${emp.name.toLowerCase()}">
                                     ${emp.name} - ${emp.status === 'completed' ? '✓ Complete' : 
                                       emp.status === 'in-progress' ? '⏱ In Progress' : '○ Not Started'}
                                 </option>
@@ -4405,6 +4524,84 @@
             if (selectedEmployeeId) {
                 startEvaluation(selectedEmployeeId);
             }
+        }
+
+        // Search and Filter Functions
+        let currentStatusFilter = 'all';
+        let currentRatingFilter = 'all';
+
+        function filterEmployees() {
+            const searchInput = document.getElementById('employeeSearch');
+            const searchTerm = searchInput?.value.toLowerCase() || '';
+            const dropdown = document.getElementById('employeeDropdown');
+            const clearBtn = document.querySelector('.clear-search');
+            
+            if (!dropdown) return;
+            
+            // Show/hide clear button
+            if (clearBtn) {
+                clearBtn.style.display = searchTerm ? 'flex' : 'none';
+            }
+            
+            const options = dropdown.querySelectorAll('option');
+            let visibleCount = 0;
+            
+            options.forEach((option, index) => {
+                if (index === 0) { // Skip the placeholder option
+                    option.style.display = 'block';
+                    return;
+                }
+                
+                const name = option.getAttribute('data-name') || '';
+                const status = option.getAttribute('data-status') || '';
+                const rating = option.getAttribute('data-rating') || 'not-set';
+                
+                const matchesSearch = name.includes(searchTerm);
+                const matchesStatus = currentStatusFilter === 'all' || status === currentStatusFilter;
+                const matchesRating = currentRatingFilter === 'all' || rating === currentRatingFilter;
+                
+                const isVisible = matchesSearch && matchesStatus && matchesRating;
+                option.style.display = isVisible ? 'block' : 'none';
+                if (isVisible) visibleCount++;
+            });
+
+            // Update the first option to show count
+            if (options[0]) {
+                options[0].textContent = visibleCount > 0 ? `Select an employee... (${visibleCount} found)` : 'No employees match filters';
+            }
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('employeeSearch');
+            if (searchInput) {
+                searchInput.value = '';
+                filterEmployees();
+                searchInput.focus();
+            }
+        }
+
+        function setFilter(status) {
+            currentStatusFilter = status;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${status}"]`).classList.add('active');
+            
+            filterEmployees();
+        }
+
+        function setRatingFilter(rating) {
+            currentRatingFilter = rating;
+            
+            // Update button states
+            document.querySelectorAll('.rating-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-rating="${rating}"]`).classList.add('active');
+            
+            filterEmployees();
         }
 
         function downloadSelectedEmployeePDF() {
