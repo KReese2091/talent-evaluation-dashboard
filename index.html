@@ -257,6 +257,56 @@
             overflow-y: auto;
         }
 
+        /* Progress Indicator */
+        .progress-indicator {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 25px;
+            margin: 0 -25px 0 -25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: none; /* Hidden by default, shown in evaluation mode */
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #11224B;
+        }
+
+        .progress-percentage {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0067A0;
+        }
+
+        .progress-bar-container {
+            background: rgba(0, 0, 0, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00AFD7 0%, #0067A0 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-current-step {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
         /* Horizontal Step Navigation */
         .horizontal-step-nav {
             background: linear-gradient(90deg, #11224B 0%, #112756 100%);
@@ -2118,6 +2168,17 @@
 
         <!-- Main Content Area -->
         <div class="main-content" id="mainContent">
+            <!-- Progress Indicator (only shown in evaluation mode) -->
+            <div class="progress-indicator" id="progressIndicator">
+                <div class="progress-header">
+                    <div class="progress-title">Evaluation Progress</div>
+                    <div class="progress-percentage" id="progressPercentage">0%</div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBarFill"></div>
+                </div>
+                <div class="progress-current-step" id="progressCurrentStep">Step 1 of 7: Basic Information & Overall Rating</div>
+            </div>
             <!-- Horizontal Step Navigation (only shown in evaluation mode) -->
             <div class="horizontal-step-nav" id="stepNavigation">
                 <div class="step-navigation">
@@ -2608,6 +2669,9 @@
 
             // Update navigation
             updateNavigation();
+            
+            // Update progress indicator
+            updateProgressIndicator();
         }
 
         function previousStep() {
@@ -2633,6 +2697,32 @@
             prevBtn.disabled = (currentStep === 0);
             nextBtn.textContent = (currentStep === totalSteps - 1) ? 'Complete Evaluation' : 'Next';
             stepInfo.textContent = `Step ${currentStep + 1} of ${totalSteps}`;
+        }
+
+        function updateProgressIndicator() {
+            const progressPercentage = document.getElementById('progressPercentage');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const progressCurrentStep = document.getElementById('progressCurrentStep');
+            
+            if (!progressPercentage) return; // Not in evaluation mode
+            
+            const stepNames = [
+                'Basic Information & Overall Rating',
+                'Key Priorities',
+                'Results & Impact',
+                'Collaboration & Influence',
+                'Growth & Development',
+                'Looking Ahead',
+                'Comprehensive Summary'
+            ];
+            
+            // Calculate completion percentage
+            const completionPercent = Math.round(((currentStep + 1) / totalSteps) * 100);
+            
+            // Update progress elements
+            progressPercentage.textContent = `${completionPercent}%`;
+            progressBarFill.style.width = `${completionPercent}%`;
+            progressCurrentStep.textContent = `Step ${currentStep + 1} of ${totalSteps}: ${stepNames[currentStep] || 'Unknown Step'}`;
         }
 
         function selectRating(element, rating) {
@@ -3530,6 +3620,17 @@
                 </div>
                 
                 <div class="main-content">
+                    <!-- Progress Indicator -->
+                    <div class="progress-indicator" id="progressIndicator">
+                        <div class="progress-header">
+                            <div class="progress-title">Evaluation Progress</div>
+                            <div class="progress-percentage" id="progressPercentage">14%</div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="progressBarFill" style="width: 14%"></div>
+                        </div>
+                        <div class="progress-current-step" id="progressCurrentStep">Step 1 of 7: Basic Information & Overall Rating</div>
+                    </div>
                     <!-- Horizontal Step Navigation -->
                     <div class="horizontal-step-nav">
                         <div class="step-navigation">
@@ -3568,6 +3669,7 @@
             // Reset to first step
             currentStep = 0;
             updateNavigation();
+            updateProgressIndicator();
             
             // Load existing data if available
             loadEmployeeData(employee);
