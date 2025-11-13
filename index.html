@@ -4359,12 +4359,20 @@
             const inProgressEvaluations = activeEmployees.filter(emp => emp.status === 'in-progress').length;
             const notStartedEvaluations = activeEmployees.filter(emp => emp.status === 'not-started').length;
             
-            // Rating distribution
+            // Rating distribution (only count employees with actual ratings)
             const ratingsCount = { exemplary: 0, successful: 0, opportunity: 0, 'not-set': 0 };
-            activeEmployees.forEach(emp => {
-                const rating = emp.evaluationData?.overallRating || 'not-set';
-                ratingsCount[rating] = (ratingsCount[rating] || 0) + 1;
+            const employeesWithRatings = activeEmployees.filter(emp => emp.status === 'completed' && emp.evaluationData?.overallRating);
+            const employeesWithoutRatings = activeEmployees.filter(emp => !emp.evaluationData?.overallRating || emp.status !== 'completed');
+            
+            employeesWithRatings.forEach(emp => {
+                const rating = emp.evaluationData.overallRating;
+                if (ratingsCount[rating] !== undefined) {
+                    ratingsCount[rating]++;
+                }
             });
+            
+            // Count employees without ratings separately
+            ratingsCount['not-set'] = employeesWithoutRatings.length;
             
             // Recent activity
             const recentActivity = activeEmployees
@@ -4534,12 +4542,20 @@
             doc.text(`• Not Started: ${notStartedCount}`, marginX + 10, yPos);
             yPos += 15;
             
-            // Rating Distribution
+            // Rating Distribution (only count employees with actual ratings)
             const ratingsCount = { exemplary: 0, successful: 0, opportunity: 0, 'not-rated': 0 };
-            employees.forEach(emp => {
-                const rating = emp.evaluationData?.overallRating || 'not-rated';
-                ratingsCount[rating] = (ratingsCount[rating] || 0) + 1;
+            const employeesWithRatings = employees.filter(emp => emp.status === 'completed' && emp.evaluationData?.overallRating);
+            const employeesWithoutRatings = employees.filter(emp => !emp.evaluationData?.overallRating || emp.status !== 'completed');
+            
+            employeesWithRatings.forEach(emp => {
+                const rating = emp.evaluationData.overallRating;
+                if (ratingsCount[rating] !== undefined) {
+                    ratingsCount[rating]++;
+                }
             });
+            
+            // Count employees without ratings separately
+            ratingsCount['not-rated'] = employeesWithoutRatings.length;
             
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
@@ -4765,18 +4781,27 @@
         function generateInsights(employees) {
             const completedEmployees = employees.filter(emp => emp.status === 'completed' && emp.evaluationData);
             
-            // Rating Distribution Analysis
-            const ratingDistribution = { exemplary: {count: 0, percentage: 0}, successful: {count: 0, percentage: 0}, opportunity: {count: 0, percentage: 0} };
-            completedEmployees.forEach(emp => {
-                const rating = emp.evaluationData?.overallRating;
+            // Rating Distribution Analysis (consistent with Team Report)
+            const ratingDistribution = { 
+                exemplary: {count: 0, percentage: 0}, 
+                successful: {count: 0, percentage: 0}, 
+                opportunity: {count: 0, percentage: 0}
+            };
+            
+            // Only count employees with actual ratings (completed evaluations)
+            const employeesWithRatings = employees.filter(emp => emp.status === 'completed' && emp.evaluationData?.overallRating);
+            
+            employeesWithRatings.forEach(emp => {
+                const rating = emp.evaluationData.overallRating;
                 if (rating && ratingDistribution[rating]) {
                     ratingDistribution[rating].count++;
                 }
             });
             
-            const total = completedEmployees.length || 1;
+            // Calculate percentages based on employees with ratings (not total employees)
+            const totalWithRatings = employeesWithRatings.length || 1;
             Object.keys(ratingDistribution).forEach(rating => {
-                ratingDistribution[rating].percentage = Math.round((ratingDistribution[rating].count / total) * 100);
+                ratingDistribution[rating].percentage = Math.round((ratingDistribution[rating].count / totalWithRatings) * 100);
             });
             
             // Performance Patterns Detection
