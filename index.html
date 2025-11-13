@@ -4351,6 +4351,9 @@
                 alert('No active employees to report on.');
                 return;
             }
+
+            // Prevent body scrolling
+            document.body.style.overflow = 'hidden';
             
             // Calculate analytics
             const totalEmployees = activeEmployees.length;
@@ -4480,6 +4483,8 @@
             const overlay = document.querySelector('.team-report-overlay');
             if (overlay) {
                 overlay.remove();
+                // Restore body scrolling
+                document.body.style.overflow = '';
             }
         }
         
@@ -4655,6 +4660,9 @@
                 alert('No evaluation data available for analysis. Please complete some evaluations first.');
                 return;
             }
+
+            // Prevent body scrolling
+            document.body.style.overflow = 'hidden';
             
             const insights = generateInsights(activeEmployees);
             
@@ -4773,6 +4781,8 @@
             const overlay = document.querySelector('.team-report-overlay');
             if (overlay) {
                 overlay.remove();
+                // Restore body scrolling
+                document.body.style.overflow = '';
             }
         }
         
