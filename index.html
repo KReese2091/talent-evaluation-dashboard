@@ -2512,6 +2512,14 @@
                 textarea.value = text;
             }
             textarea.focus();
+            
+            // Mark that this content came from a suggestion (for more realistic analysis)
+            textarea.setAttribute('data-has-suggestions', 'true');
+            
+            // Trigger analysis after suggestion is added
+            setTimeout(() => {
+                analyzeFeedback(fieldId);
+            }, 100);
         }
 
         // Bias Detection and AI Writing Coach
@@ -2543,78 +2551,147 @@
         }
         
         function calculateObjectivity(text, fieldId) {
-            const subjectiveWords = ['good', 'bad', 'great', 'poor', 'nice', 'awesome', 'terrible', 'amazing', 'horrible', 'fantastic', 'awful', 'disappointing', 'impressive', 'wonderful', 'brilliant', 'mediocre'];
+            const textarea = document.getElementById(fieldId);
+            const hasSuggestions = textarea && textarea.getAttribute('data-has-suggestions') === 'true';
             
-            // Section-specific objective indicators
+            // Expanded subjective words list for better detection
+            const subjectiveWords = ['good', 'bad', 'great', 'poor', 'nice', 'awesome', 'terrible', 'amazing', 'horrible', 'fantastic', 'awful', 'disappointing', 'impressive', 'wonderful', 'brilliant', 'mediocre', 'excellent', 'outstanding', 'exceptional', 'superb', 'magnificent', 'fabulous', 'marvelous', 'tremendous', 'incredible', 'unbelievable', 'phenomenal', 'remarkable', 'extraordinary', 'sensational', 'spectacular', 'dreadful', 'appalling', 'atrocious', 'abysmal', 'horrendous', 'ghastly', 'abominable'];
+            
+            // More realistic objective indicators
             const objectiveIndicators = {
-                keyPriorities: ['achieved', 'delivered', 'completed', 'met goals', 'exceeded targets', 'on schedule', 'within budget', 'milestone', 'deadline', 'project scope'],
-                resultsImpact: ['increased by', 'decreased by', 'generated', 'saved', 'revenue', 'cost reduction', 'efficiency gain', 'market share', 'customer satisfaction', 'ROI', 'KPI', 'metrics improved'],
-                collaboration: ['partnered with', 'facilitated', 'coordinated', 'cross-functional', 'stakeholder engagement', 'team productivity', 'conflict resolution', 'communication effectiveness'],
-                growth: ['developed skills in', 'completed training', 'earned certification', 'learned', 'improved capability', 'expanded knowledge', 'mastered', 'competency gained'],
-                lookingAhead: ['development opportunity', 'skill gap', 'training needed', 'stretch assignment', 'career path', 'next level', 'promotion readiness', 'areas for improvement']
+                keyPriorities: ['achieved target of', 'completed by deadline', 'delivered on time', 'met milestone', 'exceeded target', 'on schedule', 'within budget', 'project completed', 'goal reached', 'objective met'],
+                resultsImpact: ['increased by X%', 'decreased costs by', 'generated $X', 'saved $X', 'improved efficiency by', 'ROI of X%', 'KPI improved from X to Y', 'revenue increased', 'market share gained', 'customer satisfaction score'],
+                collaboration: ['collaborated with [specific team]', 'facilitated X meetings', 'coordinated project with', 'resolved conflict between', 'improved team efficiency by', 'established partnership with'],
+                growth: ['completed [specific] training', 'earned [specific] certification', 'developed competency in', 'mastered [specific] skill', 'improved performance by', 'learned [specific] technology'],
+                lookingAhead: ['needs development in [specific area]', 'training required for', 'stretch assignment in', 'skill gap identified in', 'next role preparation', 'development plan for']
             };
             
             const words = text.toLowerCase().split(/\W+/);
             const phrases = text.toLowerCase();
             
+            // Count subjective words
             const subjectiveCount = words.filter(word => subjectiveWords.includes(word)).length;
             
+            // Count vague phrases that reduce objectivity
+            const vagueIndicators = ['did well', 'performed good', 'worked hard', 'tried their best', 'made an effort', 'showed improvement', 'was successful', 'did a good job', 'performed as expected', 'met expectations'];
+            let vagueCount = 0;
+            vagueIndicators.forEach(phrase => {
+                if (phrases.includes(phrase)) vagueCount++;
+            });
+            
+            // Count objective indicators
             let objectiveCount = 0;
             if (objectiveIndicators[fieldId]) {
                 objectiveIndicators[fieldId].forEach(indicator => {
-                    if (phrases.includes(indicator)) objectiveCount++;
+                    if (phrases.includes(indicator.toLowerCase())) objectiveCount++;
                 });
             }
             
-            // Add general objective words
-            const generalObjective = ['implemented', 'managed', 'led', 'created', 'designed', 'analyzed', 'measured', 'tracked', 'results', 'data', 'evidence'];
+            // Add general objective words (but be more selective)
+            const generalObjective = ['implemented', 'managed X employees', 'led project', 'created solution', 'designed process', 'analyzed data', 'measured results', 'tracked progress', 'documented outcomes'];
             objectiveCount += words.filter(word => generalObjective.includes(word)).length;
             
-            if (subjectiveCount + objectiveCount === 0) return 0;
-            return Math.round((objectiveCount / (subjectiveCount + objectiveCount)) * 100);
+            // Count specific numbers, dates, percentages
+            const numberMatches = text.match(/\d+%|\$\d+|\d+\.\d+|\d{1,2}\/\d{1,2}\/\d{2,4}/g);
+            if (numberMatches) objectiveCount += numberMatches.length;
+            
+            // Penalty for using mostly suggestions without specific details
+            if (hasSuggestions && text.length < 100) {
+                objectiveCount = Math.max(0, objectiveCount - 2);
+            }
+            
+            // Calculate score more realistically
+            const totalWords = subjectiveCount + objectiveCount + vagueCount;
+            if (totalWords === 0) return 45; // Default moderate score for empty content
+            
+            let objectivityScore = Math.round((objectiveCount / totalWords) * 100);
+            
+            // Apply penalties for common issues
+            if (subjectiveCount > objectiveCount) objectivityScore = Math.max(20, objectivityScore - 15);
+            if (vagueCount > 2) objectivityScore = Math.max(30, objectivityScore - 10);
+            if (hasSuggestions && objectiveCount === 0) objectivityScore = Math.max(35, objectivityScore);
+            
+            // Cap maximum score to be more realistic
+            return Math.min(85, Math.max(20, objectivityScore));
         }
         
         function calculateSpecificity(text, fieldId) {
-            // Section-specific indicators of specificity
+            const textarea = document.getElementById(fieldId);
+            const hasSuggestions = textarea && textarea.getAttribute('data-has-suggestions') === 'true';
+            
+            // Look for ACTUAL specific details, not just keywords
             const specificityIndicators = {
-                keyPriorities: ['%', '$', 'Q1', 'Q2', 'Q3', 'Q4', 'FY', 'by [month]', 'project [name]', 'initiative', 'campaign', 'target of', 'goal of', 'milestone'],
-                resultsImpact: ['%', '$', 'million', 'thousand', 'increased by', 'decreased by', 'ROI of', 'saved $', 'generated $', 'improved by', 'metric:', 'KPI:', 'baseline'],
-                collaboration: ['cross-functional team', 'stakeholder group', '[department name]', 'project team', 'working group', 'partnership with', 'coordinated with', 'facilitated'],
-                growth: ['certification in', 'training program', 'course completed', 'skill development', 'competency', 'learning objective', 'development plan', 'career goal'],
-                lookingAhead: ['development area:', 'skill gap in', 'training in', 'experience with', 'next role', 'promotion to', 'stretch assignment', 'development goal']
+                keyPriorities: ['specific project name', 'Q[1-4] 20XX', 'by [specific date]', '[X]% target', '$[amount]', 'within [timeframe]', '[specific metric] improved'],
+                resultsImpact: ['increased revenue by [X]%', 'saved $[amount]', 'improved [metric] from X to Y', 'ROI of [X]%', 'generated $[amount]', '[specific KPI] reached [number]'],
+                collaboration: ['worked with [specific team/person]', '[X] stakeholders', '[specific department]', 'facilitated [X] meetings', 'resolved [specific] conflict'],
+                growth: ['completed [specific] certification', '[course name]', 'learned [specific technology]', 'improved [skill] by [measure]', '[training program name]'],
+                lookingAhead: ['needs training in [specific skill]', '[specific role] preparation', 'development in [area]', '[specific] stretch assignment', 'skill gap: [specific area]']
             };
             
-            const generalPhrases = ['did well', 'performed good', 'worked hard', 'tried their best', 'made an effort', 'showed improvement', 'was successful', 'did a good job'];
+            // Vague phrases that reduce specificity
+            const vagueIndicators = ['did well', 'performed good', 'worked hard', 'tried their best', 'made an effort', 'showed improvement', 'was successful', 'did a good job', 'performed as expected', 'handled responsibilities', 'contributed to', 'participated in', 'involved in', 'supported the team', 'helped with', 'assisted', 'various projects', 'multiple initiatives', 'several tasks', 'different activities'];
             
             let specificCount = 0;
-            let generalCount = 0;
+            let vagueCount = 0;
             
             const lowerText = text.toLowerCase();
             
-            // Count section-specific indicators
-            if (specificityIndicators[fieldId]) {
-                specificityIndicators[fieldId].forEach(indicator => {
-                    if (lowerText.includes(indicator.toLowerCase())) specificCount++;
-                });
+            // Count actual numbers, percentages, dates, dollar amounts
+            const numberMatches = text.match(/\d+%|\$\d+,?\d*|\d+\.\d+%?|\d{1,2}\/\d{1,2}\/\d{2,4}|\b\d+\s*(million|thousand|k|%)\b/gi);
+            if (numberMatches) {
+                specificCount += numberMatches.length * 2; // Weight numbers highly
             }
             
-            // Count general specific indicators
-            const generalSpecific = ['achieved', 'delivered', 'completed in', 'within', 'by the deadline', 'ahead of schedule', 'on time', 'measured', 'tracked'];
-            generalSpecific.forEach(indicator => {
-                if (lowerText.includes(indicator)) specificCount++;
+            // Count specific names, dates, timeframes
+            const nameMatches = text.match(/[A-Z][a-z]+ [A-Z][a-z]+|Q[1-4] 20\d{2}|[A-Z][a-z]+ 20\d{2}|Project [A-Z][a-z]+/g);
+            if (nameMatches) {
+                specificCount += nameMatches.length;
+            }
+            
+            // Look for "from X to Y" patterns
+            const improvementPatterns = text.match(/from \d+.* to \d+|increased.*by \d+|decreased.*by \d+|improved.*from.*to/gi);
+            if (improvementPatterns) {
+                specificCount += improvementPatterns.length * 2;
+            }
+            
+            // Count vague phrases (penalize these)
+            vagueIndicators.forEach(phrase => {
+                if (lowerText.includes(phrase)) vagueCount++;
             });
             
-            // Count numbers and percentages
-            if (text.match(/\d+%|\$\d+|\d+\.\d+/)) specificCount += 2;
-            if (text.match(/\d{1,2}\/\d{1,2}\/\d{2,4}/)) specificCount++; // dates
+            // Check for incomplete suggestions (ends with "...")
+            const incompleteCount = (text.match(/\.\.\./g) || []).length;
             
-            // Count vague phrases
-            generalPhrases.forEach(phrase => {
-                if (lowerText.includes(phrase)) generalCount++;
-            });
+            // Penalty for mostly suggestion-based content without completion
+            let penalty = 0;
+            if (hasSuggestions) {
+                if (incompleteCount > 0) penalty += 15; // Incomplete suggestions
+                if (text.length < 80) penalty += 10; // Too short for specificity
+                if (specificCount === 0) penalty += 20; // No specific details added
+            }
             
-            if (specificCount + generalCount === 0) return 60;
-            return Math.min(100, Math.round((specificCount / (specificCount + generalCount + 1)) * 100) + 40);
+            // Calculate base score
+            const totalElements = specificCount + vagueCount + 1;
+            let specificityScore = Math.round((specificCount / totalElements) * 100);
+            
+            // Apply penalties
+            specificityScore = Math.max(15, specificityScore - penalty);
+            
+            // Penalize high vague count
+            if (vagueCount > specificCount) {
+                specificityScore = Math.max(25, specificityScore - 15);
+            }
+            
+            // Section-specific adjustments
+            if (fieldId === 'lookingAhead') {
+                // Looking Ahead should focus on specific development areas
+                if (text.includes('development') && specificCount === 0) {
+                    specificityScore = Math.max(30, specificityScore - 10);
+                }
+            }
+            
+            // Cap the maximum to be more realistic
+            return Math.min(80, Math.max(20, specificityScore));
         }
         
         function calculateCompleteness(text, fieldId) {
