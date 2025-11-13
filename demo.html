@@ -1,0 +1,3339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Evaluation Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #A4DBE8 0%, #00AFD7 100%);
+            color: #11224B;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(17, 34, 75, 0.15);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #7C878E;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #0067A0;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #00358E;
+        }
+
+        .btn-secondary {
+            background-color: #7C878E;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #112756;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: #0067A0;
+            border: 2px solid #0067A0;
+        }
+
+        .btn-outline:hover {
+            background-color: #0067A0;
+            color: white;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            min-height: 600px;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .carousel-progress {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(17, 34, 75, 0.15);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            background: #7C878E;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        .progress-step.active {
+            background: #0067A0;
+            transform: scale(1.05);
+        }
+
+        .progress-step.completed {
+            background: #00358E;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #7C878E;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0067A0 0%, #00AFD7 100%);
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .carousel-slide {
+            display: none !important;
+            animation: fadeIn 0.3s ease-in-out;
+            width: 100%;
+        }
+
+        .carousel-slide.active {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .carousel-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(17, 34, 75, 0.15);
+        }
+
+        .step-indicator {
+            color: #11224B;
+            font-weight: 500;
+        }
+
+        /* AI Enhancement Styles */
+        .ai-suggestions {
+            background: linear-gradient(135deg, #A4DBE8 0%, #00AFD7 25%);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            border-left: 4px solid #0067A0;
+        }
+
+        .ai-suggestions h4 {
+            color: #11224B;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .suggestion-item {
+            background: white;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #7C878E;
+        }
+
+        .suggestion-item:hover {
+            background: #0067A0;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .writing-coach {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #7C878E;
+        }
+
+        .coach-metric {
+            display: inline-block;
+            background: #A4DBE8;
+            color: #11224B;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 2px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .coach-metric.good {
+            background: #00AFD7;
+            color: white;
+        }
+
+        .coach-metric.excellent {
+            background: #00358E;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-btn {
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .rating-btn.selected {
+            border-width: 3px;
+        }
+
+        .rating-btn.exemplary {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .rating-btn.successful {
+            border-color: #17a2b8;
+            background-color: #d1ecf1;
+        }
+
+        .rating-btn.opportunity {
+            border-color: #ffc107;
+            background-color: #fff3cd;
+        }
+
+        .bias-alert {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .bias-alert.warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+
+        .bias-alert.info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #28a745;
+            transition: width 0.3s ease;
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .evaluation-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #0067A0;
+            margin-bottom: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .section-bias-analysis {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #0067A0;
+        }
+
+        .section-bias-analysis h4 {
+            margin-bottom: 10px;
+            color: #007acc;
+            font-size: 14px;
+        }
+
+        .readonly-summary {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        /* Progress tracking enhancements */
+        .progress-tracker {
+            position: sticky;
+            top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            z-index: 100;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            padding: 10px 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 0 2px;
+        }
+
+        .progress-step.completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .progress-step.active {
+            background-color: #007acc;
+            color: white;
+        }
+
+        .progress-step.pending {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        /* AI Writing Assistant */
+        .ai-assistant {
+            position: relative;
+        }
+
+        .ai-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .ai-suggestion {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .ai-suggestion:hover {
+            background-color: #f8f9fa;
+        }
+
+        .ai-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        /* Floating action buttons */
+        .floating-actions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background-color: #0067A0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(17, 34, 75, 0.2);
+            transition: all 0.3s;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .fab:hover {
+            background-color: #00358E;
+            transform: scale(1.1);
+        }
+
+        .fab.secondary {
+            background-color: #7C878E;
+        }
+
+        .fab.secondary:hover {
+            background-color: #112756;
+        }
+
+        /* Dark mode support */
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .card {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        .dark-mode input,
+        .dark-mode textarea,
+        .dark-mode select {
+            background-color: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        .dark-mode .bias-alert.info {
+            background-color: #1a4d66;
+            border-color: #2980b9;
+            color: #85c1e9;
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1001;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Word count and typing indicators */
+        .field-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .typing-indicator {
+            color: #007acc;
+            font-style: italic;
+        }
+
+        /* Auto-save indicator */
+        .auto-save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1001;
+        }
+
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .rating-buttons {
+                flex-direction: column;
+            }
+            
+            .rating-btn {
+                text-align: center;
+                min-width: auto;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+
+        /* Smart Suggestions Styles */
+        .smart-suggestions {
+            background: linear-gradient(135deg, #A4DBE8, #00AFD7);
+            border: 1px solid #0067A0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .suggestions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .toggle-suggestions {
+            background: #0067A0;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .toggle-suggestions:hover {
+            background: #00358E;
+        }
+
+        .suggestion-section {
+            margin-bottom: 15px;
+        }
+
+        .suggestion-section h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #11224B;
+            font-weight: 600;
+        }
+
+        .example-phrases {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .phrase-btn {
+            background: white;
+            border: 1px solid #0067A0;
+            color: #0067A0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .phrase-btn:hover {
+            background: #0067A0;
+            color: white;
+        }
+
+        .example-statements ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .example-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .example-item:last-child {
+            border-bottom: none;
+        }
+
+        .example-text {
+            flex: 1;
+            font-size: 13px;
+            color: #555;
+            margin-right: 10px;
+        }
+
+        .use-example-btn {
+            background: #00358E;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .use-example-btn:hover {
+            background: #112756;
+        }
+
+        /* Enhanced Writing Coach Styles */
+        .writing-coach-details {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 12px;
+            border-left: 4px solid #0067A0;
+        }
+
+        .coach-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+
+        .metric strong {
+            color: #11224B;
+            margin-bottom: 2px;
+        }
+
+        .metric small {
+            color: #7C878E;
+            font-style: italic;
+            margin-left: 5px;
+        }
+
+        @media (min-width: 768px) {
+            .coach-metrics {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .metric {
+                flex: 1;
+                margin-right: 15px;
+            }
+            
+            .metric:last-child {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Talent Evaluation Dashboard</h1>
+            <p>Performance Assessment & Bias Detection</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="btn btn-primary" id="evaluationTab">Performance Evaluation</button>
+            <button class="btn btn-secondary" id="dashboardTab">Dashboard & Analytics</button>
+        </nav>
+
+        <div id="evaluationView">
+            <!-- Carousel Progress Indicator -->
+            <div class="carousel-progress" id="carouselProgress">
+                <div class="progress-steps">
+                    <div class="progress-step active" data-step="0">Basic Information</div>
+                    <div class="progress-step" data-step="1">Key Priorities</div>
+                    <div class="progress-step" data-step="2">Results & Impact</div>
+                    <div class="progress-step" data-step="3">Collaboration</div>
+                    <div class="progress-step" data-step="4">Growth & Development</div>
+                    <div class="progress-step" data-step="5">Looking Ahead</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Carousel Container -->
+            <div class="carousel-container" id="evaluationCarousel">
+                <!-- Step 0: Basic Information -->
+                <div class="carousel-slide active" data-step="0" style="display: block; background: white; padding: 20px; border-radius: 8px;">
+                    <h2>Basic Information & Overall Rating</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label for="employeeName" style="display: block; margin-bottom: 5px; font-weight: bold;">Employee Name:</label>
+                            <input type="text" id="employeeName" placeholder="Enter employee name" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <div>
+                            <label for="reviewerName" style="display: block; margin-bottom: 5px; font-weight: bold;">Reviewer Name:</label>
+                            <input type="text" id="reviewerName" placeholder="Enter reviewer name" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label for="reviewPeriod" style="display: block; margin-bottom: 5px; font-weight: bold;">Fiscal Year:</label>
+                        <select id="reviewPeriod" style="width: 200px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                            <option value="FY26">FY26</option>
+                            <option value="FY25">FY25</option>
+                            <option value="FY24">FY24</option>
+                            <option value="FY23">FY23</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 10px; font-weight: bold;">Overall Performance Rating:</label>
+                        <div class="rating-buttons" id="overallRating">
+                            <button class="rating-btn exemplary" data-rating="exemplary" onclick="selectRating('exemplary')">
+                                <strong>Exemplary</strong><br>
+                                <small>Performance consistently exceeds the requirements of the role</small>
+                            </button>
+                            <button class="rating-btn successful selected" data-rating="successful" onclick="selectRating('successful')">
+                                <strong>Successful</strong><br>
+                                <small>Performance consistently meets the requirements of the role</small>
+                            </button>
+                            <button class="rating-btn opportunity" data-rating="opportunity" onclick="selectRating('opportunity')">
+                                <strong>Opportunity</strong><br>
+                                <small>Performance consistently failed to meet the requirements of the role</small>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Key Priorities -->
+                <div class="carousel-slide" data-step="1" style="display: none; background: white; padding: 20px; border-radius: 8px;">
+                    <h2>Key Priorities</h2>
+                    <p style="color: #666; margin-bottom: 20px;">What were the associate's main goals or deliverables this year?</p>
+                    
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4>Smart Content Suggestions</h4>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('key_priorities', 'Successfully delivered on key business priorities including...')">
+                            "Successfully delivered on key business priorities including..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('key_priorities', 'Exceeded expectations by achieving...')">
+                            "Exceeded expectations by achieving..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('key_priorities', 'Consistently focused on strategic objectives such as...')">
+                            "Consistently focused on strategic objectives such as..."
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label for="content-key_priorities" style="display: block; margin-bottom: 5px; font-weight: bold;">Feedback:</label>
+                        <textarea 
+                            id="content-key_priorities" 
+                            placeholder="Provide specific, objective feedback with examples and measurable outcomes..."
+                            rows="6"
+                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;"
+                            onkeyup="analyzeFeedbackRealTime('key_priorities', this.value)"
+                        ></textarea>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                        <h4>Real-time Writing Coach</h4>
+                        <div style="margin: 10px 0;">
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="objectivity-key_priorities">Objectivity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="specificity-key_priorities">Specificity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="completeness-key_priorities">Completeness: Pending</span>
+                        </div>
+                        <div id="feedback-key_priorities" style="font-size: 14px; color: #666;">
+                            Start typing to receive real-time feedback on your writing quality.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Results & Impact -->
+                <div class="carousel-slide" data-step="2" style="display: none; background: white; padding: 20px; border-radius: 8px;">
+                    <h2>Results & Impact</h2>
+                    <p style="color: #666; margin-bottom: 20px;">What outcomes did they drive, and how did they move the business or brand forward?</p>
+                    
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4>Smart Content Suggestions</h4>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('results_impact', 'Delivered measurable business impact by achieving...')">
+                            "Delivered measurable business impact by achieving..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('results_impact', 'Generated significant value through...')">
+                            "Generated significant value through..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('results_impact', 'Improved key metrics including...')">
+                            "Improved key metrics including..."
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label for="content-results_impact" style="display: block; margin-bottom: 5px; font-weight: bold;">Feedback:</label>
+                        <textarea 
+                            id="content-results_impact" 
+                            placeholder="Provide specific, objective feedback with examples and measurable outcomes..."
+                            rows="6"
+                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;"
+                            onkeyup="analyzeFeedbackRealTime('results_impact', this.value)"
+                        ></textarea>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                        <h4>Real-time Writing Coach</h4>
+                        <div style="margin: 10px 0;">
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="objectivity-results_impact">Objectivity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="specificity-results_impact">Specificity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="completeness-results_impact">Completeness: Pending</span>
+                        </div>
+                        <div id="feedback-results_impact" style="font-size: 14px; color: #666;">
+                            Start typing to receive real-time feedback on your writing quality.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Collaboration & Influence -->
+                <div class="carousel-slide" data-step="3" style="display: none; background: white; padding: 20px; border-radius: 8px;">
+                    <h2>Collaboration & Influence</h2>
+                    <p style="color: #666; margin-bottom: 20px;">How did they partner across teams or functions to deliver results?</p>
+                    
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4>Smart Content Suggestions</h4>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('collaboration_influence', 'Built strong partnerships with cross-functional teams to...')">
+                            "Built strong partnerships with cross-functional teams to..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('collaboration_influence', 'Influenced positive outcomes by effectively communicating...')">
+                            "Influenced positive outcomes by effectively communicating..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('collaboration_influence', 'Demonstrated leadership by facilitating...')">
+                            "Demonstrated leadership by facilitating..."
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label for="content-collaboration_influence" style="display: block; margin-bottom: 5px; font-weight: bold;">Feedback:</label>
+                        <textarea 
+                            id="content-collaboration_influence" 
+                            placeholder="Provide specific, objective feedback with examples and measurable outcomes..."
+                            rows="6"
+                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;"
+                            onkeyup="analyzeFeedbackRealTime('collaboration_influence', this.value)"
+                        ></textarea>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                        <h4>Real-time Writing Coach</h4>
+                        <div style="margin: 10px 0;">
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="objectivity-collaboration_influence">Objectivity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="specificity-collaboration_influence">Specificity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="completeness-collaboration_influence">Completeness: Pending</span>
+                        </div>
+                        <div id="feedback-collaboration_influence" style="font-size: 14px; color: #666;">
+                            Start typing to receive real-time feedback on your writing quality.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Growth & Development -->
+                <div class="carousel-slide" data-step="4" style="display: none; background: white; padding: 20px; border-radius: 8px;">
+                    <h2>Growth & Development</h2>
+                    <p style="color: #666; margin-bottom: 20px;">What new skills, behaviors, or leadership qualities did they build this year?</p>
+                    
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4>Smart Content Suggestions</h4>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('growth_development', 'Developed new capabilities in...')">
+                            "Developed new capabilities in..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('growth_development', 'Showed significant growth by learning...')">
+                            "Showed significant growth by learning..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('growth_development', 'Strengthened leadership skills through...')">
+                            "Strengthened leadership skills through..."
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label for="content-growth_development" style="display: block; margin-bottom: 5px; font-weight: bold;">Feedback:</label>
+                        <textarea 
+                            id="content-growth_development" 
+                            placeholder="Provide specific, objective feedback with examples and measurable outcomes..."
+                            rows="6"
+                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;"
+                            onkeyup="analyzeFeedbackRealTime('growth_development', this.value)"
+                        ></textarea>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                        <h4>Real-time Writing Coach</h4>
+                        <div style="margin: 10px 0;">
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="objectivity-growth_development">Objectivity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="specificity-growth_development">Specificity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="completeness-growth_development">Completeness: Pending</span>
+                        </div>
+                        <div id="feedback-growth_development" style="font-size: 14px; color: #666;">
+                            Start typing to receive real-time feedback on your writing quality.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Looking Ahead -->
+                <div class="carousel-slide" data-step="5" style="display: none; background: white; padding: 20px; border-radius: 8px;">
+                    <h2>Looking Ahead</h2>
+                    <p style="color: #666; margin-bottom: 20px;">What are their biggest opportunities and development areas to grow next year?</p>
+                    
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4>Smart Content Suggestions</h4>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('looking_ahead', 'Key development opportunities include...')">
+                            "Key development opportunities include..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('looking_ahead', 'Focus areas for next year should be...')">
+                            "Focus areas for next year should be..."
+                        </div>
+                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" onclick="useSuggestion('looking_ahead', 'Recommended stretch assignments or experiences...')">
+                            "Recommended stretch assignments or experiences..."
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label for="content-looking_ahead" style="display: block; margin-bottom: 5px; font-weight: bold;">Feedback:</label>
+                        <textarea 
+                            id="content-looking_ahead" 
+                            placeholder="Provide specific, objective feedback with examples and measurable outcomes..."
+                            rows="6"
+                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;"
+                            onkeyup="analyzeFeedbackRealTime('looking_ahead', this.value)"
+                        ></textarea>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                        <h4>Real-time Writing Coach</h4>
+                        <div style="margin: 10px 0;">
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="objectivity-looking_ahead">Objectivity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="specificity-looking_ahead">Specificity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="completeness-looking_ahead">Completeness: Pending</span>
+                        </div>
+                        <div id="feedback-looking_ahead" style="font-size: 14px; color: #666;">
+                            Start typing to receive real-time feedback on your writing quality.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Navigation -->
+            <div class="carousel-navigation">
+                <button class="btn btn-outline" id="prevBtn" disabled>Previous</button>
+                <div class="step-indicator">
+                    <span id="stepIndicator">Step 1 of 7</span>
+                </div>
+                <button class="btn btn-primary" id="nextBtn">Next</button>
+            </div>
+
+            <div class="card" style="display: none;" id="summaryCard">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Comprehensive Evaluation Summary</h2>
+                    <button class="btn btn-outline" id="backToCarouselBtn">Back to Review</button>
+                </div>
+                <div class="form-group">
+                    <label for="comprehensiveSummary">Complete Performance Assessment:</label>
+                    <textarea 
+                        id="comprehensiveSummary" 
+                        placeholder="This section will automatically compile a comprehensive evaluation based on the feedback areas above, or you can write your own summary..."
+                        rows="6"
+                        readonly
+                    ></textarea>
+                </div>
+                <button class="btn btn-secondary" id="generateSummaryBtn" style="margin-bottom: 20px;">Generate AI-Enhanced Summary + Development Plan</button>
+                <button class="btn btn-secondary" id="editSummaryBtn" style="margin-left: 10px; margin-bottom: 20px;">Edit Summary Manually</button>
+                
+                <div id="summaryBiasAnalysis">
+                    <h3>Summary Quality Analysis</h3>
+                    <div class="bias-alert info">
+                        <strong>✓ Summary Quality: Pending</strong>
+                        <p>Generate or write a comprehensive summary to see quality analysis.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="text-align: center;">
+                <button class="btn btn-primary" id="saveBtn">Complete & Save Evaluation</button>
+                <button class="btn btn-secondary" id="resetBtn" style="margin-left: 10px;">Reset All Fields</button>
+                <button class="btn btn-secondary" id="exportBtn" style="margin-left: 10px;">Export as PDF</button>
+            </div>
+        </div>
+
+        <!-- Auto-save indicator -->
+        <div class="auto-save-indicator" id="autoSaveIndicator">
+            Auto-saved
+        </div>
+
+        <!-- Floating Action Buttons -->
+        <div class="floating-actions">
+            <button class="fab tooltip" id="darkModeToggle" title="Toggle dark mode">
+                DARK
+                <span class="tooltiptext">Toggle Dark Mode</span>
+            </button>
+            <button class="fab secondary tooltip" id="aiAssistantToggle" title="AI Writing Assistant">
+                AI
+                <span class="tooltiptext">AI Writing Assistant</span>
+            </button>
+            <button class="fab secondary tooltip" id="quickSaveBtn" title="Quick Save">
+                SAVE
+                <span class="tooltiptext">Quick Save Draft</span>
+            </button>
+        </div>
+
+        <div id="dashboardView" class="hidden">
+            <div class="grid grid-3">
+                <div class="card">
+                    <h3>Total Evaluations</h3>
+                    <div style="font-size: 2rem; font-weight: bold; color: #007acc;" id="totalEvaluations">0</div>
+                </div>
+                
+                <div class="card">
+                    <h3>Rating Distribution</h3>
+                    <div id="ratingDistribution">
+                        <div>Exemplary: <span id="exemplaryCount">0</span></div>
+                        <div>Successful: <span id="successfulCount">0</span></div>
+                        <div>Opportunity: <span id="opportunityCount">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Bias Detection</h3>
+                    <div id="biasStats">
+                        <div>Easy Rater: <span id="easyRaterCount">0</span></div>
+                        <div>Halo Effect: <span id="haloEffectCount">0</span></div>
+                        <div>Other Biases: <span id="otherBiasCount">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Evaluation History</h2>
+                <div id="evaluationsList">
+                    <p>No evaluations completed yet. Start your first evaluation using the "New Evaluation" tab.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        let currentEvaluation = null;
+        let evaluations = JSON.parse(localStorage.getItem('talent_evaluations') || '[]');
+        let currentTab = 'evaluation';
+        let autoSaveTimer = null;
+        let isDarkMode = localStorage.getItem('darkMode') === 'true';
+        let aiAssistantEnabled = true;
+        let typingTimer = null;
+
+        // AI Writing Assistant Templates
+        const AI_SUGGESTIONS = {
+            key_priorities: [
+                "Successfully delivered [specific project/goal] resulting in [measurable outcome]",
+                "Exceeded quarterly targets by [percentage/amount] through [specific actions]",
+                "Led the development of [initiative] which contributed [specific business impact]",
+                "Completed [number] key deliverables including [list main items]"
+            ],
+            results_impact: [
+                "Achieved [X]% increase in [metric] compared to previous period",
+                "Generated $[amount] in [revenue/savings] through [specific initiative]",
+                "Improved [process/metric] by [percentage] resulting in [business benefit]",
+                "Successfully launched [project] reaching [number] customers/users"
+            ],
+            collaboration_influence: [
+                "Partnered with [teams/departments] to deliver [specific outcome]",
+                "Mentored [number] team members, resulting in [specific improvements]",
+                "Facilitated cross-functional collaboration that led to [specific result]",
+                "Built strategic relationships with [stakeholders] enabling [outcome]"
+            ],
+            growth_development: [
+                "Acquired new skills in [area] demonstrated through [specific example]",
+                "Completed [training/certification] and applied knowledge to [project]",
+                "Expanded expertise in [domain] leading to [improved performance]",
+                "Developed leadership capabilities by [specific actions and results]"
+            ],
+            looking_ahead: [
+                "Focus on developing [specific skills] to enhance [performance area]",
+                "Opportunity to increase [metric/capability] through [suggested approach]",
+                "Recommended next steps include [specific development actions]",
+                "Areas for growth include [specific, actionable items]"
+            ]
+        };
+
+        // Feedback areas configuration
+        const FEEDBACK_AREAS = [
+            {
+                id: 'key_priorities',
+                name: 'Key Priorities',
+                description: 'What were the associate\'s main goals or deliverables this year?'
+            },
+            {
+                id: 'results_impact',
+                name: 'Results & Impact',
+                description: 'What outcomes did they drive, and how did they move the business or brand forward?'
+            },
+            {
+                id: 'collaboration_influence',
+                name: 'Collaboration & Influence',
+                description: 'How did they partner across teams or functions to deliver results?'
+            },
+            {
+                id: 'growth_development',
+                name: 'Growth & Development',
+                description: 'What new skills, behaviors, or leadership qualities did they build this year?'
+            },
+            {
+                id: 'looking_ahead',
+                name: 'Looking Ahead',
+                description: 'What are their biggest opportunities and development areas to grow next year?'
+            }
+        ];
+
+        // Smart Content Suggestions System
+        const CONTENT_SUGGESTIONS = {
+            key_priorities: {
+                prompts: [
+                    "What were their top 3 business priorities this year?",
+                    "Which goals did they exceed, meet, or miss?",
+                    "What measurable impact did they drive?"
+                ],
+                examples: [
+                    "Led Q3 product launch that generated $2.3M in first-quarter revenue",
+                    "Completed digital transformation project 2 weeks ahead of schedule, reducing processing time by 40%",
+                    "Exceeded annual sales target by 15%, bringing in $850K above goal"
+                ],
+                objectiveStarters: [
+                    "Achieved", "Delivered", "Exceeded", "Completed", "Generated", "Reduced", "Increased", "Led", "Managed"
+                ]
+            },
+            results_impact: {
+                prompts: [
+                    "What quantifiable results did they achieve?",
+                    "How did their work move the business forward?",
+                    "What was the measurable impact on customers/revenue/efficiency?"
+                ],
+                examples: [
+                    "Improved customer satisfaction scores from 7.2 to 8.5 through process redesign",
+                    "Generated $1.2M in cost savings by optimizing supply chain operations",
+                    "Launched new feature that increased user engagement by 25% within 3 months"
+                ],
+                objectiveStarters: [
+                    "Improved", "Generated", "Increased", "Decreased", "Saved", "Launched", "Implemented", "Optimized"
+                ]
+            },
+            collaboration_influence: {
+                prompts: [
+                    "Which teams/functions did they partner with?",
+                    "How did they influence outcomes across organizations?",
+                    "What stakeholder relationships did they build/strengthen?"
+                ],
+                examples: [
+                    "Coordinated cross-functional team of 12 members from IT, Marketing, and Operations to deliver integrated solution",
+                    "Built consensus among 5 regional directors to standardize processes, resulting in 20% efficiency gain",
+                    "Facilitated partnership between Sales and Product teams that accelerated feature development by 6 weeks"
+                ],
+                objectiveStarters: [
+                    "Coordinated", "Facilitated", "Built consensus", "Aligned", "Negotiated", "Influenced", "Partnered"
+                ]
+            },
+            growth_development: {
+                prompts: [
+                    "What new skills or capabilities did they demonstrate?",
+                    "How did they grow as a leader/contributor?",
+                    "What behaviors changed or improved this year?"
+                ],
+                examples: [
+                    "Developed data analysis skills through SQL training, now creating weekly performance dashboards independently",
+                    "Enhanced presentation skills, successfully leading quarterly business reviews for senior leadership",
+                    "Strengthened delegation abilities, effectively managing team of 6 while maintaining quality standards"
+                ],
+                objectiveStarters: [
+                    "Developed", "Enhanced", "Strengthened", "Gained", "Demonstrated", "Applied", "Mastered"
+                ]
+            },
+            looking_ahead: {
+                prompts: [
+                    "What skills should they focus on developing?",
+                    "What growth opportunities align with business needs?",
+                    "What specific development plans have you created?"
+                ],
+                examples: [
+                    "Focus on strategic thinking through Harvard Business Review case studies and monthly strategy sessions",
+                    "Develop executive presence by joining Toastmasters and presenting to board quarterly",
+                    "Build financial acumen through CFO mentorship program and finance fundamentals course"
+                ],
+                objectiveStarters: [
+                    "Focus on", "Develop", "Build", "Strengthen", "Enhance", "Work on", "Practice"
+                ]
+            }
+        };
+
+        // Enhanced bias detection patterns
+        const BIAS_PATTERNS = {
+            easy_rater: {
+                keywords: ['great', 'nice', 'friendly', 'pleasant', 'easy to work with', 'gets along well', 'likeable', 'popular', 'sweet', 'kind', 'wonderful', 'amazing', 'awesome', 'love', 'enjoy', 'enjoys', 'associate'],
+                phrases: ['everyone likes', 'well-liked', 'team favorite', 'pleasure to work with', 'great personality', 'really nice person', 'great associate', 'love working with', 'everyone enjoys', 'enjoys partnering with']
+            },
+            hard_rater: {
+                keywords: ['never', 'always fails', 'impossible', 'cannot', 'incapable', 'worthless', 'terrible', 'awful', 'disaster'],
+                phrases: ['no one can', 'expects perfection', 'sets impossible standards', 'never good enough', 'always finds fault']
+            },
+            personality_focus: {
+                keywords: ['personality', 'attitude', 'charisma', 'charm', 'likeable', 'popular', 'extroverted', 'introverted', 'shy', 'outgoing', 'person', 'him', 'her'],
+                phrases: ['great personality', 'bad attitude', 'personality conflict', 'not a people person', 'people skills', 'working with him', 'working with her']
+            },
+            vague_language: {
+                keywords: ['things', 'stuff', 'everything', 'something', 'anything', 'necessary', 'all', 'everyone', 'good', 'fine', 'okay', 'decent', 'satisfactory', 'adequate'],
+                phrases: ['doing well', 'pretty good', 'not bad', 'okay job', 'fine work', 'all the things', 'has all the things necessary', 'all the things necessary']
+            },
+            subjective: ['feel', 'think', 'believe', 'seems', 'appears', 'probably', 'maybe', 'might', 'suppose', 'assume', 'guess', 'personally'],
+            emotional_language: ['love', 'hate', 'annoying', 'frustrating', 'exciting', 'boring', 'amazing', 'terrible', 'fantastic', 'awful'],
+            comparison_bias: ['better than', 'worse than', 'not as good as', 'reminds me of', 'similar to', 'like other', 'compared to', 'everyone enjoys', 'everyone likes', 'partnering with him', 'partnering with her'],
+            timing_bias: ['recently', 'lately', 'just', 'last week', 'yesterday', 'right now', 'currently', 'at the moment'],
+            objective: ['achieved', 'delivered', 'completed', 'increased', 'decreased', 'improved', 'measured', 'resulted in', 'generated', 'produced', 'exceeded', 'met target', 'reduced by', 'grew by', 'implemented', 'launched', 'executed']
+        };
+
+        // Development Recommendations System
+        const DEVELOPMENT_RESOURCES = {
+            leadership: {
+                courses: ['Executive Leadership Program', 'Strategic Leadership Certification', 'Advanced Management Skills'],
+                books: ['The Leadership Challenge', 'Good to Great', 'Dare to Lead'],
+                mentorship: ['Senior Director Mentorship', 'Executive Coaching Program'],
+                experiences: ['Cross-functional project lead', 'Board presentation opportunity', 'Crisis management simulation']
+            },
+            communication: {
+                courses: ['Executive Communication', 'Presentation Skills Mastery', 'Difficult Conversations Workshop'],
+                books: ['Crucial Conversations', 'Made to Stick', 'The Pyramid Principle'],
+                mentorship: ['Communications Director pairing', 'Toastmasters sponsorship'],
+                experiences: ['Quarterly business review presenter', 'All-hands meeting facilitator', 'Customer advisory board participant']
+            },
+            strategic_thinking: {
+                courses: ['Strategic Planning Workshop', 'Business Strategy Fundamentals', 'Innovation and Design Thinking'],
+                books: ['Blue Ocean Strategy', 'The Innovator\'s Dilemma', 'Playing to Win'],
+                mentorship: ['VP Strategy mentorship', 'CEO shadow program'],
+                experiences: ['Strategic initiative lead', 'Competitive analysis project', 'Market expansion planning']
+            },
+            collaboration: {
+                courses: ['Cross-Functional Team Leadership', 'Influence Without Authority', 'Negotiation Skills'],
+                books: ['Getting to Yes', 'The Trusted Advisor', 'Team of Teams'],
+                mentorship: ['Cross-functional leader pairing', 'Matrix management coaching'],
+                experiences: ['Multi-department project coordination', 'Stakeholder alignment initiative', 'Change management lead']
+            },
+            technical_skills: {
+                courses: ['Data Analytics Certification', 'Project Management Professional', 'Digital Transformation Workshop'],
+                books: ['The Analytics Revolution', 'Scrum Guide', 'Digital to the Core'],
+                mentorship: ['Technical expert pairing', 'Innovation lab rotation'],
+                experiences: ['Technology implementation lead', 'Process automation project', 'Digital tool pilot program']
+            }
+        };
+
+        function generateDevelopmentRecommendations() {
+            if (!currentEvaluation || !currentEvaluation.feedbackAreas) return null;
+
+            const recommendations = analyzeForDevelopmentNeeds();
+            return createDevelopmentPlan(recommendations);
+        }
+
+        function analyzeForDevelopmentNeeds() {
+            const analysis = {
+                strengths: [],
+                developmentAreas: [],
+                patterns: {},
+                suggestedFocus: []
+            };
+
+            currentEvaluation.feedbackAreas.forEach(area => {
+                if (!area.content) return;
+
+                const content = area.content.toLowerCase();
+
+                // Analyze content for development themes
+                if (content.includes('leadership') || content.includes('lead') || content.includes('manage')) {
+                    analysis.patterns.leadership = (analysis.patterns.leadership || 0) + 1;
+                }
+                if (content.includes('communication') || content.includes('present') || content.includes('speak')) {
+                    analysis.patterns.communication = (analysis.patterns.communication || 0) + 1;
+                }
+                if (content.includes('strategic') || content.includes('strategy') || content.includes('vision')) {
+                    analysis.patterns.strategic_thinking = (analysis.patterns.strategic_thinking || 0) + 1;
+                }
+                if (content.includes('collaborate') || content.includes('partner') || content.includes('team')) {
+                    analysis.patterns.collaboration = (analysis.patterns.collaboration || 0) + 1;
+                }
+                if (content.includes('technical') || content.includes('data') || content.includes('system')) {
+                    analysis.patterns.technical_skills = (analysis.patterns.technical_skills || 0) + 1;
+                }
+
+                // Identify strengths and development areas
+                const positiveWords = ['excellent', 'strong', 'effective', 'outstanding', 'exceeded'];
+                const developmentWords = ['develop', 'improve', 'enhance', 'strengthen', 'focus', 'grow'];
+
+                if (positiveWords.some(word => content.includes(word))) {
+                    analysis.strengths.push(area.name);
+                }
+                if (developmentWords.some(word => content.includes(word)) || area.id === 'looking_ahead') {
+                    analysis.developmentAreas.push(area.name);
+                }
+            });
+
+            // Determine top focus areas based on patterns
+            const sortedPatterns = Object.entries(analysis.patterns)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3);
+
+            analysis.suggestedFocus = sortedPatterns.map(([skill]) => skill);
+
+            return analysis;
+        }
+
+        function createDevelopmentPlan(analysis) {
+            const plan = {
+                executiveSummary: generateExecutiveSummary(analysis),
+                focusAreas: [],
+                timeline: '12-month development plan',
+                success_metrics: []
+            };
+
+            // Create detailed focus areas with resources
+            analysis.suggestedFocus.forEach((skill, index) => {
+                const resources = DEVELOPMENT_RESOURCES[skill];
+                if (resources) {
+                    plan.focusAreas.push({
+                        skill: skill.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                        priority: index === 0 ? 'High' : index === 1 ? 'Medium' : 'Low',
+                        timeline: index === 0 ? 'Months 1-4' : index === 1 ? 'Months 5-8' : 'Months 9-12',
+                        courses: resources.courses.slice(0, 2),
+                        books: resources.books.slice(0, 2),
+                        mentorship: resources.mentorship[0],
+                        experience: resources.experiences[0],
+                        success_metric: generateSuccessMetric(skill)
+                    });
+                }
+            });
+
+            return plan;
+        }
+
+        function generateExecutiveSummary(analysis) {
+            const strengthsText = analysis.strengths.length > 0 
+                ? `Strong performance noted in ${analysis.strengths.join(' and ')}.` 
+                : 'Performance shows solid foundation across multiple areas.';
+            
+            const focusText = analysis.suggestedFocus.length > 0 
+                ? `Key development opportunities identified in ${analysis.suggestedFocus.map(s => s.replace('_', ' ')).join(', ')}.`
+                : 'Continue building on current capabilities.';
+            
+            return `${strengthsText} ${focusText} Recommended 12-month development plan focuses on strategic skill building aligned with career growth and business needs.`;
+        }
+
+        function generateSuccessMetric(skill) {
+            const metrics = {
+                leadership: 'Lead cross-functional project with 5+ team members and deliver measurable business outcome',
+                communication: 'Successfully present to senior leadership quarterly and receive 85%+ effectiveness rating',
+                strategic_thinking: 'Develop and present strategic recommendation that influences business direction',
+                collaboration: 'Facilitate successful partnership between 3+ departments resulting in process improvement',
+                technical_skills: 'Implement new technical solution that improves efficiency by 20%+'
+            };
+            return metrics[skill] || 'Demonstrate measurable improvement in skill application';
+        }
+
+        // Carousel Management
+        let currentStep = 0;
+        const totalSteps = 7; // Basic Info + 5 feedback areas + Summary
+
+        function initializeCarousel() {
+            // Set up navigation buttons
+            document.getElementById('prevBtn').addEventListener('click', goToPreviousStep);
+            document.getElementById('nextBtn').addEventListener('click', goToNextStep);
+            
+            // Set up step indicators (clickable)
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.addEventListener('click', () => goToStep(index));
+            });
+            
+            updateCarouselDisplay();
+        }
+
+        // Super simple carousel that just works
+        function initializeSimpleCarousel() {
+            console.log('Setting up simple carousel...');
+            
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) {
+                prevBtn.onclick = function() {
+                    if (currentStep > 0) {
+                        currentStep--;
+                        showCurrentStep();
+                    }
+                };
+            }
+            
+            if (nextBtn) {
+                nextBtn.onclick = function() {
+                    if (currentStep < 5) { // All 6 steps now working (0-5)
+                        currentStep++;
+                        showCurrentStep();
+                    } else if (currentStep === 5) {
+                        // Show summary or complete evaluation
+                        alert('Evaluation complete! Summary functionality will be added next.');
+                    }
+                };
+            }
+            
+            // Make progress steps clickable
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.onclick = function() {
+                    currentStep = index;
+                    showCurrentStep();
+                };
+            });
+            
+            showCurrentStep();
+        }
+
+        function showCurrentStep() {
+            console.log(`Showing step ${currentStep}`);
+            
+            // Hide all slides
+            document.querySelectorAll('.carousel-slide').forEach(slide => {
+                slide.style.display = 'none';
+            });
+            
+            // Show current slide
+            const currentSlide = document.querySelector(`[data-step="${currentStep}"]`);
+            if (currentSlide) {
+                currentSlide.style.display = 'block';
+                console.log(`Showing slide ${currentStep}`);
+            } else {
+                console.log(`No slide found for step ${currentStep}`);
+            }
+            
+            // Update progress
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index === currentStep) {
+                    step.classList.add('active');
+                } else if (index < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+            
+            // Update buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const stepIndicator = document.getElementById('stepIndicator');
+            
+            if (prevBtn) prevBtn.disabled = (currentStep === 0);
+            if (nextBtn) {
+                if (currentStep === 5) {
+                    nextBtn.textContent = 'Complete Evaluation';
+                } else {
+                    nextBtn.textContent = 'Next';
+                }
+            }
+            if (stepIndicator) stepIndicator.textContent = `Step ${currentStep + 1} of 6`;
+            
+            // Update progress bar
+            const progressFill = document.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${(currentStep / 5) * 100}%`;
+            }
+        }
+
+        function goToStep(stepIndex) {
+            if (stepIndex >= 0 && stepIndex < 6) { // Only allow navigation to feedback steps
+                currentStep = stepIndex;
+                updateCarouselDisplay();
+            }
+        }
+
+        function goToPreviousStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateCarouselDisplay();
+            }
+        }
+
+        function goToNextStep() {
+            if (currentStep < 5) { // Steps 0-5 for the 6 sections
+                currentStep++;
+                updateCarouselDisplay();
+            } else if (currentStep === 5) {
+                // Show summary on final step
+                showSummaryView();
+            }
+        }
+
+        function updateCarouselDisplay() {
+            console.log(`Updating carousel display for step ${currentStep}`);
+            
+            // Hide all slides
+            const allSlides = document.querySelectorAll('.carousel-slide');
+            console.log(`Found ${allSlides.length} slides total`);
+            
+            allSlides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Show current slide
+            const currentSlide = document.querySelector(`[data-step="${currentStep}"]`);
+            if (currentSlide) {
+                currentSlide.classList.add('active');
+                console.log(`Activated slide for step ${currentStep}`);
+            } else {
+                console.log(`No slide found for step ${currentStep}`);
+            }
+
+            // Update progress indicators
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index === currentStep) {
+                    step.classList.add('active');
+                } else if (index < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+
+            // Update progress bar
+            const progressFill = document.querySelector('.progress-fill');
+            const progressPercentage = (currentStep / 5) * 100; // 6 steps total (0-5)
+            progressFill.style.width = `${progressPercentage}%`;
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const stepIndicator = document.getElementById('stepIndicator');
+
+            prevBtn.disabled = currentStep === 0;
+            
+            if (currentStep === 5) {
+                nextBtn.textContent = 'Complete Evaluation';
+            } else {
+                nextBtn.textContent = 'Next';
+            }
+
+            stepIndicator.textContent = `Step ${currentStep + 1} of 6`;
+        }
+
+        function showSummaryView() {
+            // Hide carousel
+            document.getElementById('evaluationCarousel').style.display = 'none';
+            document.getElementById('carouselProgress').style.display = 'none';
+            document.querySelector('.carousel-navigation').style.display = 'none';
+            
+            // Show summary card
+            document.getElementById('summaryCard').style.display = 'block';
+            
+            // Generate summary automatically
+            generateSummary();
+        }
+
+        function backToCarousel() {
+            // Hide summary card
+            document.getElementById('summaryCard').style.display = 'none';
+            
+            // Show carousel elements
+            document.getElementById('evaluationCarousel').style.display = 'block';
+            document.getElementById('carouselProgress').style.display = 'block';
+            document.querySelector('.carousel-navigation').style.display = 'flex';
+            
+            // Go to last step of carousel
+            currentStep = 5;
+            updateCarouselDisplay();
+        }
+
+        // Fixed carousel navigation functions
+        function goToStepFixed(stepIndex) {
+            if (stepIndex >= 0 && stepIndex < 6) {
+                currentStep = stepIndex;
+                updateCarouselDisplayFixed();
+            }
+        }
+
+        function goToPreviousStepFixed() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateCarouselDisplayFixed();
+            }
+        }
+
+        function goToNextStepFixed() {
+            if (currentStep < 5) {
+                currentStep++;
+                updateCarouselDisplayFixed();
+            } else if (currentStep === 5) {
+                showSummaryView();
+            }
+        }
+
+        function updateCarouselDisplayFixed() {
+            console.log(`Updating carousel display for step ${currentStep}`);
+            
+            // Debug: Show all slides and their data-step attributes
+            const allSlides = document.querySelectorAll('.carousel-slide');
+            console.log(`Found ${allSlides.length} slides total`);
+            allSlides.forEach((slide, i) => {
+                console.log(`Slide ${i}: data-step="${slide.getAttribute('data-step')}", display="${slide.style.display}"`);
+            });
+            
+            // Hide all slides
+            allSlides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+
+            // Show current slide
+            const currentSlide = document.querySelector(`[data-step="${currentStep}"]`);
+            if (currentSlide) {
+                currentSlide.style.display = 'block';
+                console.log(`Activated slide for step ${currentStep}:`, currentSlide);
+            } else {
+                console.log(`No slide found for step ${currentStep}`);
+                console.log('Available slides with data-step:', Array.from(allSlides).map(s => s.getAttribute('data-step')));
+            }
+
+            updateNavigationState();
+        }
+
+        function updateNavigationState() {
+            // Update progress indicators
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index === currentStep) {
+                    step.classList.add('active');
+                } else if (index < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+
+            // Update progress bar
+            const progressFill = document.querySelector('.progress-fill');
+            if (progressFill) {
+                const progressPercentage = (currentStep / 5) * 100;
+                progressFill.style.width = `${progressPercentage}%`;
+            }
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const stepIndicator = document.getElementById('stepIndicator');
+
+            if (prevBtn) prevBtn.disabled = currentStep === 0;
+            
+            if (nextBtn) {
+                if (currentStep === 5) {
+                    nextBtn.textContent = 'Complete Evaluation';
+                } else {
+                    nextBtn.textContent = 'Next';
+                }
+            }
+
+            if (stepIndicator) {
+                stepIndicator.textContent = `Step ${currentStep + 1} of 6`;
+            }
+        }
+
+        // Rating selection functionality
+        function selectRating(rating) {
+            // Remove selected class from all rating buttons
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selected class to the clicked button
+            document.querySelector(`[data-rating="${rating}"]`).classList.add('selected');
+            
+            // Update current evaluation
+            if (currentEvaluation) {
+                currentEvaluation.overallRating = rating;
+            }
+            
+            console.log(`Selected rating: ${rating}`);
+        }
+
+        // Smart Suggestions functionality
+        function useSuggestion(areaId, suggestion) {
+            const textarea = document.getElementById(`content-${areaId}`);
+            if (textarea.value) {
+                textarea.value += ' ' + suggestion;
+            } else {
+                textarea.value = suggestion;
+            }
+            // Trigger real-time coach analysis
+            analyzeFeedbackRealTime(areaId, textarea.value);
+        }
+
+        // Real-time Writing Coach
+        function analyzeFeedbackRealTime(areaId, content) {
+            const objectivityEl = document.getElementById(`objectivity-${areaId}`);
+            const specificityEl = document.getElementById(`specificity-${areaId}`);
+            const completenessEl = document.getElementById(`completeness-${areaId}`);
+            const feedbackEl = document.getElementById(`feedback-${areaId}`);
+
+            if (!content.trim()) {
+                objectivityEl.textContent = 'Objectivity: Pending';
+                specificityEl.textContent = 'Specificity: Pending';
+                completenessEl.textContent = 'Completeness: Pending';
+                feedbackEl.textContent = 'Start typing to receive real-time feedback on your writing quality.';
+                return;
+            }
+
+            // Simple analysis logic
+            const objectivityScore = analyzeObjectivity(content);
+            const specificityScore = analyzeSpecificity(content);
+            const completenessScore = analyzeCompleteness(content);
+
+            // Update metrics with appropriate classes
+            objectivityEl.textContent = `Objectivity: ${objectivityScore}%`;
+            objectivityEl.className = `coach-metric ${getScoreClass(objectivityScore)}`;
+
+            specificityEl.textContent = `Specificity: ${specificityScore}%`;
+            specificityEl.className = `coach-metric ${getScoreClass(specificityScore)}`;
+
+            completenessEl.textContent = `Completeness: ${completenessScore}%`;
+            completenessEl.className = `coach-metric ${getScoreClass(completenessScore)}`;
+
+            // Provide feedback
+            const suggestions = [];
+            if (objectivityScore < 70) suggestions.push('Use more specific examples and measurable outcomes');
+            if (specificityScore < 70) suggestions.push('Include concrete details and specific instances');
+            if (completenessScore < 70) suggestions.push('Consider adding more comprehensive coverage');
+
+            feedbackEl.textContent = suggestions.length > 0 
+                ? 'Suggestions: ' + suggestions.join('. ') 
+                : 'Excellent feedback quality! Well-written and comprehensive.';
+        }
+
+        function analyzeObjectivity(content) {
+            const objectiveWords = ['achieved', 'completed', 'delivered', 'increased', 'decreased', 'implemented', 'measured'];
+            const subjectiveWords = ['amazing', 'fantastic', 'terrible', 'always', 'never'];
+            
+            const objectiveCount = objectiveWords.filter(word => content.toLowerCase().includes(word)).length;
+            const subjectiveCount = subjectiveWords.filter(word => content.toLowerCase().includes(word)).length;
+            
+            return Math.min(100, Math.max(0, 60 + (objectiveCount * 10) - (subjectiveCount * 15)));
+        }
+
+        function analyzeSpecificity(content) {
+            const hasNumbers = /\d/.test(content);
+            const hasPercentages = /%/.test(content);
+            const hasTimeframes = /\b(month|quarter|year|week|day)\b/i.test(content);
+            
+            let score = 40;
+            if (hasNumbers) score += 20;
+            if (hasPercentages) score += 20;
+            if (hasTimeframes) score += 20;
+            
+            return Math.min(100, score);
+        }
+
+        function analyzeCompleteness(content) {
+            const words = content.trim().split(/\s+/).length;
+            if (words < 20) return Math.min(words * 3, 60);
+            if (words < 50) return Math.min(60 + (words - 20) * 1.5, 85);
+            return Math.min(85 + (words - 50) * 0.5, 100);
+        }
+
+        function getScoreClass(score) {
+            if (score >= 85) return 'excellent';
+            if (score >= 70) return 'good';
+            return '';
+        }
+
+        // Initialize the application
+        function init() {
+            console.log('Initializing application...');
+            initializeCurrentEvaluation();
+            
+            // Ensure DOM is ready before rendering
+            setTimeout(() => {
+                console.log('Setting up event listeners...');
+                setupEventListeners();
+                console.log('Initializing simple carousel...');
+                initializeSimpleCarousel();
+            }, 200);
+            
+            updateDashboard();
+            showTab('evaluation');
+        }
+
+        function initializeCurrentEvaluation() {
+            currentEvaluation = {
+                id: Date.now().toString(),
+                employeeName: '',
+                reviewerName: '',
+                reviewPeriod: 'FY26',
+                overallRating: 'successful',
+                feedbackAreas: FEEDBACK_AREAS.map(area => ({
+                    id: area.id,
+                    name: area.name,
+                    description: area.description,
+                    content: ''
+                })),
+                comprehensiveSummary: '',
+                biasAnalysis: [],
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+        }
+
+        function setupEventListeners() {
+            document.getElementById('evaluationTab').addEventListener('click', () => showTab('evaluation'));
+            document.getElementById('dashboardTab').addEventListener('click', () => showTab('dashboard'));
+            document.getElementById('saveBtn').addEventListener('click', saveEvaluation);
+            document.getElementById('resetBtn').addEventListener('click', resetEvaluation);
+            document.getElementById('generateSummaryBtn').addEventListener('click', generateSummary);
+            document.getElementById('editSummaryBtn').addEventListener('click', toggleSummaryEdit);
+            document.getElementById('backToCarouselBtn').addEventListener('click', backToCarousel);
+
+            // Basic info listeners
+            document.getElementById('employeeName').addEventListener('input', (e) => {
+                currentEvaluation.employeeName = e.target.value;
+            });
+            document.getElementById('reviewerName').addEventListener('input', (e) => {
+                currentEvaluation.reviewerName = e.target.value;
+            });
+            document.getElementById('reviewPeriod').addEventListener('change', (e) => {
+                currentEvaluation.reviewPeriod = e.target.value;
+            });
+
+            // Overall rating buttons
+            document.querySelectorAll('#overallRating .rating-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('#overallRating .rating-btn').forEach(b => b.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    currentEvaluation.overallRating = e.target.dataset.rating;
+                });
+            });
+
+            // Summary textarea listener
+            document.getElementById('comprehensiveSummary').addEventListener('input', (e) => {
+                currentEvaluation.comprehensiveSummary = e.target.value;
+                analyzeSummaryBias();
+                scheduleAutoSave();
+            });
+
+            // Enhanced UX listeners
+            document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+            document.getElementById('aiAssistantToggle').addEventListener('click', toggleAIAssistant);
+            document.getElementById('quickSaveBtn').addEventListener('click', quickSave);
+            document.getElementById('exportBtn').addEventListener('click', exportToPDF);
+
+            // Apply dark mode if enabled
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 's':
+                            e.preventDefault();
+                            quickSave();
+                            break;
+                        case 'd':
+                            e.preventDefault();
+                            toggleDarkMode();
+                            break;
+                        case 'g':
+                            e.preventDefault();
+                            generateSummary();
+                            break;
+                    }
+                }
+            });
+        }
+
+        function showTab(tab) {
+            currentTab = tab;
+            document.getElementById('evaluationView').classList.toggle('hidden', tab !== 'evaluation');
+            document.getElementById('dashboardView').classList.toggle('hidden', tab !== 'dashboard');
+            
+            document.getElementById('evaluationTab').className = `btn ${tab === 'evaluation' ? 'btn-primary' : 'btn-secondary'}`;
+            document.getElementById('dashboardTab').className = `btn ${tab === 'dashboard' ? 'btn-primary' : 'btn-secondary'}`;
+            
+            if (tab === 'dashboard') {
+                updateDashboard();
+            }
+        }
+
+        function resetEvaluation() {
+            if (confirm('Are you sure you want to reset all fields? This will clear all entered data.')) {
+                initializeCurrentEvaluation();
+                
+                // Reset form fields
+                document.getElementById('employeeName').value = '';
+                document.getElementById('reviewerName').value = '';
+                document.getElementById('reviewPeriod').value = 'FY26';
+                document.getElementById('comprehensiveSummary').value = '';
+                
+                // Reset rating selection
+                document.querySelectorAll('#overallRating .rating-btn').forEach(btn => btn.classList.remove('selected'));
+                document.querySelector('#overallRating .rating-btn[data-rating="successful"]').classList.add('selected');
+                
+                // Reset feedback areas
+                FEEDBACK_AREAS.forEach(area => {
+                    document.getElementById(`content-${area.id}`).value = '';
+                    const biasContainer = document.getElementById(`bias-${area.id}`);
+                    if (biasContainer) {
+                        biasContainer.innerHTML = `
+                            <div class="bias-alert info">
+                                <strong>Ready for feedback</strong>
+                                <p>Start typing to see real-time quality analysis.</p>
+                            </div>
+                        `;
+                    }
+                });
+
+                // Reset summary analysis
+                document.getElementById('summaryBiasAnalysis').innerHTML = `
+                    <h3>Summary Quality Analysis</h3>
+                    <div class="bias-alert info">
+                        <strong>✓ Summary Quality: Pending</strong>
+                        <p>Generate or write a comprehensive summary to see quality analysis.</p>
+                    </div>
+                `;
+
+                alert('✓ All fields have been reset.');
+            }
+        }
+
+        function renderFeedbackAreas() {
+            console.log('renderFeedbackAreas called');
+            const container = document.getElementById('feedbackAreaSlides');
+            if (!container) {
+                console.error('feedbackAreaSlides container not found');
+                return;
+            }
+            
+            console.log('FEEDBACK_AREAS:', FEEDBACK_AREAS);
+            console.log('Container found:', container);
+            container.innerHTML = '';
+
+            FEEDBACK_AREAS.forEach((area, index) => {
+                console.log(`Creating slide for ${area.name} at index ${index}`);
+                
+                // Create carousel slide wrapper with simple content first
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'carousel-slide';
+                slideDiv.setAttribute('data-step', index + 1); // +1 because step 0 is basic info
+                slideDiv.style.display = 'none'; // Initially hidden
+                slideDiv.style.background = 'white';
+                slideDiv.style.padding = '20px';
+                slideDiv.style.borderRadius = '8px';
+                slideDiv.style.margin = '20px 0';
+                
+                // Simple content for testing
+                slideDiv.innerHTML = `
+                    <h2>${area.name}</h2>
+                    <p style="color: #666; margin-bottom: 20px;">${area.description}</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4>Smart Content Suggestions</h4>
+                        <div style="background: #f0f8ff; padding: 10px; border-radius: 4px; margin: 10px 0;">
+                            <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;" 
+                                 onclick="useSuggestion('${area.id}', 'Demonstrated strong performance by...')">
+                                "Demonstrated strong performance by..."
+                            </div>
+                            <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;"
+                                 onclick="useSuggestion('${area.id}', 'Achieved measurable results through...')">
+                                "Achieved measurable results through..."
+                            </div>
+                            <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 4px; cursor: pointer;"
+                                 onclick="useSuggestion('${area.id}', 'Collaborated effectively to...')">
+                                "Collaborated effectively to..."
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label for="content-${area.id}" style="display: block; margin-bottom: 5px; font-weight: bold;">Feedback:</label>
+                        <textarea 
+                            id="content-${area.id}" 
+                            placeholder="Provide specific, objective feedback with examples and measurable outcomes..."
+                            rows="6"
+                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;"
+                        ></textarea>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                        <h4>Real-time Writing Coach</h4>
+                        <div style="margin: 10px 0;">
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="objectivity-${area.id}">Objectivity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="specificity-${area.id}">Specificity: Pending</span>
+                            <span style="display: inline-block; background: #e0e0e0; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;" id="completeness-${area.id}">Completeness: Pending</span>
+                        </div>
+                        <div id="feedback-${area.id}" style="font-size: 14px; color: #666;">
+                            Start typing to receive real-time feedback on your writing quality.
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(slideDiv);
+                console.log(`Slide created for ${area.name} with data-step="${index + 1}"`);
+
+                // Set up event listener for this textarea
+                setTimeout(() => {
+                    const textarea = document.getElementById(`content-${area.id}`);
+                    if (textarea && currentEvaluation && currentEvaluation.feedbackAreas) {
+                        const areaData = currentEvaluation.feedbackAreas.find(a => a.id === area.id);
+                        if (areaData && areaData.content) {
+                            textarea.value = areaData.content;
+                        }
+                        
+                        textarea.addEventListener('input', (e) => {
+                            const areaToUpdate = currentEvaluation.feedbackAreas.find(a => a.id === area.id);
+                            if (areaToUpdate) {
+                                areaToUpdate.content = e.target.value;
+                                analyzeFeedbackRealTime(area.id, e.target.value);
+                            }
+                        });
+                    }
+                }, 100);
+            });
+
+            // Add a simple test slide to make sure creation works
+            const testSlide = document.createElement('div');
+            testSlide.className = 'carousel-slide';
+            testSlide.setAttribute('data-step', '99');
+            testSlide.style.display = 'none';
+            testSlide.style.background = 'yellow';
+            testSlide.style.padding = '20px';
+            testSlide.innerHTML = '<h2>TEST SLIDE - If you see this, slide creation works!</h2>';
+            container.appendChild(testSlide);
+
+            console.log(`Total slides created: ${FEEDBACK_AREAS.length}`);
+            console.log('Container contents:', container.innerHTML.length, 'characters');
+            
+            // Debug: Check what slides are actually in the DOM
+            setTimeout(() => {
+                const allSlides = document.querySelectorAll('.carousel-slide');
+                console.log('All slides in DOM:', allSlides.length);
+                allSlides.forEach((slide, i) => {
+                    console.log(`Slide ${i}: step=${slide.getAttribute('data-step')}, visible=${slide.style.display !== 'none'}`);
+                });
+            }, 500);
+        }
+
+        function setupFeedbackAreaListeners() {
+            setTimeout(() => {
+                FEEDBACK_AREAS.forEach(area => {
+                    const textarea = document.getElementById(`content-${area.id}`);
+                    if (textarea) {
+                        // Set initial value if exists
+                        if (currentEvaluation && currentEvaluation.feedbackAreas) {
+                            const areaData = currentEvaluation.feedbackAreas.find(a => a.id === area.id);
+                            if (areaData && areaData.content) {
+                                textarea.value = areaData.content;
+                                analyzeFeedbackRealTime(area.id, areaData.content);
+                            }
+                        }
+                        
+                        textarea.addEventListener('input', (e) => {
+                            if (currentEvaluation && currentEvaluation.feedbackAreas) {
+                                const areaToUpdate = currentEvaluation.feedbackAreas.find(a => a.id === area.id);
+                                if (areaToUpdate) {
+                                    areaToUpdate.content = e.target.value;
+                                    analyzeFeedbackRealTime(area.id, e.target.value);
+                                    scheduleAutoSave();
+                                }
+                            }
+                        });
+                    }
+                });
+            }, 200);
+        }
+
+        function toggleSuggestions(areaId) {
+            const content = document.getElementById(`suggestions-content-${areaId}`);
+            const button = document.querySelector(`#suggestions-${areaId} .toggle-suggestions`);
+            
+            if (content.style.display === 'none') {
+                showSmartSuggestions(areaId);
+                content.style.display = 'block';
+                button.textContent = 'Hide';
+            } else {
+                content.style.display = 'none';
+                button.textContent = 'Show';
+            }
+        }
+
+        function showSmartSuggestions(areaId) {
+            const suggestions = CONTENT_SUGGESTIONS[areaId];
+            if (!suggestions) return;
+
+            const container = document.getElementById(`suggestions-content-${areaId}`);
+            container.innerHTML = `
+                <div class="suggestion-section">
+                    <h4>Guiding Questions:</h4>
+                    <ul>
+                        ${suggestions.prompts.map(prompt => `<li>${prompt}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="suggestion-section">
+                    <h4>Example Phrases:</h4>
+                    <div class="example-phrases">
+                        ${suggestions.objectiveStarters.map(starter => 
+                            `<button class="phrase-btn" onclick="insertText('content-${areaId}', '${starter} ')">${starter}</button>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div class="suggestion-section">
+                    <h4>Sample Statements:</h4>
+                    <div class="example-statements">
+                        ${suggestions.examples.map((example, index) => 
+                            `<div class="example-item">
+                                <span class="example-text">${example}</span>
+                                <button class="use-example-btn" onclick="insertText('content-${areaId}', '${example.replace(/'/g, "\\'")}')">Use as Template</button>
+                            </div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function insertText(textareaId, text) {
+            const textarea = document.getElementById(textareaId);
+            const cursorPos = textarea.selectionStart;
+            const textBefore = textarea.value.substring(0, cursorPos);
+            const textAfter = textarea.value.substring(cursorPos);
+            
+            textarea.value = textBefore + text + textAfter;
+            textarea.focus();
+            textarea.setSelectionRange(cursorPos + text.length, cursorPos + text.length);
+            
+            // Trigger input event to update bias analysis
+            textarea.dispatchEvent(new Event('input'));
+        }
+
+        function performWritingCoachAnalysis(content, areaId) {
+            const lowerContent = content.toLowerCase();
+            const wordCount = content.split(' ').length;
+            const sentenceCount = content.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+            
+            let analysis = {
+                baseScore: 100,
+                toneAnalysis: {},
+                completenessCheck: {},
+                impactScore: 0,
+                recommendations: []
+            };
+
+            // 1. TONE ANALYSIS
+            const positiveWords = ['excellent', 'outstanding', 'exceptional', 'strong', 'effective', 'successful', 'improved', 'achieved', 'delivered'];
+            const negativeWords = ['poor', 'weak', 'failed', 'struggled', 'difficult', 'challenging', 'missed', 'below', 'lacking'];
+            const neutralWords = ['completed', 'participated', 'attended', 'worked', 'continued', 'maintained', 'met', 'standard'];
+            
+            const positiveCount = positiveWords.filter(word => lowerContent.includes(word)).length;
+            const negativeCount = negativeWords.filter(word => lowerContent.includes(word)).length;
+            const neutralCount = neutralWords.filter(word => lowerContent.includes(word)).length;
+            
+            let tone = 'balanced';
+            if (positiveCount > negativeCount * 2) tone = 'overly positive';
+            else if (negativeCount > positiveCount * 2) tone = 'overly critical';
+            else if (positiveCount === 0 && negativeCount === 0) tone = 'too neutral';
+            
+            analysis.toneAnalysis = {
+                tone,
+                positiveCount,
+                negativeCount,
+                neutralCount,
+                recommendation: getToneRecommendation(tone)
+            };
+
+            // 2. COMPLETENESS CHECK
+            const hasSpecifics = /\d+|%|percent|\$|dollars|weeks|months|days|hours/.test(content);
+            const hasExamples = /example|instance|such as|for example|specifically/.test(lowerContent);
+            const hasTimeframe = /this year|quarter|month|week|during|since|by/.test(lowerContent);
+            const hasOutcome = /result|outcome|impact|effect|led to|resulted in/.test(lowerContent);
+            
+            const completenessScore = [hasSpecifics, hasExamples, hasTimeframe, hasOutcome].filter(Boolean).length;
+            
+            analysis.completenessCheck = {
+                score: completenessScore,
+                hasSpecifics,
+                hasExamples,
+                hasTimeframe,
+                hasOutcome,
+                recommendation: getCompletenessRecommendation(completenessScore, areaId)
+            };
+
+            // 3. IMPACT SCORE
+            const impactWords = ['generated', 'saved', 'increased', 'improved', 'reduced', 'delivered', 'exceeded', 'achieved', 'transformed'];
+            const quantifiers = (content.match(/\d+[%$]?/g) || []).length;
+            const businessTerms = ['revenue', 'profit', 'efficiency', 'productivity', 'customer', 'quality', 'performance', 'roi'].filter(term => 
+                lowerContent.includes(term)
+            ).length;
+            
+            const impactScore = Math.min(100, (impactWords.filter(word => lowerContent.includes(word)).length * 15) + 
+                                         (quantifiers * 10) + 
+                                         (businessTerms * 8));
+            
+            analysis.impactScore = impactScore;
+
+            // 4. OVERALL RECOMMENDATIONS
+            if (tone === 'overly positive') analysis.baseScore -= 15;
+            if (tone === 'overly critical') analysis.baseScore -= 20;
+            if (tone === 'too neutral') analysis.baseScore -= 10;
+            if (completenessScore < 2) analysis.baseScore -= 20;
+            if (impactScore < 30) analysis.baseScore -= 15;
+            if (wordCount < 20) analysis.baseScore -= 25;
+            
+            analysis.baseScore = Math.max(0, analysis.baseScore);
+            
+            return analysis;
+        }
+
+        function getToneRecommendation(tone) {
+            switch (tone) {
+                case 'overly positive':
+                    return 'Consider adding areas for growth or development to provide balanced feedback.';
+                case 'overly critical':
+                    return 'Balance critical feedback with recognition of strengths and achievements.';
+                case 'too neutral':
+                    return 'Include more specific evaluation of performance - both strengths and areas for improvement.';
+                default:
+                    return 'Tone appears balanced and appropriate for performance feedback.';
+            }
+        }
+
+        function getCompletenessRecommendation(score, areaId) {
+            if (score >= 3) return 'Feedback appears comprehensive with good detail.';
+            
+            const missing = [];
+            if (score === 0) return 'Add specific examples, timeframes, and measurable outcomes.';
+            if (score === 1) return 'Include more specific details, examples, and measurable results.';
+            if (score === 2) return 'Consider adding one more element: specific metrics, examples, or outcomes.';
+            
+            return 'Good level of detail provided.';
+        }
+
+        function performSectionBiasAnalysis(areaId, content) {
+            const biasContainer = document.getElementById(`bias-${areaId}`);
+            if (!biasContainer || !content.trim()) {
+                if (biasContainer) {
+                    biasContainer.innerHTML = `
+                        <h4>Section Quality Analysis</h4>
+                        <div class="bias-alert info">
+                            <strong>✓ Ready for feedback</strong>
+                            <p>Start typing to see real-time quality analysis.</p>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            // Special handling for behavioral/development-focused sections
+            const isLookingAhead = areaId === 'looking_ahead';
+            const isGrowthDevelopment = areaId === 'growth_development';
+            const isCollaboration = areaId === 'collaboration_influence';
+            const isDevelopmentSection = isLookingAhead || isGrowthDevelopment;
+            const isBehavioralSection = isDevelopmentSection || isCollaboration;
+            
+            const lowerContent = content.toLowerCase();
+            const biasResults = [];
+            const detectedIssues = [];
+            
+            // Enhanced bias detection with multiple patterns
+            
+            // 1. Easy Rater bias detection
+            const easyRaterMatches = BIAS_PATTERNS.easy_rater.keywords.filter(keyword => 
+                lowerContent.includes(keyword.toLowerCase())
+            ).length;
+            const easyRaterPhrases = BIAS_PATTERNS.easy_rater.phrases.filter(phrase => 
+                lowerContent.includes(phrase.toLowerCase())
+            ).length;
+            
+            if (easyRaterMatches > 0 || easyRaterPhrases > 0) {
+                detectedIssues.push({
+                    type: 'Easy Rater Bias',
+                    severity: 'high',
+                    message: 'Focuses on personality traits rather than performance outcomes',
+                    matches: easyRaterMatches + easyRaterPhrases
+                });
+            }
+
+            // 2. Hard Rater bias detection
+            const hardRaterMatches = BIAS_PATTERNS.hard_rater.keywords.filter(keyword => 
+                lowerContent.includes(keyword.toLowerCase())
+            ).length;
+            const hardRaterPhrases = BIAS_PATTERNS.hard_rater.phrases.filter(phrase => 
+                lowerContent.includes(phrase.toLowerCase())
+            ).length;
+            
+            if (hardRaterMatches > 0 || hardRaterPhrases > 0) {
+                detectedIssues.push({
+                    type: 'Hard Rater Bias', 
+                    severity: 'high',
+                    message: 'Uses absolute negative language or impossible standards',
+                    matches: hardRaterMatches + hardRaterPhrases
+                });
+            }
+
+            // 3. Personality focus detection
+            const personalityMatches = BIAS_PATTERNS.personality_focus.keywords.filter(keyword => 
+                lowerContent.includes(keyword.toLowerCase())
+            ).length;
+            
+            if (personalityMatches > 1) {
+                detectedIssues.push({
+                    type: 'Personality Focus',
+                    severity: 'medium',
+                    message: 'Evaluates personality traits rather than job performance',
+                    matches: personalityMatches
+                });
+            }
+
+            // 4. Vague language detection
+            const vagueMatches = BIAS_PATTERNS.vague_language.keywords.filter(keyword => 
+                lowerContent.includes(keyword)
+            ).length;
+            const vaguePhrasesMatches = BIAS_PATTERNS.vague_language.phrases.filter(phrase => 
+                lowerContent.includes(phrase)
+            ).length;
+            
+            if (vagueMatches > 2 || vaguePhrasesMatches > 0) {
+                detectedIssues.push({
+                    type: 'Vague Language',
+                    severity: 'medium',
+                    message: 'Uses non-specific language without concrete examples',
+                    matches: vagueMatches + vaguePhrasesMatches
+                });
+            }
+
+            // 5. Subjective language detection (enhanced)
+            const subjectiveMatches = BIAS_PATTERNS.subjective.filter(indicator => 
+                lowerContent.includes(indicator)
+            ).length;
+            
+            if (subjectiveMatches > 2) {
+                detectedIssues.push({
+                    type: 'Subjective Language',
+                    severity: 'medium',
+                    message: 'Contains opinion-based language rather than factual observations',
+                    matches: subjectiveMatches
+                });
+            }
+
+            // 6. Emotional language detection
+            const emotionalMatches = BIAS_PATTERNS.emotional_language.filter(word => 
+                lowerContent.includes(word)
+            ).length;
+            
+            if (emotionalMatches > 1) {
+                detectedIssues.push({
+                    type: 'Emotional Language',
+                    severity: 'medium',
+                    message: 'Uses emotional rather than professional descriptors',
+                    matches: emotionalMatches
+                });
+            }
+
+            // 7. Comparison bias detection
+            const comparisonMatches = BIAS_PATTERNS.comparison_bias.filter(phrase => 
+                lowerContent.includes(phrase)
+            ).length;
+            
+            if (comparisonMatches > 0) {
+                detectedIssues.push({
+                    type: 'Comparison Bias',
+                    severity: 'medium',
+                    message: 'Makes comparisons to other people rather than role requirements',
+                    matches: comparisonMatches
+                });
+            }
+
+            // 8. Timing bias detection (recency bias)
+            const timingMatches = BIAS_PATTERNS.timing_bias.filter(word => 
+                lowerContent.includes(word)
+            ).length;
+            
+            if (timingMatches > 2) {
+                detectedIssues.push({
+                    type: 'Recency Bias',
+                    severity: 'low',
+                    message: 'Focuses heavily on recent events rather than full period',
+                    matches: timingMatches
+                });
+            }
+
+            // Enhanced Writing Coach Analysis
+            const writingCoachResults = performWritingCoachAnalysis(content, areaId);
+            
+            // Calculate enhanced objectivity score
+            const objectiveMatches = BIAS_PATTERNS.objective.filter(indicator => 
+                lowerContent.includes(indicator)
+            ).length;
+
+            const wordCount = content.split(' ').length;
+            let sectionScore = writingCoachResults.baseScore; // Start with writing coach adjusted score
+
+            if (isBehavioralSection) {
+                // Special scoring for behavioral sections - more lenient and focused on collaboration/development
+                
+                // Look for appropriate language based on section type
+                const developmentWords = isGrowthDevelopment ? 
+                    ['develop', 'developed', 'grow', 'grew', 'improve', 'improved', 'learn', 'learned', 'training', 'skill', 'skills', 'strengthen', 'strengthened', 'build', 'built', 'focus', 'focused', 'practice', 'practiced', 'enhance', 'enhanced', 'gained', 'acquired', 'mastered'] :
+                    isCollaboration ?
+                    ['partner', 'partnered', 'collaborate', 'collaborated', 'work with', 'worked with', 'engage', 'engaged', 'influence', 'influenced', 'communicate', 'communicated', 'facilitate', 'facilitated', 'coordinate', 'coordinated', 'align', 'aligned'] :
+                    ['develop', 'grow', 'improve', 'learn', 'training', 'skill', 'strengthen', 'build', 'focus', 'work on', 'practice', 'enhance'];
+                
+                const developmentMatches = developmentWords.filter(word => 
+                    lowerContent.includes(word)
+                ).length;
+                
+                // Look for specific actions based on section type
+                const actionWords = isGrowthDevelopment ?
+                    ['completed', 'attended', 'participated', 'achieved', 'demonstrated', 'showed', 'exhibited', 'applied', 'implemented', 'practiced'] :
+                    isCollaboration ?
+                    ['led', 'organized', 'facilitated', 'coordinated', 'brought together', 'connected', 'bridged', 'aligned', 'negotiated', 'persuaded', 'convinced', 'rallied'] :
+                    ['assigned', 'enrolled', 'will', 'needs to', 'should', 'plan to', 'goal', 'target', 'coaching', 'mentoring'];
+                
+                const actionMatches = actionWords.filter(word => 
+                    lowerContent.includes(word)
+                ).length;
+                
+                // Look for relationship/collaboration language 
+                const behaviorWords = isCollaboration ?
+                    ['relationship', 'relationships', 'partnership', 'partnerships', 'teamwork', 'cross-functional', 'stakeholder', 'stakeholders', 'influence', 'communication', 'trust', 'rapport', 'consensus', 'buy-in'] :
+                    ['behavior', 'behaviors', 'leadership', 'communication', 'collaboration', 'initiative', 'confidence', 'decision-making', 'problem-solving'];
+                    
+                const behaviorMatches = behaviorWords.filter(word => 
+                    lowerContent.includes(word)
+                ).length;
+                
+                // Bonus for appropriate section-specific language
+                if (developmentMatches > 0) {
+                    sectionScore += Math.min(developmentMatches * 5, 15);
+                }
+                
+                // Bonus for specific actions/evidence
+                if (actionMatches > 0) {
+                    sectionScore += Math.min(actionMatches * 8, 20);
+                }
+                
+                // Bonus for behavioral/relationship focus
+                if (behaviorMatches > 0) {
+                    const bonusMultiplier = isCollaboration ? 8 : 6; // Higher bonus for collaboration language
+                    sectionScore += Math.min(behaviorMatches * bonusMultiplier, 16);
+                }
+                
+                // Much lighter penalties for bias in behavioral context
+                detectedIssues.forEach(issue => {
+                    // Only penalize severe bias patterns, ignore minor ones for behavioral sections
+                    if (issue.type === 'Easy Rater Bias' || issue.type === 'Hard Rater Bias') {
+                        switch (issue.severity) {
+                            case 'high':
+                                sectionScore -= Math.min(issue.matches * 10, 20); // Much lighter penalty
+                                break;
+                            case 'medium':
+                                sectionScore -= Math.min(issue.matches * 5, 15);
+                                break;
+                        }
+                    }
+                    // Very light penalty for other bias types in collaboration context
+                    else if (isCollaboration && (issue.type === 'Personality Focus' || issue.type === 'Subjective Language')) {
+                        sectionScore -= Math.min(issue.matches * 3, 8); // Very light penalty
+                    }
+                });
+                
+                // No penalty for lack of objective language in behavioral context
+                
+            } else {
+                // Standard strict scoring for performance sections
+                
+                // Major penalty for lack of objective language
+                if (objectiveMatches === 0) {
+                    sectionScore -= 40; // Huge penalty for no objective language
+                } else {
+                    // Small bonus for objective language
+                    sectionScore += Math.min((objectiveMatches / wordCount) * 50, 10);
+                }
+
+                // Severe deductions for each type of bias/issue detected
+                detectedIssues.forEach(issue => {
+                    switch (issue.severity) {
+                        case 'high':
+                            sectionScore -= Math.min(issue.matches * 25, 50); // Much higher penalty
+                            break;
+                        case 'medium':
+                            sectionScore -= Math.min(issue.matches * 15, 30); // Higher penalty
+                            break;
+                        case 'low':
+                            sectionScore -= Math.min(issue.matches * 8, 15); // Higher penalty
+                            break;
+                    }
+                });
+
+                // Additional harsh penalties
+                if (objectiveMatches === 0 && wordCount > 15) {
+                    sectionScore -= 25; // Large penalty for substantial non-objective content
+                }
+            }
+
+            if (wordCount < 15) {
+                sectionScore -= 10; // Too brief for meaningful evaluation
+            }
+
+            sectionScore = Math.max(0, Math.min(100, sectionScore));
+
+            // Determine quality level based on enhanced scoring
+            let qualityLevel = 'Excellent';
+            let alertClass = 'info';
+            
+            if (sectionScore < 30) {
+                qualityLevel = 'Poor';
+                alertClass = '';
+            } else if (sectionScore < 50) {
+                qualityLevel = 'Needs Improvement';
+                alertClass = '';
+            } else if (sectionScore < 70) {
+                qualityLevel = 'Fair';
+                alertClass = 'warning';
+            } else if (sectionScore < 85) {
+                qualityLevel = 'Good';
+                alertClass = 'info';
+            }
+
+            // Create detailed feedback message
+            let message = '';
+            let suggestions = [];
+
+            if (isBehavioralSection) {
+                // Special messaging for behavioral sections
+                if (detectedIssues.length === 0) {
+                    message = isGrowthDevelopment ? 
+                        'This section provides appropriate assessment of skills and behavior development.' :
+                        isCollaboration ?
+                        'This section provides appropriate assessment of collaboration and influence capabilities.' :
+                        'This section provides appropriate developmental feedback.';
+                    suggestions = isGrowthDevelopment ? 
+                        ['Continue documenting specific skills and behaviors developed'] :
+                        isCollaboration ?
+                        ['Continue describing specific partnership and influence examples'] :
+                        ['Continue focusing on specific growth areas and development plans'];
+                } else {
+                    // Only show major bias issues for behavioral sections
+                    const majorIssues = detectedIssues.filter(issue => 
+                        issue.type === 'Easy Rater Bias' || issue.type === 'Hard Rater Bias'
+                    );
+                    
+                    if (majorIssues.length > 0) {
+                        message = majorIssues[0].message;
+                    } else {
+                        message = isGrowthDevelopment ? 
+                            'This section provides appropriate assessment of skills and behavior development.' :
+                            isCollaboration ?
+                            'This section provides appropriate assessment of collaboration and influence capabilities.' :
+                            'This section provides appropriate developmental feedback.';
+                    }
+                }
+            } else if (detectedIssues.length === 0) {
+                message = 'This section demonstrates objective, specific feedback.';
+                suggestions = ['Continue providing concrete examples and measurable outcomes'];
+            } else {
+                const primaryIssue = detectedIssues.reduce((prev, current) => 
+                    (prev.severity === 'high' || (prev.severity === 'medium' && current.severity === 'low')) ? prev : current
+                );
+                
+                message = primaryIssue.message;
+                
+                if (isBehavioralSection && suggestions.length === 0) {
+                    // Special suggestions for behavioral sections
+                    suggestions = isGrowthDevelopment ? [
+                        'Include specific skills, behaviors, or leadership qualities developed',
+                        'Mention concrete examples of growth and learning',
+                        'Focus on how new capabilities were demonstrated or applied'
+                    ] : isCollaboration ? [
+                        'Include specific examples of cross-functional partnerships',
+                        'Describe how they influenced outcomes or built consensus',
+                        'Focus on relationship-building and stakeholder engagement results'
+                    ] : [
+                        'Include specific development goals and growth areas',
+                        'Mention concrete development plans (training, coaching, projects)',
+                        'Focus on skills and competencies to build for future success'
+                    ];
+                } else {
+                    switch (primaryIssue.type) {
+                        case 'Easy Rater Bias':
+                            suggestions = isBehavioralSection ? (isGrowthDevelopment ? [
+                                'Focus on specific skills and behaviors developed rather than personality traits',
+                                'Include concrete examples of growth and learning demonstrated',
+                                'Describe observable behavior changes and new capabilities'
+                            ] : isCollaboration ? [
+                                'Focus on specific collaboration outcomes rather than personality traits',
+                                'Include concrete examples of partnership success and influence',
+                                'Describe measurable results from cross-functional work'
+                            ] : [
+                                'Focus on specific skills to develop rather than personality traits',
+                                'Include concrete development actions and timelines',
+                                'Identify measurable growth objectives'
+                            ]) : [
+                                'Replace personality descriptions with specific performance outcomes',
+                                'Include measurable results and concrete examples',
+                                'Focus on job-related behaviors and achievements'
+                            ];
+                            break;
+                        case 'Hard Rater Bias':
+                            suggestions = isBehavioralSection ? (isGrowthDevelopment ? [
+                                'Acknowledge growth achieved while noting areas for continued development',
+                                'Focus on progress made and skills gained',
+                                'Balance recognition of development with constructive feedback'
+                            ] : isCollaboration ? [
+                                'Focus on specific collaboration challenges rather than absolute statements',
+                                'Provide constructive examples of partnership opportunities',
+                                'Balance recognition of influence skills with growth areas'
+                            ] : [
+                                'Frame development areas as growth opportunities',
+                                'Provide specific, achievable development goals',
+                                'Focus on skill-building rather than deficiency correction'
+                            ]) : [
+                                'Replace absolute language with specific performance gaps',
+                                'Provide constructive feedback with improvement suggestions',
+                                'Focus on role requirements rather than perfection'
+                            ];
+                            break;
+                        case 'Personality Focus':
+                            suggestions = isBehavioralSection ? (isGrowthDevelopment ? [
+                                'Focus on observable behavior changes and skill development',
+                                'Describe specific capabilities gained and demonstrated',
+                                'Include examples of how new skills were applied to work'
+                            ] : isCollaboration ? [
+                                'Focus on specific collaboration behaviors and influence actions',
+                                'Describe concrete partnership outcomes and stakeholder results',
+                                'Include examples of how they built relationships to achieve goals'
+                            ] : [
+                                'Focus on skill development rather than personality changes',
+                                'Identify specific competencies to strengthen',
+                                'Include development actions and learning opportunities'
+                            ]) : [
+                                'Shift focus from personality to performance outcomes',
+                                'Describe what was accomplished, not how it felt',
+                                'Use behavior-based examples tied to business results'
+                            ];
+                            break;
+                        case 'Vague Language':
+                            suggestions = isBehavioralSection ? (isGrowthDevelopment ? [
+                                'Specify exactly which skills, behaviors, or leadership qualities developed',
+                                'Include concrete examples of how growth was demonstrated',
+                                'Describe specific situations where new capabilities were applied'
+                            ] : isCollaboration ? [
+                                'Specify exactly which teams, functions, or stakeholders they partnered with',
+                                'Include concrete examples of collaboration outcomes and influence',
+                                'Describe specific situations where partnerships delivered results'
+                            ] : [
+                                'Specify exactly which skills or competencies to develop',
+                                'Include concrete development actions and resources',
+                                'Set clear, measurable development objectives'
+                            ]) : [
+                                'Replace general terms with specific metrics and examples',
+                                'Include quantifiable results (percentages, numbers, timelines)',
+                                'Describe concrete actions and their business impact'
+                            ];
+                            break;
+                        case 'Subjective Language':
+                            suggestions = isBehavioralSection ? (isGrowthDevelopment ? [
+                                'Focus on observable behavior changes and skill development',
+                                'Include specific evidence of growth and learning',
+                                'Describe concrete examples of new capabilities demonstrated'
+                            ] : isCollaboration ? [
+                                'Focus on observable collaboration behaviors and partnership outcomes',
+                                'Include specific evidence of influence and stakeholder engagement',
+                                'Describe concrete examples of cross-functional success'
+                            ] : [
+                                'Focus on specific development needs and growth areas',
+                                'Include concrete development plans and actions',
+                                'Identify measurable skills or competencies to build'
+                            ]) : [
+                                'Replace opinion words with factual observations',
+                                'Use data and evidence to support statements',
+                                'Focus on observable behaviors and measurable outcomes'
+                            ];
+                            break;
+                        default:
+                            suggestions = isBehavioralSection ? (isGrowthDevelopment ? [
+                                'Include specific skills, behaviors, or leadership qualities developed',
+                                'Mention concrete examples of growth and learning demonstrated',
+                                'Focus on how new capabilities were applied to work'
+                            ] : isCollaboration ? [
+                                'Include specific examples of cross-functional partnerships',
+                                'Mention concrete collaboration outcomes and influence results',
+                                'Focus on relationship-building and stakeholder engagement success'
+                            ] : [
+                                'Include specific development goals and growth areas',
+                                'Mention concrete development plans and actions',
+                                'Focus on future skill-building and competency development'
+                            ]) : [
+                                'Provide more specific, objective feedback',
+                                'Include concrete examples and measurable results',
+                                'Focus on job performance and business impact'
+                            ];
+                            break;
+                    }
+                }
+            }
+
+            // Update the display with enhanced writing coach feedback
+            const icon = sectionScore >= 70 ? 'PASS' : 'REVIEW';
+            biasContainer.innerHTML = `
+                <h4>AI Writing Coach Analysis</h4>
+                <div class="bias-alert ${alertClass}">
+                    <strong>[${icon}] Section Quality: ${qualityLevel} (${Math.round(sectionScore)}%)</strong>
+                    <p>${message}</p>
+                    ${detectedIssues.length > 1 ? `<p><small>Additional issues detected: ${detectedIssues.slice(1).map(i => i.type).join(', ')}</small></p>` : ''}
+                    
+                    <div class="writing-coach-details" style="margin-top: 15px;">
+                        <div class="coach-metrics">
+                            <div class="metric">
+                                <strong>Tone Analysis:</strong> ${writingCoachResults.toneAnalysis.tone}
+                                <small>(${writingCoachResults.toneAnalysis.recommendation})</small>
+                            </div>
+                            <div class="metric">
+                                <strong>Completeness:</strong> ${writingCoachResults.completenessCheck.score}/4 elements
+                                <small>(${writingCoachResults.completenessCheck.recommendation})</small>
+                            </div>
+                            <div class="metric">
+                                <strong>Impact Score:</strong> ${Math.round(writingCoachResults.impactScore)}%
+                                <small>${writingCoachResults.impactScore >= 60 ? '(Strong business impact language)' : '(Consider adding more measurable impact details)'}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 10px;">
+                        <strong>Priority Suggestions:</strong>
+                        <ul>
+                            ${suggestions.map(suggestion => `<li>${suggestion}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateSummary() {
+            if (!currentEvaluation) return;
+
+            const completedAreas = currentEvaluation.feedbackAreas.filter(area => area.content.trim().length > 0);
+            if (completedAreas.length === 0) {
+                alert('Please complete at least one feedback area before generating a summary.');
+                return;
+            }
+
+            let summary = `Performance Evaluation Summary for ${currentEvaluation.employeeName || '[Employee Name]'} - ${currentEvaluation.reviewPeriod}\n\n`;
+            summary += `Overall Performance Rating: ${currentEvaluation.overallRating.charAt(0).toUpperCase() + currentEvaluation.overallRating.slice(1)}\n\n`;
+
+            completedAreas.forEach(area => {
+                if (area.content.trim()) {
+                    summary += `${area.name}:\n${area.content.trim()}\n\n`;
+                }
+            });
+
+            // Generate AI Development Recommendations
+            const developmentPlan = generateDevelopmentRecommendations();
+            if (developmentPlan && developmentPlan.focusAreas.length > 0) {
+                summary += `\n--- AI-Generated Development Recommendations ---\n\n`;
+                summary += `${developmentPlan.executiveSummary}\n\n`;
+                
+                summary += `Recommended Focus Areas (${developmentPlan.timeline}):\n\n`;
+                
+                developmentPlan.focusAreas.forEach((area, index) => {
+                    summary += `${index + 1}. ${area.skill} (${area.priority} Priority - ${area.timeline})\n`;
+                    summary += `   • Success Metric: ${area.success_metric}\n`;
+                    summary += `   • Learning Resources: ${area.courses.join(', ')}\n`;
+                    summary += `   • Reading: ${area.books.join(', ')}\n`;
+                    summary += `   • Mentorship: ${area.mentorship}\n`;
+                    summary += `   • Experience: ${area.experience}\n\n`;
+                });
+                
+                summary += `These recommendations are AI-generated based on evaluation content analysis and should be reviewed and customized based on business needs and individual preferences.\n\n`;
+            }
+
+            summary += `This evaluation reflects the associate's performance during ${currentEvaluation.reviewPeriod} and is based on objective assessment of their contributions, results, and professional development.`;
+
+            document.getElementById('comprehensiveSummary').value = summary;
+            currentEvaluation.comprehensiveSummary = summary;
+            
+            // Make it editable after generation
+            document.getElementById('comprehensiveSummary').readOnly = false;
+            document.getElementById('comprehensiveSummary').classList.remove('readonly-summary');
+            
+            analyzeSummaryBias();
+        }
+
+        function toggleSummaryEdit() {
+            const summaryField = document.getElementById('comprehensiveSummary');
+            if (summaryField.readOnly) {
+                summaryField.readOnly = false;
+                summaryField.classList.remove('readonly-summary');
+                summaryField.focus();
+                document.getElementById('editSummaryBtn').textContent = 'Lock Summary';
+            } else {
+                summaryField.readOnly = true;
+                summaryField.classList.add('readonly-summary');
+                document.getElementById('editSummaryBtn').textContent = 'Edit Summary Manually';
+            }
+        }
+
+        function analyzeSummaryBias() {
+            const content = document.getElementById('comprehensiveSummary').value;
+            const container = document.getElementById('summaryBiasAnalysis');
+            
+            if (!content.trim()) {
+                container.innerHTML = `
+                    <h3>Summary Quality Analysis</h3>
+                    <div class="bias-alert info">
+                        <strong>✓ Summary Quality: Pending</strong>
+                        <p>Generate or write a comprehensive summary to see quality analysis.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const lowerContent = content.toLowerCase();
+            const biasResults = [];
+            
+            // Check for comprehensiveness
+            const mentionsAllAreas = FEEDBACK_AREAS.every(area => 
+                lowerContent.includes(area.name.toLowerCase().split(' ')[0]) || 
+                currentEvaluation.feedbackAreas.find(fa => fa.id === area.id && fa.content.trim().length === 0)
+            );
+
+            const objectiveCount = BIAS_PATTERNS.objective.filter(indicator => 
+                lowerContent.includes(indicator)
+            ).length;
+
+            const subjectiveCount = BIAS_PATTERNS.subjective.filter(indicator => 
+                lowerContent.includes(indicator)
+            ).length;
+
+            let summaryScore = 70; // Base score
+            summaryScore += objectiveCount * 5;
+            summaryScore -= subjectiveCount * 3;
+
+            if (content.length < 200) {
+                summaryScore -= 15;
+                biasResults.push('Summary appears too brief for comprehensive evaluation');
+            }
+
+            if (!mentionsAllAreas) {
+                summaryScore -= 10;
+                biasResults.push('Consider addressing all feedback areas in the summary');
+            }
+
+            summaryScore = Math.max(0, Math.min(100, summaryScore));
+
+            let qualityLevel = 'Excellent';
+            let alertClass = 'info';
+            if (summaryScore < 50) {
+                qualityLevel = 'Needs Improvement';
+                alertClass = '';
+            } else if (summaryScore < 75) {
+                qualityLevel = 'Good';
+                alertClass = 'warning';
+            }
+
+            container.innerHTML = `
+                <h3>Summary Quality Analysis</h3>
+                <div class="bias-alert ${alertClass}">
+                    <strong>✓ Summary Quality: ${qualityLevel} (${Math.round(summaryScore)}%)</strong>
+                    <p>${biasResults.length === 0 ? 'Comprehensive summary with objective language.' : biasResults.join('. ')}</p>
+                </div>
+            `;
+        }
+
+
+
+        function saveEvaluation() {
+            if (!currentEvaluation) return;
+
+            const employeeName = document.getElementById('employeeName').value;
+            const reviewerName = document.getElementById('reviewerName').value;
+            const reviewPeriod = document.getElementById('reviewPeriod').value;
+
+            if (!employeeName || !reviewerName) {
+                alert('Please complete both employee name and reviewer name fields');
+                return;
+            }
+
+            // Check if at least some feedback areas have content
+            const completedAreas = currentEvaluation.feedbackAreas.filter(area => area.content.trim().length > 0);
+            if (completedAreas.length < 3) {
+                if (!confirm('You have only completed ' + completedAreas.length + ' feedback areas. Would you like to save anyway?')) {
+                    return;
+                }
+            }
+
+            // Check if summary exists
+            const summaryContent = document.getElementById('comprehensiveSummary').value;
+            if (!summaryContent.trim()) {
+                if (!confirm('No comprehensive summary has been created. Would you like to save without a summary?')) {
+                    return;
+                }
+            }
+
+            currentEvaluation.employeeName = employeeName;
+            currentEvaluation.reviewerName = reviewerName;
+            currentEvaluation.reviewPeriod = reviewPeriod;
+            currentEvaluation.comprehensiveSummary = summaryContent;
+            currentEvaluation.updatedAt = new Date();
+
+            evaluations.push(currentEvaluation);
+            localStorage.setItem('talent_evaluations', JSON.stringify(evaluations));
+
+            alert('✓ Evaluation completed and saved successfully!');
+            
+            if (confirm('Would you like to start a new evaluation?')) {
+                resetEvaluation();
+            }
+        }
+
+        function updateDashboard() {
+            const totalEvals = evaluations.length;
+            document.getElementById('totalEvaluations').textContent = totalEvals;
+
+            // Rating distribution
+            const ratingCounts = { exemplary: 0, successful: 0, opportunity: 0 };
+            evaluations.forEach(eval => {
+                if (eval.overallRating) {
+                    ratingCounts[eval.overallRating]++;
+                }
+            });
+
+            document.getElementById('exemplaryCount').textContent = ratingCounts.exemplary;
+            document.getElementById('successfulCount').textContent = ratingCounts.successful;
+            document.getElementById('opportunityCount').textContent = ratingCounts.opportunity;
+
+            // Bias stats (simplified)
+            document.getElementById('easyRaterCount').textContent = evaluations.filter(e => 
+                e.biasAnalysis && e.biasAnalysis.some(b => b.type === 'easy_rater')
+            ).length;
+            document.getElementById('haloEffectCount').textContent = evaluations.filter(e => 
+                e.biasAnalysis && e.biasAnalysis.some(b => b.type === 'halo_effect')
+            ).length;
+            document.getElementById('otherBiasCount').textContent = evaluations.filter(e => 
+                e.biasAnalysis && e.biasAnalysis.length > 0
+            ).length;
+
+            // Evaluations list
+            const evalsList = document.getElementById('evaluationsList');
+            if (evaluations.length === 0) {
+                evalsList.innerHTML = '<p>No evaluations completed yet. Start your first evaluation using the "New Evaluation" tab.</p>';
+            } else {
+                evalsList.innerHTML = evaluations.map(eval => `
+                    <div class="evaluation-item">
+                        <h4>${eval.employeeName}</h4>
+                        <p>Reviewer: ${eval.reviewerName}</p>
+                        <p>Period: ${eval.reviewPeriod}</p>
+                        <p>Overall Rating: <strong>${eval.overallRating}</strong></p>
+                        <p>Completed Areas: ${eval.feedbackAreas.filter(area => area.content && area.content.trim().length > 0).length}/5</p>
+                        <p>Has Summary: ${eval.comprehensiveSummary && eval.comprehensiveSummary.trim() ? 'Yes' : 'No'}</p>
+                        <p>Created: ${new Date(eval.createdAt).toLocaleDateString()}</p>
+                        <button class="btn btn-secondary" onclick="deleteEvaluation('${eval.id}')">Delete</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function deleteEvaluation(id) {
+            if (confirm('Are you sure you want to delete this evaluation?')) {
+                evaluations = evaluations.filter(e => e.id !== id);
+                localStorage.setItem('talent_evaluations', JSON.stringify(evaluations));
+                updateDashboard();
+            }
+        }
+
+        // === UX ENHANCEMENTS ===
+
+        function createFieldStats(areaId) {
+            const stats = document.createElement('div');
+            stats.className = 'field-stats';
+            stats.innerHTML = `
+                <span id="wordCount-${areaId}">0 words</span>
+                <span id="typingIndicator-${areaId}" class="typing-indicator" style="display: none;">✍️ typing...</span>
+            `;
+            return stats;
+        }
+
+        function updateWordCount(areaId, content) {
+            const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+            document.getElementById(`wordCount-${areaId}`).textContent = `${wordCount} words`;
+        }
+
+        function showTypingIndicator(areaId) {
+            const indicator = document.getElementById(`typingIndicator-${areaId}`);
+            indicator.style.display = 'inline';
+            
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 1000);
+        }
+
+        function updateProgress() {
+            if (!currentEvaluation) return;
+
+            const basicInfoComplete = currentEvaluation.employeeName && currentEvaluation.reviewerName;
+            const completedAreas = currentEvaluation.feedbackAreas.filter(area => area.content.trim().length > 50);
+            const hasSummary = currentEvaluation.comprehensiveSummary && currentEvaluation.comprehensiveSummary.trim().length > 100;
+
+            let progress = 15; // Base progress for starting
+            
+            if (basicInfoComplete) progress += 15;
+            progress += (completedAreas.length / FEEDBACK_AREAS.length) * 50;
+            if (hasSummary) progress += 20;
+
+            // Update progress bar
+            document.getElementById('overallProgress').style.width = `${progress}%`;
+            document.getElementById('progressPercent').textContent = Math.round(progress);
+
+            // Update steps
+            const steps = document.querySelectorAll('.progress-step');
+            steps[0].className = basicInfoComplete ? 'progress-step completed' : 'progress-step active';
+            steps[1].className = completedAreas.length >= 3 ? 'progress-step completed' : 
+                                 completedAreas.length > 0 ? 'progress-step active' : 'progress-step pending';
+            steps[2].className = hasSummary ? 'progress-step completed' : 
+                                 completedAreas.length >= 3 ? 'progress-step active' : 'progress-step pending';
+            steps[3].className = progress >= 95 ? 'progress-step completed' : 'progress-step pending';
+
+            // Update time remaining estimate
+            const timeRemaining = Math.max(1, Math.round((100 - progress) / 10));
+            document.getElementById('timeRemaining').textContent = `${timeRemaining} min`;
+        }
+
+        function scheduleAutoSave() {
+            clearTimeout(autoSaveTimer);
+            document.getElementById('autoSaveStatus').textContent = 'Saving...';
+            
+            autoSaveTimer = setTimeout(() => {
+                if (currentEvaluation) {
+                    localStorage.setItem('draft_evaluation', JSON.stringify(currentEvaluation));
+                    document.getElementById('autoSaveStatus').textContent = 'Changes saved';
+                    showAutoSaveIndicator();
+                }
+            }, 2000);
+        }
+
+        function showAutoSaveIndicator() {
+            const indicator = document.getElementById('autoSaveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        function quickSave() {
+            if (currentEvaluation) {
+                localStorage.setItem('draft_evaluation', JSON.stringify(currentEvaluation));
+                showAutoSaveIndicator();
+            }
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            
+            const toggle = document.getElementById('darkModeToggle');
+            toggle.textContent = isDarkMode ? '☀️' : '🌙';
+        }
+
+        function toggleAIAssistant() {
+            aiAssistantEnabled = !aiAssistantEnabled;
+            const toggle = document.getElementById('aiAssistantToggle');
+            toggle.style.opacity = aiAssistantEnabled ? '1' : '0.5';
+            
+            if (aiAssistantEnabled) {
+                alert('✨ AI Writing Assistant enabled! Press Ctrl+Space in any text area for suggestions.');
+            } else {
+                alert('AI Writing Assistant disabled.');
+            }
+        }
+
+        function showAISuggestions(areaId, textarea) {
+            if (!aiAssistantEnabled) return;
+
+            const suggestions = AI_SUGGESTIONS[areaId] || [];
+            if (suggestions.length === 0) return;
+
+            // Remove existing suggestions
+            const existing = textarea.parentElement.querySelector('.ai-suggestions');
+            if (existing) existing.remove();
+
+            // Create suggestions dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'ai-suggestions';
+            dropdown.style.display = 'block';
+
+            suggestions.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.className = 'ai-suggestion';
+                item.innerHTML = `
+                    <strong>💡 Suggestion:</strong><br>
+                    ${suggestion}
+                `;
+                item.addEventListener('click', () => {
+                    const currentValue = textarea.value;
+                    const cursorPos = textarea.selectionStart;
+                    const beforeCursor = currentValue.substring(0, cursorPos);
+                    const afterCursor = currentValue.substring(cursorPos);
+                    
+                    textarea.value = beforeCursor + suggestion + afterCursor;
+                    textarea.focus();
+                    textarea.setSelectionRange(cursorPos + suggestion.length, cursorPos + suggestion.length);
+                    
+                    // Trigger input event to update everything
+                    textarea.dispatchEvent(new Event('input'));
+                    dropdown.remove();
+                });
+                dropdown.appendChild(item);
+            });
+
+            // Position and show dropdown
+            textarea.parentElement.style.position = 'relative';
+            textarea.parentElement.appendChild(dropdown);
+
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (dropdown.parentElement) {
+                    dropdown.remove();
+                }
+            }, 10000);
+        }
+
+        function exportToPDF() {
+            if (!currentEvaluation || !currentEvaluation.employeeName) {
+                alert('Please complete the basic information before exporting.');
+                return;
+            }
+
+            // Create a formatted export version
+            let exportContent = `
+PERFORMANCE EVALUATION REPORT
+============================
+
+Employee: ${currentEvaluation.employeeName}
+Reviewer: ${currentEvaluation.reviewerName}
+Period: ${currentEvaluation.reviewPeriod}
+Overall Rating: ${currentEvaluation.overallRating.toUpperCase()}
+Date: ${new Date().toLocaleDateString()}
+
+`;
+
+            currentEvaluation.feedbackAreas.forEach(area => {
+                if (area.content.trim()) {
+                    exportContent += `
+${area.name.toUpperCase()}
+${'='.repeat(area.name.length)}
+${area.content.trim()}
+
+`;
+                }
+            });
+
+            if (currentEvaluation.comprehensiveSummary) {
+                exportContent += `
+COMPREHENSIVE EVALUATION SUMMARY
+==============================
+${currentEvaluation.comprehensiveSummary}
+`;
+            }
+
+            // Create download
+            const blob = new Blob([exportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Evaluation_${currentEvaluation.employeeName.replace(/\s+/g, '_')}_${currentEvaluation.reviewPeriod}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('📄 Evaluation exported successfully!');
+        }
+
+        // Load draft on startup
+        function loadDraft() {
+            const draft = localStorage.getItem('draft_evaluation');
+            if (draft && !currentEvaluation) {
+                try {
+                    const draftData = JSON.parse(draft);
+                    if (confirm('Found a saved draft. Would you like to continue where you left off?')) {
+                        currentEvaluation = draftData;
+                        
+                        // Populate form fields
+                        if (draftData.employeeName) document.getElementById('employeeName').value = draftData.employeeName;
+                        if (draftData.reviewerName) document.getElementById('reviewerName').value = draftData.reviewerName;
+                        if (draftData.reviewPeriod) document.getElementById('reviewPeriod').value = draftData.reviewPeriod;
+                        
+                        // Populate feedback areas
+                        draftData.feedbackAreas.forEach(area => {
+                            const textarea = document.getElementById(`content-${area.id}`);
+                            if (textarea && area.content) {
+                                textarea.value = area.content;
+                                updateWordCount(area.id, area.content);
+                                performSectionBiasAnalysis(area.id, area.content);
+                            }
+                        });
+                        
+                        // Populate summary
+                        if (draftData.comprehensiveSummary) {
+                            document.getElementById('comprehensiveSummary').value = draftData.comprehensiveSummary;
+                            analyzeSummaryBias();
+                        }
+                        
+                        updateProgress();
+                    }
+                } catch (e) {
+                    console.error('Error loading draft:', e);
+                }
+            }
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            setTimeout(loadDraft, 500); // Load draft after init
+        });
+    </script>
+</body>
+</html>
