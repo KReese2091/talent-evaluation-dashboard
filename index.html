@@ -596,6 +596,162 @@
             color: #11224B;
         }
 
+        /* Floating Action Buttons */
+        .floating-action-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none; /* Hidden by default, shown in evaluation mode */
+        }
+
+        .floating-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
+            color: white;
+        }
+
+        .fab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .fab.primary {
+            background: linear-gradient(135deg, #00AFD7 0%, #0067A0 100%);
+        }
+
+        .fab.secondary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .fab.help {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        .fab.ai {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        }
+
+        .fab-tooltip {
+            position: absolute;
+            right: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .fab:hover .fab-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .fab-tooltip::after {
+            content: '';
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border: 4px solid transparent;
+            border-left-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .fab-mini {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Navigation FABs */
+        .fab-nav-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* Help Modal Styles */
+        .help-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(17, 34, 75, 0.8);
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .help-modal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(17, 34, 75, 0.3);
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .help-header {
+            background: linear-gradient(135deg, #11224B 0%, #112756 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+        }
+
+        .help-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .help-content {
+            padding: 20px;
+        }
+
+        .help-content ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .help-content li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: #333;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .container {
@@ -2764,6 +2920,7 @@
 
             // Update navigation
             updateNavigation();
+            updateFabNavigation();
             
             // Update progress indicator
             updateProgressIndicator();
@@ -3529,6 +3686,9 @@
             const employees = allEmployees.filter(emp => !emp.archived);
             const archivedEmployees = allEmployees.filter(emp => emp.archived);
             
+            // Hide floating action buttons when returning to dashboard
+            hideFloatingActions();
+            
             document.querySelector('.container').innerHTML = `
                 <div class="sidebar">
                     <div class="reviewer-info">
@@ -3783,12 +3943,43 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Floating Action Buttons -->
+                <div class="floating-action-container" id="floatingActions">
+                    <div class="floating-actions">
+                        <div class="fab-nav-group">
+                            <button class="fab fab-mini secondary" onclick="previousStep()" id="fabPrev" title="Previous Section">
+                                ←
+                                <div class="fab-tooltip">Previous</div>
+                            </button>
+                            <button class="fab fab-mini secondary" onclick="nextStep()" id="fabNext" title="Next Section">
+                                →
+                                <div class="fab-tooltip">Next</div>
+                            </button>
+                        </div>
+                        <button class="fab primary" onclick="saveEvaluation()" title="Save Progress">
+                            💾
+                            <div class="fab-tooltip">Save Progress</div>
+                        </button>
+                        <button class="fab help" onclick="showContextualHelp()" title="Get Help">
+                            ?
+                            <div class="fab-tooltip">Writing Tips</div>
+                        </button>
+                        <button class="fab ai" onclick="showAIAssistant()" title="AI Suggestions">
+                            🤖
+                            <div class="fab-tooltip">AI Writing Coach</div>
+                        </button>
+                    </div>
+                </div>
             `;
             
             // Reset to first step
             currentStep = 0;
             updateNavigation();
             updateProgressIndicator();
+            
+            // Show floating action buttons
+            showFloatingActions();
             
             // Load existing data if available
             loadEmployeeData(employee);
@@ -4577,6 +4768,144 @@
                 searchInput.value = '';
                 filterEmployees();
                 searchInput.focus();
+            }
+        }
+
+        // Floating Action Button Functions
+        function showFloatingActions() {
+            const fabContainer = document.getElementById('floatingActions');
+            if (fabContainer) {
+                fabContainer.style.display = 'block';
+                updateFabNavigation();
+            }
+        }
+
+        function hideFloatingActions() {
+            const fabContainer = document.getElementById('floatingActions');
+            if (fabContainer) {
+                fabContainer.style.display = 'none';
+            }
+        }
+
+        function updateFabNavigation() {
+            const fabPrev = document.getElementById('fabPrev');
+            const fabNext = document.getElementById('fabNext');
+            
+            if (fabPrev && fabNext) {
+                fabPrev.disabled = (currentStep === 0);
+                fabPrev.style.opacity = (currentStep === 0) ? '0.5' : '1';
+                
+                fabNext.innerHTML = (currentStep === totalSteps - 1) ? '✓' : '→';
+                fabNext.querySelector('.fab-tooltip').textContent = (currentStep === totalSteps - 1) ? 'Complete' : 'Next';
+            }
+        }
+
+        function showContextualHelp() {
+            const helpContent = getContextualHelp(currentStep);
+            showHelpModal(helpContent);
+        }
+
+        function getContextualHelp(step) {
+            const helpTexts = {
+                0: {
+                    title: "Basic Information & Overall Rating",
+                    tips: [
+                        "Select the overall performance rating that best represents the employee's performance",
+                        "Consider all aspects of performance when choosing the rating",
+                        "Use 'Exemplary' for exceptional performance that exceeds expectations",
+                        "Use 'Successful' for solid performance that meets expectations",
+                        "Use 'Opportunity' when improvement is needed in key areas"
+                    ]
+                },
+                1: {
+                    title: "Key Priorities", 
+                    tips: [
+                        "Focus on the most important goals and objectives",
+                        "Be specific about what was accomplished vs. what was expected",
+                        "Include measurable results when possible",
+                        "Consider both individual and team contributions"
+                    ]
+                },
+                2: {
+                    title: "Results & Impact",
+                    tips: [
+                        "Highlight concrete achievements and outcomes",
+                        "Quantify impact with numbers, percentages, or metrics when available",
+                        "Describe how their work contributed to team/organizational success",
+                        "Include both short-term wins and long-term value creation"
+                    ]
+                },
+                3: {
+                    title: "Collaboration & Influence",
+                    tips: [
+                        "Assess how well they work with others across different teams",
+                        "Consider their communication style and effectiveness",
+                        "Note examples of leadership, mentoring, or positive influence",
+                        "Evaluate their ability to build relationships and partnerships"
+                    ]
+                },
+                4: {
+                    title: "Growth & Development",
+                    tips: [
+                        "Identify skills they've developed during this period",
+                        "Note areas where they've shown improvement or learning",
+                        "Consider their openness to feedback and change",
+                        "Assess their initiative in seeking development opportunities"
+                    ]
+                },
+                5: {
+                    title: "Looking Ahead",
+                    tips: [
+                        "Set clear, achievable goals for the next period",
+                        "Focus on 2-3 key development areas",
+                        "Make goals specific and measurable when possible",
+                        "Consider both skill development and career growth opportunities"
+                    ]
+                },
+                6: {
+                    title: "Comprehensive Summary",
+                    tips: [
+                        "Provide a balanced overview of performance",
+                        "Highlight key strengths and accomplishments",
+                        "Address areas for continued growth",
+                        "End with encouragement and support for future success"
+                    ]
+                }
+            };
+            
+            return helpTexts[step] || helpTexts[0];
+        }
+
+        function showHelpModal(helpContent) {
+            const modalHTML = `
+                <div class="help-modal-overlay" onclick="closeHelpModal()">
+                    <div class="help-modal" onclick="event.stopPropagation()">
+                        <div class="help-header">
+                            <h3>💡 Writing Tips: ${helpContent.title}</h3>
+                            <button class="close-btn" onclick="closeHelpModal()">×</button>
+                        </div>
+                        <div class="help-content">
+                            <ul>
+                                ${helpContent.tips.map(tip => `<li>${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function closeHelpModal() {
+            const modal = document.querySelector('.help-modal-overlay');
+            if (modal) modal.remove();
+        }
+
+        function showAIAssistant() {
+            // Show existing AI Writing Coach - find the coach panel and make it visible
+            const coachPanel = document.querySelector('.ai-coach-panel');
+            if (coachPanel) {
+                coachPanel.style.display = coachPanel.style.display === 'none' ? 'block' : 'none';
             }
         }
 
