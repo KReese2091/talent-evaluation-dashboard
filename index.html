@@ -496,10 +496,22 @@
         .btn-primary {
             background: #0067A0;
             color: white;
+            transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
             background: #00358E;
+        }
+
+        .btn-primary.step-ready {
+            background: #00AFD7 !important;
+            box-shadow: 0 2px 8px rgba(0, 175, 215, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary.step-ready:hover {
+            background: #0096b8 !important;
+            transform: scale(1.05);
         }
 
         .btn-outline {
@@ -4454,33 +4466,25 @@
                     
                     // Auto-save after short delay
                     setTimeout(saveEmployeeEvaluation, 300);
-                    
-                    // Intelligent backend navigation - check for step completion
-                    setTimeout(() => {
-                        checkForAutoAdvancement(event.target);
-                    }, 1500);
                 });
 
-                // Also check on blur (when user finishes with a field)
+                // Also save on blur (when user finishes with a field)
                 input.addEventListener('blur', (event) => {
                     // Don't process blur events while loading employee data
                     if (window.loadingEmployeeData) return;
                     
-                    setTimeout(() => {
-                        checkForAutoAdvancement(event.target);
-                    }, 800);
+                    // Just save the data, no auto-advancement
+                    setTimeout(saveEmployeeEvaluation, 300);
                 });
             });
         }
 
-        // Backend logic to automatically advance steps when content is sufficient
+        // Backend logic to check step completion (auto-advancement disabled)
         function checkForAutoAdvancement(triggerElement) {
-            // Don't auto-advance while loading employee data
+            // Auto-advancement is disabled - users must click "Next" button
+            // This function now only performs validation and saves data
+            
             if (window.loadingEmployeeData) return;
-            
-            // Prevent multiple auto-advancement calls
-            if (autoAdvancementInProgress) return;
-            
             if (!triggerElement || !currentEmployee || !reviewerData[currentReviewer]) return;
 
             const employee = reviewerData[currentReviewer].employees[currentEmployee];
@@ -4489,30 +4493,17 @@
             const data = employee.evaluationData;
             const stepComplete = checkCurrentStepCompletion(data);
 
-            if (stepComplete && currentStep < totalSteps - 1) {
-                const nextStep = currentStep + 1;
-                console.log(`Backend Navigation: Auto-advancing from step ${currentStep + 1} to ${nextStep + 1}`);
+            // Only log completion status, no auto-advancement
+            if (stepComplete) {
+                console.log(`Step ${currentStep + 1} is complete. User must click "Next" to proceed.`);
                 
-                // Validate the next step before advancing
-                if (nextStep >= totalSteps) {
-                    console.error(`Auto-advancement prevented: next step ${nextStep} exceeds total steps ${totalSteps}`);
-                    return;
+                // Optional: Show a subtle indicator that the step is ready to advance
+                const nextBtn = document.getElementById('nextBtn');
+                if (nextBtn && !nextBtn.classList.contains('step-ready')) {
+                    nextBtn.classList.add('step-ready');
+                    nextBtn.style.backgroundColor = '#00AFD7';
+                    nextBtn.style.transform = 'scale(1.02)';
                 }
-                
-                // Set flag to prevent multiple calls
-                autoAdvancementInProgress = true;
-                
-                // Show progression notification
-                showStepProgressNotification(currentStep, nextStep);
-                
-                // Advance to next step after brief delay
-                setTimeout(() => {
-                    goToStep(nextStep);
-                    // Reset flag after advancement
-                    setTimeout(() => {
-                        autoAdvancementInProgress = false;
-                    }, 500);
-                }, 1000);
             }
         }
 
