@@ -4491,7 +4491,7 @@
             doc.setFont(undefined, 'normal');
             yPos = 50;
             
-            doc.text(`Reviewer: ${reviewer.name}`, marginX, yPos);
+            doc.text(`Reviewer: ${reviewer.name.replace(/[^\x00-\x7F]/g, '')}`, marginX, yPos);
             yPos += 8;
             doc.text(`Generated: ${new Date().toLocaleDateString()}`, marginX, yPos);
             yPos += 8;
@@ -4578,8 +4578,8 @@
                 const status = emp.status.charAt(0).toUpperCase() + emp.status.slice(1).replace('-', ' ');
                 
                 doc.setTextColor(0, 0, 0);
-                doc.text(emp.name.substring(0, 22), marginX + 5, yPos + 3);
-                doc.text(emp.position.substring(0, 18), marginX + 60, yPos + 3);
+                doc.text(emp.name.replace(/[^\x00-\x7F]/g, '').substring(0, 22), marginX + 5, yPos + 3);
+                doc.text(emp.position.replace(/[^\x00-\x7F]/g, '').substring(0, 18), marginX + 60, yPos + 3);
                 
                 // Status with color coding
                 if (emp.status === 'completed') doc.setTextColor(40, 167, 69);
@@ -5151,7 +5151,7 @@
             doc.setFont(undefined, 'normal');
             yPos = 50;
             
-            doc.text(`Reviewer: ${reviewer.name}`, marginX, yPos);
+            doc.text(`Reviewer: ${reviewer.name.replace(/[^\x00-\x7F]/g, '')}`, marginX, yPos);
             yPos += 8;
             doc.text(`Export Date: ${new Date().toLocaleDateString()}`, marginX, yPos);
             yPos += 8;
@@ -5173,12 +5173,12 @@
                 doc.setFontSize(14);
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor(0, 67, 160);
-                doc.text(`${index + 1}. ${employee.name}`, marginX, yPos);
+                doc.text(`${index + 1}. ${employee.name.replace(/[^\x00-\x7F]/g, '')}`, marginX, yPos);
                 
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'normal');
                 doc.setTextColor(0, 0, 0);
-                doc.text(`Position: ${employee.position}`, marginX, yPos + 8);
+                doc.text(`Position: ${employee.position.replace(/[^\x00-\x7F]/g, '')}`, marginX, yPos + 8);
                 
                 // Status and rating
                 const status = employee.status.charAt(0).toUpperCase() + employee.status.slice(1).replace('-', ' ');
@@ -5213,8 +5213,11 @@
                             
                             doc.setFont(undefined, 'normal');
                             
+                            // Clean content to remove problematic characters for PDF
+                            const cleanContent = content.replace(/[^\x00-\x7F]/g, ''); // Remove non-ASCII characters
+                            
                             // Split long text into multiple lines
-                            const lines = doc.splitTextToSize(content, pageWidth - marginX - 30);
+                            const lines = doc.splitTextToSize(cleanContent, pageWidth - marginX - 30);
                             lines.forEach(line => {
                                 if (yPos > 280) {
                                     doc.addPage();
@@ -5229,13 +5232,13 @@
                 } else if (employee.status === 'in-progress') {
                     doc.setFontSize(10);
                     doc.setTextColor(255, 193, 7);
-                    doc.text('⚠️ Evaluation in progress - partial data only', marginX + 5, yPos);
+                    doc.text('WARNING: Evaluation in progress - partial data only', marginX + 5, yPos);
                     yPos += 8;
                     doc.setTextColor(0, 0, 0);
                 } else {
                     doc.setFontSize(10);
                     doc.setTextColor(220, 53, 69);
-                    doc.text('❌ Evaluation not started', marginX + 5, yPos);
+                    doc.text('INCOMPLETE: Evaluation not started', marginX + 5, yPos);
                     yPos += 8;
                     doc.setTextColor(0, 0, 0);
                 }
