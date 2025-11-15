@@ -5930,40 +5930,6 @@
                                 </div>
                             </div>
 
-                            <!-- Team Roster & Individual Insights -->
-                            <div class="insights-section">
-                                <div class="section-header">
-                                    <span class="section-icon">👥</span>
-                                    <h3>Team Roster & Individual Performance</h3>
-                                </div>
-                                <div class="team-roster-grid">
-                                    ${insights.teamRoster.map(employee => `
-                                        <div class="employee-card ${employee.ratingClass}">
-                                            <div class="employee-header">
-                                                <div class="employee-name">${employee.name}</div>
-                                                <div class="employee-status ${employee.status}">${employee.statusDisplay}</div>
-                                            </div>
-                                            <div class="employee-rating">
-                                                <span class="rating-label">Overall Rating:</span>
-                                                <span class="rating-badge ${employee.ratingClass}">${employee.ratingDisplay}</span>
-                                            </div>
-                                            ${employee.highlights ? `
-                                                <div class="employee-highlights">
-                                                    <div class="highlights-title">Key Highlights:</div>
-                                                    <div class="highlights-content">${employee.highlights}</div>
-                                                </div>
-                                            ` : ''}
-                                            ${employee.developmentAreas ? `
-                                                <div class="employee-development">
-                                                    <div class="development-title">Development Focus:</div>
-                                                    <div class="development-content">${employee.developmentAreas}</div>
-                                                </div>
-                                            ` : ''}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-
                             <!-- Performance Patterns -->
                             <div class="insights-section chart-section">
                                 <div class="section-header">
@@ -6233,9 +6199,8 @@
             // Anomaly Detection Analysis
             const anomalyDetection = analyzeAnomalyPatterns(employees, completedEmployees, ratingDistribution, biasAnalysis);
             
-            // Executive Summary and Team Roster
+            // Executive Summary
             const executiveSummary = generateExecutiveSummary(employees, completedEmployees, ratingDistribution);
-            const teamRoster = generateTeamRoster(employees);
             
             return {
                 performancePatterns,
@@ -6247,7 +6212,6 @@
                 anomalyRiskScore: anomalyDetection.riskScore,
                 anomalyRiskLevel: anomalyDetection.riskLevel,
                 executiveSummary,
-                teamRoster,
                 completedCount: completedEmployees.length,
                 overallBiasScore: Math.round(biasAnalysis.reduce((sum, bias) => sum + bias.score, 0) / biasAnalysis.length)
             };
@@ -6617,73 +6581,7 @@
             return { topStrength };
         }
 
-        function generateTeamRoster(employees) {
-            return employees.map(employee => {
-                const isCompleted = employee.status === 'completed';
-                const rating = employee.evaluationData?.overallRating;
-                
-                let statusDisplay = '';
-                let ratingDisplay = 'Not Rated';
-                let ratingClass = 'not-rated';
-                
-                // Status display
-                switch (employee.status) {
-                    case 'completed':
-                        statusDisplay = '✓ Complete';
-                        break;
-                    case 'in-progress':
-                        statusDisplay = '⏱ In Progress';
-                        break;
-                    default:
-                        statusDisplay = '○ Not Started';
-                        break;
-                }
-                
-                // Rating display and class
-                if (rating) {
-                    ratingDisplay = rating.charAt(0).toUpperCase() + rating.slice(1);
-                    ratingClass = rating;
-                }
-                
-                // Generate highlights from evaluation data
-                let highlights = '';
-                let developmentAreas = '';
-                
-                if (isCompleted && employee.evaluationData?.sections) {
-                    const sections = employee.evaluationData.sections;
-                    
-                    // Extract key highlights from feedback
-                    const feedbackTexts = [
-                        sections.keyPriorities?.feedback,
-                        sections.resultsImpact?.feedback,
-                        sections.collaboration?.feedback,
-                        sections.growthDevelopment?.feedback,
-                        sections.lookingAhead?.feedback
-                    ].filter(text => text && text.length > 50);
-                    
-                    if (feedbackTexts.length > 0) {
-                        // Find the most substantial piece of feedback
-                        const longestFeedback = feedbackTexts.reduce((a, b) => a.length > b.length ? a : b);
-                        highlights = longestFeedback.substring(0, 150) + (longestFeedback.length > 150 ? '...' : '');
-                    }
-                    
-                    // Development areas for opportunity ratings
-                    if (rating === 'opportunity' && sections.growthDevelopment?.feedback) {
-                        developmentAreas = sections.growthDevelopment.feedback.substring(0, 120) + (sections.growthDevelopment.feedback.length > 120 ? '...' : '');
-                    }
-                }
-                
-                return {
-                    name: employee.name,
-                    status: employee.status,
-                    statusDisplay,
-                    ratingDisplay,
-                    ratingClass,
-                    highlights: highlights || null,
-                    developmentAreas: developmentAreas || null
-                };
-            });
-        }
+
         
         function generateRecommendations(employees, ratingDistribution, biasAnalysis, contentQuality) {
             const recommendations = [];
