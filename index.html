@@ -2227,11 +2227,59 @@
             transform: translateY(0) !important;
         }
         
-        /* Ensure Content Quality tooltip is above modal overlay */
-        .modal.show ~ * #help-quality.help-tooltip.show,
-        .modal.show + * #help-quality.help-tooltip.show {
-            z-index: 9999999 !important;
+        /* Global tooltip container - outside modal DOM */
+        #global-tooltip-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10000000;
+        }
+        
+        .global-tooltip {
             position: fixed !important;
+            pointer-events: auto;
+            background: white;
+            border: 2px solid #0073CE;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            width: 300px;
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 10000001 !important;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        
+        .global-tooltip.show {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .global-tooltip::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            left: var(--arrow-position, 20px);
+        }
+        
+        .global-tooltip[style*="--arrow-direction: down"]::before {
+            bottom: -8px;
+            border-top: 8px solid #0073CE;
+            border-bottom: none;
+        }
+        
+        .global-tooltip[style*="--arrow-direction: up"]::before {
+            top: -8px;
+            border-bottom: 8px solid #0073CE;
+            border-top: none;
         }
 
         .help-tooltip::before {
@@ -6397,6 +6445,84 @@
             }
         }
 
+        // Global tooltip functions for problematic tooltips
+        function toggleGlobalHelp(helpId, buttonElement) {
+            const globalTooltip = document.getElementById(helpId + '-global');
+            if (!globalTooltip) return;
+            
+            const isShowing = globalTooltip.classList.contains('show');
+            
+            // Close all other tooltips first
+            closeAllHelp();
+            
+            if (!isShowing) {
+                // Calculate position relative to the button
+                const buttonRect = buttonElement.getBoundingClientRect();
+                const tooltipWidth = 300;
+                const tooltipHeight = 350;
+                
+                // Position above the button with some margin
+                let top = buttonRect.top - tooltipHeight - 20;
+                let left = buttonRect.left;
+                
+                // Adjust if tooltip would go off screen
+                if (top < 20) {
+                    top = buttonRect.bottom + 20; // Position below if no room above
+                }
+                
+                if (left + tooltipWidth > window.innerWidth - 20) {
+                    left = window.innerWidth - tooltipWidth - 20; // Adjust if too far right
+                }
+                
+                if (left < 20) {
+                    left = 20; // Ensure it's not off the left edge
+                }
+                
+                // Apply calculated position
+                globalTooltip.style.top = top + 'px';
+                globalTooltip.style.left = left + 'px';
+                
+                // Position the arrow
+                const arrowOffset = buttonRect.left - left + (buttonRect.width / 2);
+                const arrow = globalTooltip.querySelector('::before');
+                if (top === buttonRect.bottom + 20) {
+                    // Arrow pointing up (tooltip is below button)
+                    globalTooltip.style.setProperty('--arrow-position', arrowOffset + 'px');
+                    globalTooltip.style.setProperty('--arrow-direction', 'up');
+                } else {
+                    // Arrow pointing down (tooltip is above button)  
+                    globalTooltip.style.setProperty('--arrow-position', arrowOffset + 'px');
+                    globalTooltip.style.setProperty('--arrow-direction', 'down');
+                }
+                
+                // Show the tooltip
+                globalTooltip.classList.add('show');
+                console.log('Global tooltip shown for:', helpId, 'at position:', {top, left});
+            }
+        }
+        
+        function closeGlobalHelp(helpId) {
+            const globalTooltip = document.getElementById(helpId + '-global');
+            if (globalTooltip) {
+                globalTooltip.classList.remove('show');
+                console.log('Global tooltip closed for:', helpId);
+            }
+        }
+        
+        function closeAllHelp() {
+            // Close regular tooltips
+            const tooltips = document.querySelectorAll('.help-tooltip');
+            tooltips.forEach(tooltip => {
+                tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
+            });
+            
+            // Close global tooltips
+            const globalTooltips = document.querySelectorAll('.global-tooltip');
+            globalTooltips.forEach(tooltip => {
+                tooltip.classList.remove('show');
+            });
+        }
+
         function initializeHelpTooltips() {
             // Remove any existing event listeners to prevent duplicates
             const existingListener = document.helpTooltipListener;
@@ -6406,9 +6532,16 @@
             
             // Create new click outside handler
             const clickOutsideHandler = function(event) {
-                if (!event.target.closest('.help-button') && !event.target.closest('.help-tooltip')) {
+                if (!event.target.closest('.help-button') && 
+                    !event.target.closest('.help-tooltip') && 
+                    !event.target.closest('.global-tooltip')) {
+                    // Close regular tooltips
                     document.querySelectorAll('.help-tooltip').forEach(tooltip => {
                         tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
+                    });
+                    // Close global tooltips
+                    document.querySelectorAll('.global-tooltip').forEach(tooltip => {
+                        tooltip.classList.remove('show');
                     });
                 }
             };
@@ -6550,18 +6683,8 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Content Quality Trends</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-quality')" title="Learn more about Content Quality">?</button>
-                                    <div class="help-tooltip" id="help-quality">
-                                        <button class="help-close" onclick="closeHelp('help-quality')">&times;</button>
-                                        <h4>Content Quality Trends</h4>
-                                        <p>Measures the quality and depth of evaluation content across different metrics.</p>
-                                        <ul>
-                                            <li><strong>Objectivity:</strong> How fact-based vs. opinion-based the evaluations are</li>
-                                            <li><strong>Specificity:</strong> Level of detail and concrete examples provided</li>
-                                            <li><strong>Completion Rate:</strong> Percentage of fully completed evaluation sections</li>
-                                            <li><strong>Trends:</strong> Arrows show improvement (↑) or decline (↓) over time</li>
-                                        </ul>
-                                    </div>
+                                    <button class="help-button" id="help-quality-button" onclick="toggleGlobalHelp('help-quality', this)" title="Learn more about Content Quality">?</button>
+                                    <!-- Original tooltip removed - now using global tooltip -->
                                 </div>
                                 <div class="pattern-grid">
                                     <div class="pattern-card">
@@ -7991,5 +8114,21 @@
             initializeReviewerSystem();
         });
     </script>
+    
+    <!-- Global tooltip container for problematic tooltips -->
+    <div id="global-tooltip-container">
+        <!-- Content Quality Trends tooltip moved outside modal -->
+        <div class="help-tooltip global-tooltip" id="help-quality-global" style="display: none;">
+            <button class="help-close" onclick="closeGlobalHelp('help-quality')">&times;</button>
+            <h4>Content Quality Trends</h4>
+            <p>Measures the quality and depth of evaluation content across different metrics.</p>
+            <ul>
+                <li><strong>Objectivity:</strong> How fact-based vs. opinion-based the evaluations are</li>
+                <li><strong>Specificity:</strong> Level of detail and concrete examples provided</li>
+                <li><strong>Completion Rate:</strong> Percentage of fully completed evaluation sections</li>
+                <li><strong>Trends:</strong> Arrows show improvement (↑) or decline (↓) over time</li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
