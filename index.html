@@ -2433,6 +2433,189 @@
         #prevBtn, #nextBtn, .step-info, #stepInfo {
             display: block !important;
         }
+
+        /* Executive Summary Styles */
+        .executive-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .summary-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .key-insight {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ffd700;
+            font-style: italic;
+        }
+
+        .action-items {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .action-items h4 {
+            margin: 0 0 0.5rem 0;
+            color: #ffd700;
+        }
+
+        .action-items ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+        .action-items li {
+            margin-bottom: 0.3rem;
+            line-height: 1.4;
+        }
+
+        /* Team Roster Styles */
+        .team-roster {
+            margin-bottom: 2rem;
+        }
+
+        .roster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .employee-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .employee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .employee-status {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .employee-rating {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .employee-rating.exemplary {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .employee-rating.successful {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        .employee-rating.opportunity {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #333;
+        }
+
+        .employee-rating.not-rated {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #dee2e6;
+        }
+
+        .employee-highlights {
+            margin-top: 1rem;
+        }
+
+        .employee-highlights h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9em;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .employee-highlights p {
+            margin: 0;
+            font-size: 0.9em;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .development-areas {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #fff3cd;
+            border-radius: 6px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .development-areas h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9em;
+            color: #856404;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .development-areas p {
+            margin: 0;
+            font-size: 0.85em;
+            line-height: 1.4;
+            color: #856404;
+        }
     </style>
 </head>
 <body>
@@ -5409,6 +5592,70 @@
                         </div>
                         
                         <div class="analytics-container">
+                            <!-- Executive Summary -->
+                            <div class="insights-section">
+                                <h3>📋 Executive Summary</h3>
+                                <div class="executive-summary">
+                                    <div class="summary-card">
+                                        <div class="summary-header">Team Overview</div>
+                                        <div class="summary-content">
+                                            <p><strong>${reviewer.name}'s Team</strong> consists of ${activeEmployees.length} direct reports with ${insights.completedCount} evaluations completed (${Math.round((insights.completedCount / activeEmployees.length) * 100)}% completion rate).</p>
+                                            <div class="summary-highlights">
+                                                ${insights.executiveSummary.highlights.map(highlight => `
+                                                    <div class="highlight-item">
+                                                        <span class="highlight-icon">${highlight.icon}</span>
+                                                        <span>${highlight.text}</span>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="summary-card">
+                                        <div class="summary-header">Key Insights</div>
+                                        <div class="summary-content">
+                                            <p>${insights.executiveSummary.keyInsight}</p>
+                                            <div class="action-items">
+                                                <strong>Priority Actions:</strong>
+                                                <ul>
+                                                    ${insights.executiveSummary.actionItems.map(item => `<li>${item}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Team Roster & Individual Insights -->
+                            <div class="insights-section">
+                                <h3>👥 Team Roster & Individual Performance</h3>
+                                <div class="team-roster-grid">
+                                    ${insights.teamRoster.map(employee => `
+                                        <div class="employee-card ${employee.ratingClass}">
+                                            <div class="employee-header">
+                                                <div class="employee-name">${employee.name}</div>
+                                                <div class="employee-status ${employee.status}">${employee.statusDisplay}</div>
+                                            </div>
+                                            <div class="employee-rating">
+                                                <span class="rating-label">Overall Rating:</span>
+                                                <span class="rating-badge ${employee.ratingClass}">${employee.ratingDisplay}</span>
+                                            </div>
+                                            ${employee.highlights ? `
+                                                <div class="employee-highlights">
+                                                    <div class="highlights-title">Key Highlights:</div>
+                                                    <div class="highlights-content">${employee.highlights}</div>
+                                                </div>
+                                            ` : ''}
+                                            ${employee.developmentAreas ? `
+                                                <div class="employee-development">
+                                                    <div class="development-title">Development Focus:</div>
+                                                    <div class="development-content">${employee.developmentAreas}</div>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
                             <!-- Performance Patterns -->
                             <div class="insights-section">
                                 <h3>🎯 Performance Patterns</h3>
@@ -5636,6 +5883,10 @@
             // Anomaly Detection Analysis
             const anomalyDetection = analyzeAnomalyPatterns(employees, completedEmployees, ratingDistribution, biasAnalysis);
             
+            // Executive Summary and Team Roster
+            const executiveSummary = generateExecutiveSummary(employees, completedEmployees, ratingDistribution);
+            const teamRoster = generateTeamRoster(employees);
+            
             return {
                 performancePatterns,
                 ratingDistribution,
@@ -5646,6 +5897,9 @@
                 anomalyDetection: anomalyDetection.anomalies,
                 anomalyRiskScore: anomalyDetection.riskScore,
                 anomalyRiskLevel: anomalyDetection.riskLevel,
+                executiveSummary,
+                teamRoster,
+                completedCount: completedEmployees.length,
                 overallBiasScore: Math.round(biasAnalysis.reduce((sum, bias) => sum + bias.score, 0) / biasAnalysis.length)
             };
         }
@@ -5892,6 +6146,131 @@
             const variance = ratings.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / ratings.length;
             
             return variance;
+        }
+
+        function generateExecutiveSummary(allEmployees, completedEmployees, ratingDistribution) {
+            const completionRate = Math.round((completedEmployees.length / allEmployees.length) * 100);
+            const topPerformers = completedEmployees.filter(emp => emp.evaluationData?.overallRating === 'exemplary');
+            const developmentNeeds = completedEmployees.filter(emp => emp.evaluationData?.overallRating === 'opportunity');
+            
+            const highlights = [];
+            
+            // Completion status highlight
+            if (completionRate >= 80) {
+                highlights.push({ icon: '✅', text: `${completionRate}% evaluation completion rate` });
+            } else if (completionRate >= 50) {
+                highlights.push({ icon: '⚠️', text: `${completionRate}% completion rate - in progress` });
+            } else {
+                highlights.push({ icon: '🔄', text: `${completionRate}% completion rate - needs attention` });
+            }
+            
+            // Performance distribution highlight
+            if (topPerformers.length > 0) {
+                highlights.push({ icon: '🌟', text: `${topPerformers.length} exemplary performer${topPerformers.length !== 1 ? 's' : ''}` });
+            }
+            
+            if (developmentNeeds.length > 0) {
+                highlights.push({ icon: '📈', text: `${developmentNeeds.length} team member${developmentNeeds.length !== 1 ? 's' : ''} with development opportunities` });
+            }
+            
+            // Generate key insight
+            let keyInsight = '';
+            if (ratingDistribution.exemplary.percentage > 40) {
+                keyInsight = 'The team demonstrates strong performance with multiple high achievers. Focus on leadership development and stretch assignments to maximize potential.';
+            } else if (ratingDistribution.opportunity.percentage > 30) {
+                keyInsight = 'Significant development opportunities identified across the team. Prioritize targeted coaching and skill-building initiatives.';
+            } else {
+                keyInsight = 'The team shows balanced performance distribution. Continue supporting individual growth while maintaining current standards.';
+            }
+            
+            // Generate action items
+            const actionItems = [];
+            if (completionRate < 100) {
+                actionItems.push('Complete remaining evaluations to ensure comprehensive team assessment');
+            }
+            if (topPerformers.length > 0) {
+                actionItems.push('Develop retention and advancement plans for top performers');
+            }
+            if (developmentNeeds.length > 0) {
+                actionItems.push('Create individualized development plans with specific goals and timelines');
+            }
+            if (actionItems.length === 0) {
+                actionItems.push('Monitor ongoing performance and maintain regular feedback cycles');
+            }
+            
+            return {
+                highlights,
+                keyInsight,
+                actionItems
+            };
+        }
+
+        function generateTeamRoster(employees) {
+            return employees.map(employee => {
+                const isCompleted = employee.status === 'completed';
+                const rating = employee.evaluationData?.overallRating;
+                
+                let statusDisplay = '';
+                let ratingDisplay = 'Not Rated';
+                let ratingClass = 'not-rated';
+                
+                // Status display
+                switch (employee.status) {
+                    case 'completed':
+                        statusDisplay = '✓ Complete';
+                        break;
+                    case 'in-progress':
+                        statusDisplay = '⏱ In Progress';
+                        break;
+                    default:
+                        statusDisplay = '○ Not Started';
+                        break;
+                }
+                
+                // Rating display and class
+                if (rating) {
+                    ratingDisplay = rating.charAt(0).toUpperCase() + rating.slice(1);
+                    ratingClass = rating;
+                }
+                
+                // Generate highlights from evaluation data
+                let highlights = '';
+                let developmentAreas = '';
+                
+                if (isCompleted && employee.evaluationData?.sections) {
+                    const sections = employee.evaluationData.sections;
+                    
+                    // Extract key highlights from feedback
+                    const feedbackTexts = [
+                        sections.keyPriorities?.feedback,
+                        sections.resultsImpact?.feedback,
+                        sections.collaboration?.feedback,
+                        sections.growthDevelopment?.feedback,
+                        sections.lookingAhead?.feedback
+                    ].filter(text => text && text.length > 50);
+                    
+                    if (feedbackTexts.length > 0) {
+                        // Find the most substantial piece of feedback
+                        const longestFeedback = feedbackTexts.reduce((a, b) => a.length > b.length ? a : b);
+                        highlights = longestFeedback.substring(0, 150) + (longestFeedback.length > 150 ? '...' : '');
+                    }
+                    
+                    // Development areas for opportunity ratings
+                    if (rating === 'opportunity' && sections.growthDevelopment?.feedback) {
+                        developmentAreas = sections.growthDevelopment.feedback.substring(0, 120) + (sections.growthDevelopment.feedback.length > 120 ? '...' : '');
+                    }
+                }
+                
+                return {
+                    name: employee.name,
+                    status: employee.status,
+                    statusDisplay,
+                    ratingDisplay,
+                    ratingClass,
+                    highlights: highlights || null,
+                    developmentAreas: developmentAreas || null
+                };
+            });
         }
         
         function generateRecommendations(employees, ratingDistribution, biasAnalysis, contentQuality) {
