@@ -1705,81 +1705,153 @@
             opacity: 1;
         }
 
-        /* Analytics & Insights Styles */
+        /* Enhanced Analytics & Insights Styles with Sam's Club Branding */
         .analytics-container {
             display: grid;
-            gap: 20px;
-            padding: 20px;
+            gap: 24px;
+            padding: 24px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            margin: 0 auto;
+            max-width: 1200px;
         }
 
         .insights-section {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 16px rgba(0, 115, 206, 0.08);
+            border: 1px solid rgba(0, 115, 206, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insights-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0073CE 0%, #FFC220 100%);
+        }
+
+        .insights-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 115, 206, 0.12);
         }
 
         .insights-section h3 {
-            margin: 0 0 15px 0;
-            color: #11224B;
-            font-size: 18px;
-            border-bottom: 2px solid #00AFD7;
-            padding-bottom: 8px;
+            margin: 0 0 20px 0;
+            color: #0073CE;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 194, 32, 0.2);
+        }
+
+        .insights-section h3::before {
+            content: '';
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(135deg, #0073CE, #FFC220);
+            border-radius: 3px;
         }
 
         .pattern-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 16px;
         }
 
         .pattern-card {
-            background: #f8f9fa;
-            border-radius: 6px;
-            padding: 15px;
-            border-left: 4px solid #00AFD7;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #0073CE;
+            box-shadow: 0 3px 12px rgba(0, 115, 206, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(0, 115, 206, 0.1);
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 115, 206, 0.15);
+            border-left-color: #FFC220;
         }
 
         .pattern-card.warning {
-            border-left-color: #ffc107;
-            background: #fff9e6;
+            border-left-color: #FFC220;
+            background: linear-gradient(145deg, #fffcf0 0%, #fff8e1 100%);
+            border-color: rgba(255, 194, 32, 0.2);
         }
 
         .pattern-card.alert {
             border-left-color: #dc3545;
-            background: #ffeaea;
+            background: linear-gradient(145deg, #fff5f5 0%, #ffeaea 100%);
+            border-color: rgba(220, 53, 69, 0.2);
         }
 
         .pattern-title {
-            font-weight: 600;
-            color: #11224B;
-            margin-bottom: 8px;
+            font-weight: 700;
+            color: #0073CE;
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .pattern-description {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
+            color: #495057;
+            margin-bottom: 14px;
+            line-height: 1.5;
         }
 
         .pattern-data {
-            font-size: 13px;
-            color: #444;
+            font-size: 14px;
+            color: #212529;
+            font-weight: 500;
         }
 
         .insight-metric {
             display: inline-block;
-            background: #e3f2fd;
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin: 2px;
-            font-weight: 500;
+            background: linear-gradient(135deg, #0073CE 0%, #004c87 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0, 115, 206, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .insight-metric:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 115, 206, 0.4);
+        }
+
+        .insight-metric.secondary {
+            background: linear-gradient(135deg, #FFC220 0%, #e6a800 100%);
+            color: #1a1a1a;
         }
 
         .rating-distribution {
             display: flex;
-            gap: 10px;
-            margin: 15px 0;
+            gap: 16px;
+            margin: 20px 0;
+            padding: 16px;
+            background: rgba(0, 115, 206, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 115, 206, 0.1);
         }
 
         .rating-bar {
@@ -1788,48 +1860,73 @@
         }
 
         .rating-bar-fill {
-            height: 40px;
-            border-radius: 4px;
+            height: 48px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 600;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .rating-bar-fill.exemplary { background: #28a745; }
-        .rating-bar-fill.successful { background: #00AFD7; }
-        .rating-bar-fill.opportunity { background: #ffc107; color: #333; }
+        .rating-bar-fill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .rating-bar-fill.exemplary { 
+            background: linear-gradient(135deg, #0073CE 0%, #004c87 100%); 
+        }
+        .rating-bar-fill.successful { 
+            background: linear-gradient(135deg, #00AFD7 0%, #0073CE 100%); 
+        }
+        .rating-bar-fill.opportunity { 
+            background: linear-gradient(135deg, #FFC220 0%, #e6a800 100%); 
+            color: #1a1a1a; 
+        }
 
         .bias-heatmap {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 115, 206, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 115, 206, 0.1);
         }
 
         .bias-indicator {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 6px;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
             text-align: center;
-            border: 2px solid #e9ecef;
+            border: 2px solid rgba(0, 115, 206, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 115, 206, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .bias-indicator:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 115, 206, 0.12);
         }
 
         .bias-indicator.high {
             border-color: #dc3545;
-            background: #ffeaea;
+            background: linear-gradient(145deg, #fff5f5 0%, #ffeaea 100%);
         }
 
         .bias-indicator.medium {
-            border-color: #ffc107;
-            background: #fff9e6;
+            border-color: #FFC220;
+            background: linear-gradient(145deg, #fffcf0 0%, #fff8e1 100%);
         }
 
         .bias-indicator.low {
-            border-color: #28a745;
-            background: #eafaf1;
+            border-color: #0073CE;
+            background: linear-gradient(145deg, #f0f8ff 0%, #e3f2fd 100%);
         }
 
         .trend-chart {
@@ -1875,12 +1972,30 @@
 
         .anomaly-card {
             background: white;
-            border-radius: 6px;
-            padding: 20px;
-            border-left: 4px solid #e0e6ed;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e0e6ed;
-            transition: all 0.2s ease;
+            border-radius: 12px;
+            padding: 24px;
+            border-left: 5px solid #e0e6ed;
+            box-shadow: 0 4px 16px rgba(0, 115, 206, 0.08);
+            border: 1px solid rgba(0, 115, 206, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .anomaly-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0073CE 0%, #FFC220 100%);
+            opacity: 0.6;
+        }
+
+        .anomaly-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 115, 206, 0.15);
         }
 
         .anomaly-card.high {
@@ -1891,14 +2006,14 @@
 
         .anomaly-card.medium {
             border-left-color: #FFC220;
-            background: #fffbf0;
-            border-color: #ffe082;
+            background: linear-gradient(145deg, #fffcf0 0%, #fff8e1 100%);
+            border-color: rgba(255, 194, 32, 0.3);
         }
 
         .anomaly-card.low {
-            border-left-color: #28a745;
-            background: #f8fff8;
-            border-color: #c3e6cb;
+            border-left-color: #0073CE;
+            background: linear-gradient(145deg, #f0f8ff 0%, #e3f2fd 100%);
+            border-color: rgba(0, 115, 206, 0.3);
         }
 
         .anomaly-header {
@@ -2541,44 +2656,81 @@
 
         .performance-snapshot {
             display: flex;
-            gap: 20px;
-            margin-top: 16px;
+            gap: 24px;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 115, 206, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 115, 206, 0.1);
         }
 
         .snapshot-item {
             text-align: center;
-            padding: 12px;
-            border-radius: 6px;
-            min-width: 80px;
+            padding: 20px 16px;
+            border-radius: 12px;
+            min-width: 100px;
+            flex: 1;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .snapshot-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .snapshot-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
         .snapshot-item.exemplary {
-            background: rgba(40, 167, 69, 0.15);
-            border: 1px solid rgba(40, 167, 69, 0.3);
+            background: linear-gradient(145deg, #f0f8ff 0%, #e3f2fd 100%);
+            border: 2px solid rgba(0, 115, 206, 0.3);
+        }
+
+        .snapshot-item.exemplary::before {
+            background: linear-gradient(90deg, #0073CE, #004c87);
         }
 
         .snapshot-item.successful {
-            background: rgba(0, 115, 206, 0.15);
-            border: 1px solid rgba(0, 115, 206, 0.3);
+            background: linear-gradient(145deg, #f0faff 0%, #e1f5fe 100%);
+            border: 2px solid rgba(0, 175, 215, 0.3);
+        }
+
+        .snapshot-item.successful::before {
+            background: linear-gradient(90deg, #00AFD7, #0073CE);
         }
 
         .snapshot-item.opportunity {
-            background: rgba(255, 194, 32, 0.15);
-            border: 1px solid rgba(255, 194, 32, 0.3);
+            background: linear-gradient(145deg, #fffcf0 0%, #fff8e1 100%);
+            border: 2px solid rgba(255, 194, 32, 0.3);
+        }
+
+        .snapshot-item.opportunity::before {
+            background: linear-gradient(90deg, #FFC220, #e6a800);
         }
 
         .snapshot-number {
             display: block;
-            font-size: 24px;
-            font-weight: 700;
-            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            color: #0073CE;
+            margin-bottom: 8px;
         }
 
         .snapshot-label {
             display: block;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 4px;
+            font-size: 13px;
+            color: #495057;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .rec-grid {
@@ -6001,8 +6153,14 @@
                                 <button class="btn btn-outline" onclick="closeAnalytics()" style="margin-right: 15px;">← Back to Dashboard</button>
                                 <button class="close-btn" onclick="closeAnalytics()">&times;</button>
                             </div>
-                            <h2>Analytics & Insights Dashboard</h2>
-                            <p>AI-Powered Analysis for ${reviewer.name}'s Team | ${activeEmployees.length} Team Members</p>
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+                                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #0073CE, #FFC220); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">SC</div>
+                                <div>
+                                    <h2 style="margin: 0; color: #0073CE; font-size: 28px; font-weight: 700;">Analytics & Insights Dashboard</h2>
+                                    <p style="margin: 4px 0 0 0; color: #495057; font-size: 16px;">AI-Powered Analysis for ${reviewer.name}'s Team | ${activeEmployees.length} Team Members</p>
+                                </div>
+                            </div>
+                            <div style="height: 4px; background: linear-gradient(90deg, #0073CE 0%, #FFC220 100%); border-radius: 2px; margin: 16px 0;"></div>
                         </div>
                         
                         <div class="analytics-container">
