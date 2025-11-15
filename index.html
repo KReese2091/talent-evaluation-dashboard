@@ -6394,6 +6394,7 @@
                     
                     // Enhanced positioning logic for regular tooltips
                     const helpButton = tooltip.parentElement.querySelector('.help-button');
+                    console.log('Found help button for', helpId, ':', helpButton);
                     if (helpButton) {
                         const buttonRect = helpButton.getBoundingClientRect();
                         const viewportHeight = window.innerHeight;
@@ -6420,8 +6421,22 @@
                 }
                 
                 console.log('About to show tooltip for:', helpId);
+                
+                // Force simple show without complex positioning for debugging
+                tooltip.style.display = 'block';
+                tooltip.style.position = 'absolute';
+                tooltip.style.zIndex = '999999';
+                tooltip.style.opacity = '1';
+                tooltip.style.visibility = 'visible';
+                
                 tooltip.classList.add('show');
                 console.log('Tooltip classes after show:', tooltip.className);
+                console.log('Tooltip computed styles:', {
+                    display: window.getComputedStyle(tooltip).display,
+                    opacity: window.getComputedStyle(tooltip).opacity,
+                    visibility: window.getComputedStyle(tooltip).visibility,
+                    zIndex: window.getComputedStyle(tooltip).zIndex
+                });
             } else {
                 console.log('Hiding tooltip for:', helpId);
                 tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
