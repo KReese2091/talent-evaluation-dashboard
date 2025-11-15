@@ -2267,19 +2267,16 @@
             height: 0;
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
-            left: var(--arrow-position, 20px);
-        }
-        
-        .global-tooltip[style*="--arrow-direction: down"]::before {
-            bottom: -8px;
-            border-top: 8px solid #0073CE;
-            border-bottom: none;
-        }
-        
-        .global-tooltip[style*="--arrow-direction: up"]::before {
-            top: -8px;
             border-bottom: 8px solid #0073CE;
-            border-top: none;
+            top: -8px;
+            right: 20px;
+        }
+        
+        .global-tooltip.arrow-below::before {
+            top: auto;
+            bottom: -8px;
+            border-bottom: none;
+            border-top: 8px solid #0073CE;
         }
 
         .help-tooltip::before {
@@ -6447,8 +6444,12 @@
 
         // Global tooltip functions for problematic tooltips
         function toggleGlobalHelp(helpId, buttonElement) {
+            console.log('toggleGlobalHelp called with:', helpId, buttonElement);
             const globalTooltip = document.getElementById(helpId + '-global');
-            if (!globalTooltip) return;
+            if (!globalTooltip) {
+                console.error('Global tooltip not found:', helpId + '-global');
+                return;
+            }
             
             const isShowing = globalTooltip.classList.contains('show');
             
@@ -6463,36 +6464,31 @@
                 
                 // Position above the button with some margin
                 let top = buttonRect.top - tooltipHeight - 20;
-                let left = buttonRect.left;
+                let left = buttonRect.right - tooltipWidth; // Align right edge with button
+                let isBelow = false;
                 
                 // Adjust if tooltip would go off screen
                 if (top < 20) {
                     top = buttonRect.bottom + 20; // Position below if no room above
-                }
-                
-                if (left + tooltipWidth > window.innerWidth - 20) {
-                    left = window.innerWidth - tooltipWidth - 20; // Adjust if too far right
+                    isBelow = true;
                 }
                 
                 if (left < 20) {
                     left = 20; // Ensure it's not off the left edge
                 }
                 
+                if (left + tooltipWidth > window.innerWidth - 20) {
+                    left = window.innerWidth - tooltipWidth - 20; // Adjust if too far right
+                }
+                
                 // Apply calculated position
                 globalTooltip.style.top = top + 'px';
                 globalTooltip.style.left = left + 'px';
                 
-                // Position the arrow
-                const arrowOffset = buttonRect.left - left + (buttonRect.width / 2);
-                const arrow = globalTooltip.querySelector('::before');
-                if (top === buttonRect.bottom + 20) {
-                    // Arrow pointing up (tooltip is below button)
-                    globalTooltip.style.setProperty('--arrow-position', arrowOffset + 'px');
-                    globalTooltip.style.setProperty('--arrow-direction', 'up');
-                } else {
-                    // Arrow pointing down (tooltip is above button)  
-                    globalTooltip.style.setProperty('--arrow-position', arrowOffset + 'px');
-                    globalTooltip.style.setProperty('--arrow-direction', 'down');
+                // Set arrow direction
+                globalTooltip.classList.remove('arrow-below');
+                if (isBelow) {
+                    globalTooltip.classList.add('arrow-below');
                 }
                 
                 // Show the tooltip
