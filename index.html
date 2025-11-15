@@ -2153,7 +2153,10 @@
             padding: 16px;
             box-shadow: 0 8px 24px rgba(0, 115, 206, 0.2);
             width: 320px;
-            z-index: 1000;
+            max-width: 90vw;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 2000;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
@@ -2166,6 +2169,21 @@
             transform: translateY(0);
         }
 
+        .help-tooltip.position-up {
+            top: auto;
+            bottom: 30px;
+            transform: translateY(10px);
+        }
+
+        .help-tooltip.position-up.show {
+            transform: translateY(0);
+        }
+
+        .help-tooltip.position-left {
+            right: auto;
+            left: -300px;
+        }
+
         .help-tooltip::before {
             content: '';
             position: absolute;
@@ -2176,6 +2194,18 @@
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
             border-bottom: 8px solid #0073CE;
+        }
+
+        .help-tooltip.position-up::before {
+            top: auto;
+            bottom: -8px;
+            border-bottom: none;
+            border-top: 8px solid #0073CE;
+        }
+
+        .help-tooltip.position-left::before {
+            right: auto;
+            left: 12px;
         }
 
         .help-tooltip h4 {
@@ -6497,13 +6527,42 @@
             // Close all other tooltips first
             document.querySelectorAll('.help-tooltip').forEach(tooltip => {
                 if (tooltip.id !== helpId) {
-                    tooltip.classList.remove('show');
+                    tooltip.classList.remove('show', 'position-up', 'position-left');
                 }
             });
             
             // Toggle the requested tooltip
             const tooltip = document.getElementById(helpId);
             if (tooltip) {
+                const isShowing = tooltip.classList.contains('show');
+                
+                if (!isShowing) {
+                    // Reset positioning classes
+                    tooltip.classList.remove('position-up', 'position-left');
+                    
+                    // Calculate positioning
+                    const helpButton = tooltip.parentElement.querySelector('.help-button');
+                    const buttonRect = helpButton.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    const viewportWidth = window.innerWidth;
+                    
+                    // Check if tooltip would extend below viewport
+                    const spaceBelow = viewportHeight - buttonRect.bottom;
+                    const tooltipHeight = 300; // Approximate height
+                    
+                    if (spaceBelow < tooltipHeight && buttonRect.top > tooltipHeight) {
+                        tooltip.classList.add('position-up');
+                    }
+                    
+                    // Check if tooltip would extend beyond right edge
+                    const spaceRight = viewportWidth - buttonRect.right;
+                    const tooltipWidth = 320;
+                    
+                    if (spaceRight < tooltipWidth) {
+                        tooltip.classList.add('position-left');
+                    }
+                }
+                
                 tooltip.classList.toggle('show');
             }
         }
@@ -6511,7 +6570,7 @@
         function closeHelp(helpId) {
             const tooltip = document.getElementById(helpId);
             if (tooltip) {
-                tooltip.classList.remove('show');
+                tooltip.classList.remove('show', 'position-up', 'position-left');
             }
         }
 
@@ -6519,7 +6578,7 @@
         document.addEventListener('click', function(event) {
             if (!event.target.closest('.help-button') && !event.target.closest('.help-tooltip')) {
                 document.querySelectorAll('.help-tooltip').forEach(tooltip => {
-                    tooltip.classList.remove('show');
+                    tooltip.classList.remove('show', 'position-up', 'position-left');
                 });
             }
         });
