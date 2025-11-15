@@ -2170,13 +2170,19 @@
         }
 
         .help-tooltip.position-up {
+            bottom: 100%;
             top: auto;
-            bottom: 40px;
+            margin-bottom: 50px;
             transform: translateY(10px);
+            z-index: 999999 !important;
+            visibility: visible !important;
+            opacity: 0;
         }
 
         .help-tooltip.position-up.show {
             transform: translateY(0);
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
         /* Force visible positioning for problematic cases */
@@ -2196,6 +2202,25 @@
             transform: translate(-50%, -50%) !important;
             opacity: 1 !important;
             visibility: visible !important;
+        }
+
+        /* Special handling for Content Quality Trends tooltip */
+        #help-quality.help-tooltip {
+            z-index: 999999 !important;
+        }
+        
+        #help-quality.help-tooltip.position-up {
+            bottom: 100% !important;
+            top: auto !important;
+            margin-bottom: 60px !important;
+            right: 0 !important;
+            left: auto !important;
+        }
+        
+        #help-quality.help-tooltip.position-up.show {
+            visibility: visible !important;
+            opacity: 1 !important;
+            display: block !important;
         }
 
         .help-tooltip::before {
@@ -6308,30 +6333,34 @@
                     // Reset positioning classes
                     tooltip.classList.remove('position-up', 'position-left', 'force-visible');
                     
-                    // Enhanced positioning logic for better edge detection
-                    const helpButton = tooltip.parentElement.querySelector('.help-button');
-                    if (helpButton) {
-                        const buttonRect = helpButton.getBoundingClientRect();
-                        const viewportHeight = window.innerHeight;
-                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                        
-                        // Calculate available space below the button
-                        const spaceBelow = viewportHeight - buttonRect.bottom;
-                        const tooltipHeight = 350; // Max height of tooltip
-                        
-                        // More aggressive detection for positioning above
-                        // Position above if: insufficient space below OR button is in bottom 60% of viewport
-                        const buttonFromTop = buttonRect.top;
-                        const inBottomHalf = buttonFromTop > (viewportHeight * 0.4);
-                        
-                        if (spaceBelow < tooltipHeight || inBottomHalf) {
-                            // Only position above if there's enough space above
-                            const spaceAbove = buttonRect.top;
-                            if (spaceAbove > 100) { // Ensure minimum space above
-                                tooltip.classList.add('position-up');
-                            } else {
-                                // If no good space above or below, use center fallback
-                                tooltip.classList.add('force-visible');
+                    // Special handling for Content Quality Trends tooltip
+                    if (helpId === 'help-quality') {
+                        // Always position this one above or center - it's consistently problematic
+                        tooltip.classList.add('position-up');
+                    } else {
+                        // Enhanced positioning logic for other tooltips
+                        const helpButton = tooltip.parentElement.querySelector('.help-button');
+                        if (helpButton) {
+                            const buttonRect = helpButton.getBoundingClientRect();
+                            const viewportHeight = window.innerHeight;
+                            
+                            // Calculate available space below the button
+                            const spaceBelow = viewportHeight - buttonRect.bottom;
+                            const tooltipHeight = 350; // Max height of tooltip
+                            
+                            // Position above if insufficient space below OR button is in bottom 60% of viewport
+                            const buttonFromTop = buttonRect.top;
+                            const inBottomHalf = buttonFromTop > (viewportHeight * 0.4);
+                            
+                            if (spaceBelow < tooltipHeight || inBottomHalf) {
+                                // Only position above if there's enough space above
+                                const spaceAbove = buttonRect.top;
+                                if (spaceAbove > 100) { // Ensure minimum space above
+                                    tooltip.classList.add('position-up');
+                                } else {
+                                    // If no good space above or below, use center fallback
+                                    tooltip.classList.add('force-visible');
+                                }
                             }
                         }
                     }
