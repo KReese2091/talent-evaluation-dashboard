@@ -2724,6 +2724,141 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(0, 115, 206, 0.3);
         }
+
+        /* Enhanced Performance Patterns Styles */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .pattern-card {
+            background: white;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e6ed;
+            transition: all 0.2s ease;
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 115, 206, 0.15);
+        }
+
+        .pattern-card.chart {
+            border-left: 4px solid #0073CE;
+        }
+
+        .pattern-card.strength {
+            border-left: 4px solid #28a745;
+            background: linear-gradient(135deg, #f8fff8 0%, #ffffff 100%);
+        }
+
+        .pattern-card.warning {
+            border-left: 4px solid #FFC220;
+            background: linear-gradient(135deg, #fffbf0 0%, #ffffff 100%);
+        }
+
+        .pattern-card.info {
+            border-left: 4px solid #17a2b8;
+        }
+
+        .pattern-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .pattern-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .pattern-icon {
+            font-size: 18px;
+        }
+
+        .pattern-description {
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .pattern-data {
+            color: #6c757d;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Mini Chart Styles */
+        .mini-chart {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f3f6;
+        }
+
+        .chart-bar {
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #f8f9fa;
+            margin-bottom: 12px;
+        }
+
+        .bar-segment {
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .bar-segment.exemplary {
+            background: #28a745;
+        }
+
+        .bar-segment.successful {
+            background: #0073CE;
+        }
+
+        .bar-segment.opportunity {
+            background: #FFC220;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-color.exemplary {
+            background: #28a745;
+        }
+
+        .legend-color.successful {
+            background: #0073CE;
+        }
+
+        .legend-color.opportunity {
+            background: #FFC220;
+        }
     </style>
 </head>
 <body>
@@ -5779,9 +5914,29 @@
                                 <div class="pattern-grid">
                                     ${insights.performancePatterns.map(pattern => `
                                         <div class="pattern-card ${pattern.type}">
-                                            <div class="pattern-title">${pattern.title}</div>
+                                            <div class="pattern-header">
+                                                <div class="pattern-title">${pattern.title}</div>
+                                                ${pattern.type === 'chart' ? '<div class="pattern-icon">📊</div>' : 
+                                                  pattern.type === 'strength' ? '<div class="pattern-icon">💪</div>' : 
+                                                  pattern.type === 'warning' ? '<div class="pattern-icon">⚠️</div>' : 
+                                                  '<div class="pattern-icon">ℹ️</div>'}
+                                            </div>
                                             <div class="pattern-description">${pattern.description}</div>
                                             <div class="pattern-data">${pattern.data}</div>
+                                            ${pattern.chart ? `
+                                                <div class="mini-chart">
+                                                    <div class="chart-bar">
+                                                        <div class="bar-segment exemplary" style="width: ${pattern.chart.exemplary}%"></div>
+                                                        <div class="bar-segment successful" style="width: ${pattern.chart.successful}%"></div>
+                                                        <div class="bar-segment opportunity" style="width: ${pattern.chart.opportunity}%"></div>
+                                                    </div>
+                                                    <div class="chart-legend">
+                                                        <span class="legend-item"><span class="legend-color exemplary"></span>Exemplary</span>
+                                                        <span class="legend-item"><span class="legend-color successful"></span>Successful</span>
+                                                        <span class="legend-item"><span class="legend-color opportunity"></span>Opportunity</span>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
                                         </div>
                                     `).join('')}
                                 </div>
@@ -5944,39 +6099,56 @@
                 ratingDistribution[rating].percentage = Math.round((ratingDistribution[rating].count / totalWithRatings) * 100);
             });
             
-            // Performance Patterns Detection
+            // Performance Patterns Analysis
             const performancePatterns = [];
             
-            // High Performers Pattern
-            const highPerformers = completedEmployees.filter(emp => emp.evaluationData?.overallRating === 'exemplary');
-            if (highPerformers.length > 0) {
+            // Rating Distribution Pattern
+            if (completedEmployees.length > 0) {
+                const exemplaryPct = Math.round((ratingDistribution.exemplary.count / completedEmployees.length) * 100);
+                const successfulPct = Math.round((ratingDistribution.successful.count / completedEmployees.length) * 100);
+                const opportunityPct = Math.round((ratingDistribution.opportunity.count / completedEmployees.length) * 100);
+                
                 performancePatterns.push({
-                    type: 'info',
-                    title: 'High Performers Identified',
-                    description: `${highPerformers.length} team members rated as Exemplary`,
-                    data: `Names: ${highPerformers.map(emp => emp.name).join(', ')}`
+                    type: 'chart',
+                    title: 'Performance Distribution',
+                    description: 'Overall team rating breakdown',
+                    data: `${exemplaryPct}% Exemplary • ${successfulPct}% Successful • ${opportunityPct}% Opportunity`,
+                    chart: {
+                        exemplary: exemplaryPct,
+                        successful: successfulPct,
+                        opportunity: opportunityPct
+                    }
                 });
             }
             
-            // Improvement Opportunities
-            const improvementCases = completedEmployees.filter(emp => emp.evaluationData?.overallRating === 'opportunity');
-            if (improvementCases.length > 0) {
+            // Team Strengths Analysis
+            const strengthsAnalysis = analyzeTeamStrengths(completedEmployees);
+            if (strengthsAnalysis.topStrength) {
                 performancePatterns.push({
-                    type: 'warning',
-                    title: 'Development Opportunities',
-                    description: `${improvementCases.length} team members need focused development`,
-                    data: `Consider additional training and mentoring support`
+                    type: 'strength',
+                    title: 'Team Strength Area',
+                    description: `Highest performing competency: ${strengthsAnalysis.topStrength.name}`,
+                    data: `${strengthsAnalysis.topStrength.percentage}% of team excels in this area`
                 });
             }
             
-            // Completion Pattern
-            const completionRate = Math.round((completedEmployees.length / employees.length) * 100);
-            performancePatterns.push({
-                type: completionRate < 50 ? 'alert' : 'info',
-                title: 'Evaluation Progress',
-                description: `${completionRate}% of evaluations completed`,
-                data: `${completedEmployees.length} of ${employees.length} evaluations finished`
-            });
+            // Performance Variance Pattern
+            const variance = calculateRatingVariance(completedEmployees);
+            const varianceType = variance > 0.5 ? 'high' : variance > 0.2 ? 'medium' : 'low';
+            const varianceMessage = {
+                high: 'Wide performance spread - focus on standardization',
+                medium: 'Moderate performance variation - targeted coaching needed',
+                low: 'Consistent performance levels across team'
+            };
+            
+            if (completedEmployees.length > 1) {
+                performancePatterns.push({
+                    type: varianceType === 'high' ? 'warning' : 'info',
+                    title: 'Performance Consistency',
+                    description: varianceMessage[varianceType],
+                    data: `Performance variance score: ${variance.toFixed(2)}`
+                });
+            }
             
             // Bias Analysis
             const biasAnalysis = analyzeBiasPatterns(completedEmployees);
@@ -6320,6 +6492,69 @@
                 keyInsight,
                 actionItems
             };
+        }
+
+        function analyzeTeamStrengths(employees) {
+            if (employees.length === 0) return { topStrength: null };
+            
+            const competencyScores = {
+                'Key Priorities': { total: 0, count: 0, name: 'Key Priorities & Results' },
+                'Results & Impact': { total: 0, count: 0, name: 'Results & Impact' },
+                'Collaboration': { total: 0, count: 0, name: 'Collaboration & Influence' },
+                'Growth & Development': { total: 0, count: 0, name: 'Growth & Development' },
+                'Looking Ahead': { total: 0, count: 0, name: 'Strategic Vision' }
+            };
+            
+            employees.forEach(employee => {
+                if (employee.evaluationData?.sections) {
+                    const sections = employee.evaluationData.sections;
+                    
+                    // Convert ratings to numeric scores (3=exemplary, 2=successful, 1=opportunity)
+                    const scoreMap = { exemplary: 3, successful: 2, opportunity: 1 };
+                    
+                    if (sections.keyPriorities?.rating) {
+                        competencyScores['Key Priorities'].total += scoreMap[sections.keyPriorities.rating] || 0;
+                        competencyScores['Key Priorities'].count++;
+                    }
+                    if (sections.resultsImpact?.rating) {
+                        competencyScores['Results & Impact'].total += scoreMap[sections.resultsImpact.rating] || 0;
+                        competencyScores['Results & Impact'].count++;
+                    }
+                    if (sections.collaboration?.rating) {
+                        competencyScores['Collaboration'].total += scoreMap[sections.collaboration.rating] || 0;
+                        competencyScores['Collaboration'].count++;
+                    }
+                    if (sections.growthDevelopment?.rating) {
+                        competencyScores['Growth & Development'].total += scoreMap[sections.growthDevelopment.rating] || 0;
+                        competencyScores['Growth & Development'].count++;
+                    }
+                    if (sections.lookingAhead?.rating) {
+                        competencyScores['Looking Ahead'].total += scoreMap[sections.lookingAhead.rating] || 0;
+                        competencyScores['Looking Ahead'].count++;
+                    }
+                }
+            });
+            
+            // Calculate averages and find top strength
+            let topStrength = null;
+            let highestAverage = 0;
+            
+            Object.keys(competencyScores).forEach(key => {
+                const competency = competencyScores[key];
+                if (competency.count > 0) {
+                    const average = competency.total / competency.count;
+                    if (average > highestAverage) {
+                        highestAverage = average;
+                        topStrength = {
+                            name: competency.name,
+                            average: average,
+                            percentage: Math.round((average / 3) * 100)
+                        };
+                    }
+                }
+            });
+            
+            return { topStrength };
         }
 
         function generateTeamRoster(employees) {
