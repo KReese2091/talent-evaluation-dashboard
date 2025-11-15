@@ -6027,7 +6027,7 @@
                                             </div>
                                             <div class="snapshot-item opportunity">
                                                 <span class="snapshot-number">${insights.ratingDistribution.opportunity.count}</span>
-                                                <span class="snapshot-label">Development</span>
+                                                <span class="snapshot-label">Opportunity</span>
                                             </div>
                                         </div>
                                     </div>
@@ -6061,58 +6061,6 @@
                                 </div>
                             </div>
 
-                            <!-- Performance Patterns -->
-                            <div class="insights-section chart-section">
-                                <div class="section-header">
-                                    <h3>Performance Patterns</h3>
-                                </div>
-                                <div class="pattern-grid">
-                                    ${insights.performancePatterns.map(pattern => `
-                                        <div class="pattern-card ${pattern.type}">
-                                            <div class="pattern-header">
-                                                <div class="pattern-title">${pattern.title}</div>
-                                                ${pattern.type === 'chart' ? '' : 
-                                                  pattern.type === 'strength' ? '' : 
-                                                  pattern.type === 'warning' ? '' : 
-                                                  ''}
-                                            </div>
-                                            <div class="pattern-description">${pattern.description}</div>
-                                            <div class="pattern-data">${pattern.data}</div>
-                                            ${pattern.chart ? `
-                                                <div class="rating-visualization">
-                                                    ${pattern.showBars ? `
-                                                        <div class="rating-distribution">
-                                                            ${Object.entries(pattern.distributionData).map(([rating, data]) => `
-                                                                <div class="rating-bar">
-                                                                    <div class="rating-bar-fill ${rating}" style="height: ${Math.max(20, data.percentage * 2)}px;">
-                                                                        ${data.count}
-                                                                    </div>
-                                                                    <div class="rating-label">${rating.charAt(0).toUpperCase() + rating.slice(1)}</div>
-                                                                    <div class="rating-percentage">${data.percentage}%</div>
-                                                                </div>
-                                                            `).join('')}
-                                                        </div>
-                                                    ` : `
-                                                        <div class="mini-chart">
-                                                            <div class="chart-bar">
-                                                                <div class="bar-segment exemplary" style="width: ${pattern.chart.exemplary}%"></div>
-                                                                <div class="bar-segment successful" style="width: ${pattern.chart.successful}%"></div>
-                                                                <div class="bar-segment opportunity" style="width: ${pattern.chart.opportunity}%"></div>
-                                                            </div>
-                                                            <div class="chart-legend">
-                                                                <span class="legend-item"><span class="legend-color exemplary"></span>Exemplary</span>
-                                                                <span class="legend-item"><span class="legend-color successful"></span>Successful</span>
-                                                                <span class="legend-item"><span class="legend-color opportunity"></span>Opportunity</span>
-                                                            </div>
-                                                        </div>
-                                                    `}
-                                                </div>
-                                            ` : ''}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            
                             <!-- Bias Detection Heatmap -->
                             <div class="insights-section">
                                 <h3>Bias Detection Analysis</h3>
