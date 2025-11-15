@@ -6373,6 +6373,8 @@
 
         // Help Tooltip Functions (Global scope for Analytics)
         function toggleHelp(helpId) {
+            console.log('toggleHelp called for:', helpId);
+            
             // Close all other tooltips first
             document.querySelectorAll('.help-tooltip').forEach(tooltip => {
                 if (tooltip.id !== helpId) {
@@ -6382,6 +6384,7 @@
             
             // Toggle the requested tooltip
             const tooltip = document.getElementById(helpId);
+            console.log('Found tooltip element:', tooltip);
             if (tooltip) {
                 const isShowing = tooltip.classList.contains('show');
                 
@@ -6389,49 +6392,39 @@
                     // Reset positioning classes
                     tooltip.classList.remove('position-up', 'position-left', 'force-visible');
                     
-                    // Special handling for Content Quality Trends tooltip
-                    if (helpId === 'help-quality') {
-                        // Always position this one above or center - it's consistently problematic
-                        tooltip.classList.add('position-up');
-                        console.log('Content Quality tooltip - added position-up class');
-                        // Force immediate visibility
-                        setTimeout(() => {
-                            console.log('Content Quality tooltip - forcing visibility');
-                            tooltip.style.visibility = 'visible';
-                            tooltip.style.opacity = '1';
-                            tooltip.style.zIndex = '9999999';
-                            tooltip.style.display = 'block';
-                        }, 10);
-                    } else {
-                        // Enhanced positioning logic for other tooltips
-                        const helpButton = tooltip.parentElement.querySelector('.help-button');
-                        if (helpButton) {
-                            const buttonRect = helpButton.getBoundingClientRect();
-                            const viewportHeight = window.innerHeight;
-                            
-                            // Calculate available space below the button
-                            const spaceBelow = viewportHeight - buttonRect.bottom;
-                            const tooltipHeight = 350; // Max height of tooltip
-                            
-                            // Position above if insufficient space below OR button is in bottom 60% of viewport
-                            const buttonFromTop = buttonRect.top;
-                            const inBottomHalf = buttonFromTop > (viewportHeight * 0.4);
-                            
-                            if (spaceBelow < tooltipHeight || inBottomHalf) {
-                                // Only position above if there's enough space above
-                                const spaceAbove = buttonRect.top;
-                                if (spaceAbove > 100) { // Ensure minimum space above
-                                    tooltip.classList.add('position-up');
-                                } else {
-                                    // If no good space above or below, use center fallback
-                                    tooltip.classList.add('force-visible');
-                                }
+                    // Enhanced positioning logic for regular tooltips
+                    const helpButton = tooltip.parentElement.querySelector('.help-button');
+                    if (helpButton) {
+                        const buttonRect = helpButton.getBoundingClientRect();
+                        const viewportHeight = window.innerHeight;
+                        
+                        // Calculate available space below the button
+                        const spaceBelow = viewportHeight - buttonRect.bottom;
+                        const tooltipHeight = 350; // Max height of tooltip
+                        
+                        // Position above if insufficient space below OR button is in bottom 60% of viewport
+                        const buttonFromTop = buttonRect.top;
+                        const inBottomHalf = buttonFromTop > (viewportHeight * 0.4);
+                        
+                        if (spaceBelow < tooltipHeight || inBottomHalf) {
+                            // Only position above if there's enough space above
+                            const spaceAbove = buttonRect.top;
+                            if (spaceAbove > 100) { // Ensure minimum space above
+                                tooltip.classList.add('position-up');
+                            } else {
+                                // If no good space above or below, use center fallback
+                                tooltip.classList.add('force-visible');
                             }
                         }
                     }
                 }
                 
-                tooltip.classList.toggle('show');
+                console.log('About to show tooltip for:', helpId);
+                tooltip.classList.add('show');
+                console.log('Tooltip classes after show:', tooltip.className);
+            } else {
+                console.log('Hiding tooltip for:', helpId);
+                tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
             }
         }
 
@@ -6453,8 +6446,12 @@
             
             const isShowing = globalTooltip.classList.contains('show');
             
-            // Close all other tooltips first
-            closeAllHelp();
+            // Close other global tooltips only
+            document.querySelectorAll('.global-tooltip').forEach(tooltip => {
+                if (tooltip !== globalTooltip) {
+                    tooltip.classList.remove('show');
+                }
+            });
             
             if (!isShowing) {
                 // Calculate position relative to the button
