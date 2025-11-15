@@ -6281,6 +6281,79 @@
             doc.save(fileName);
         }
 
+        // Help Tooltip Functions (Global scope for Analytics)
+        function toggleHelp(helpId) {
+            // Close all other tooltips first
+            document.querySelectorAll('.help-tooltip').forEach(tooltip => {
+                if (tooltip.id !== helpId) {
+                    tooltip.classList.remove('show', 'position-up', 'position-left');
+                }
+            });
+            
+            // Toggle the requested tooltip
+            const tooltip = document.getElementById(helpId);
+            if (tooltip) {
+                const isShowing = tooltip.classList.contains('show');
+                
+                if (!isShowing) {
+                    // Reset positioning classes
+                    tooltip.classList.remove('position-up', 'position-left');
+                    
+                    // Calculate positioning
+                    const helpButton = tooltip.parentElement.querySelector('.help-button');
+                    const buttonRect = helpButton.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    const viewportWidth = window.innerWidth;
+                    
+                    // Check if tooltip would extend below viewport
+                    const spaceBelow = viewportHeight - buttonRect.bottom;
+                    const tooltipHeight = 300; // Approximate height
+                    
+                    if (spaceBelow < tooltipHeight && buttonRect.top > tooltipHeight) {
+                        tooltip.classList.add('position-up');
+                    }
+                    
+                    // Check if tooltip would extend beyond right edge
+                    const spaceRight = viewportWidth - buttonRect.right;
+                    const tooltipWidth = 320;
+                    
+                    if (spaceRight < tooltipWidth) {
+                        tooltip.classList.add('position-left');
+                    }
+                }
+                
+                tooltip.classList.toggle('show');
+            }
+        }
+
+        function closeHelp(helpId) {
+            const tooltip = document.getElementById(helpId);
+            if (tooltip) {
+                tooltip.classList.remove('show', 'position-up', 'position-left');
+            }
+        }
+
+        function initializeHelpTooltips() {
+            // Remove any existing event listeners to prevent duplicates
+            const existingListener = document.helpTooltipListener;
+            if (existingListener) {
+                document.removeEventListener('click', existingListener);
+            }
+            
+            // Create new click outside handler
+            const clickOutsideHandler = function(event) {
+                if (!event.target.closest('.help-button') && !event.target.closest('.help-tooltip')) {
+                    document.querySelectorAll('.help-tooltip').forEach(tooltip => {
+                        tooltip.classList.remove('show', 'position-up', 'position-left');
+                    });
+                }
+            };
+            
+            // Store reference and add listener
+            document.helpTooltipListener = clickOutsideHandler;
+            document.addEventListener('click', clickOutsideHandler);
+        }
+
         // Analytics & Insights Function
         function showAnalyticsInsights() {
             const reviewer = reviewerData[currentReviewer];
@@ -6504,6 +6577,9 @@
             `;
             
             document.body.insertAdjacentHTML('beforeend', analyticsHTML);
+            
+            // Initialize help tooltips after analytics HTML is inserted
+            initializeHelpTooltips();
         }
         
         function closeAnalytics(event) {
@@ -6521,67 +6597,6 @@
                 }
             }
         }
-
-        // Help Tooltip Functions
-        function toggleHelp(helpId) {
-            // Close all other tooltips first
-            document.querySelectorAll('.help-tooltip').forEach(tooltip => {
-                if (tooltip.id !== helpId) {
-                    tooltip.classList.remove('show', 'position-up', 'position-left');
-                }
-            });
-            
-            // Toggle the requested tooltip
-            const tooltip = document.getElementById(helpId);
-            if (tooltip) {
-                const isShowing = tooltip.classList.contains('show');
-                
-                if (!isShowing) {
-                    // Reset positioning classes
-                    tooltip.classList.remove('position-up', 'position-left');
-                    
-                    // Calculate positioning
-                    const helpButton = tooltip.parentElement.querySelector('.help-button');
-                    const buttonRect = helpButton.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-                    const viewportWidth = window.innerWidth;
-                    
-                    // Check if tooltip would extend below viewport
-                    const spaceBelow = viewportHeight - buttonRect.bottom;
-                    const tooltipHeight = 300; // Approximate height
-                    
-                    if (spaceBelow < tooltipHeight && buttonRect.top > tooltipHeight) {
-                        tooltip.classList.add('position-up');
-                    }
-                    
-                    // Check if tooltip would extend beyond right edge
-                    const spaceRight = viewportWidth - buttonRect.right;
-                    const tooltipWidth = 320;
-                    
-                    if (spaceRight < tooltipWidth) {
-                        tooltip.classList.add('position-left');
-                    }
-                }
-                
-                tooltip.classList.toggle('show');
-            }
-        }
-
-        function closeHelp(helpId) {
-            const tooltip = document.getElementById(helpId);
-            if (tooltip) {
-                tooltip.classList.remove('show', 'position-up', 'position-left');
-            }
-        }
-
-        // Close tooltips when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.help-button') && !event.target.closest('.help-tooltip')) {
-                document.querySelectorAll('.help-tooltip').forEach(tooltip => {
-                    tooltip.classList.remove('show', 'position-up', 'position-left');
-                });
-            }
-        });
         
         function generateInsights(employees) {
             const completedEmployees = employees.filter(emp => emp.status === 'completed' && emp.evaluationData);
