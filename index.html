@@ -2113,6 +2113,125 @@
             color: #721c24;
         }
 
+        /* Help Button and Tooltip Styles */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .help-button {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0073CE, #FFC220);
+            border: none;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .help-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 115, 206, 0.3);
+        }
+
+        .help-tooltip {
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background: white;
+            border: 2px solid #0073CE;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 115, 206, 0.2);
+            width: 320px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .help-tooltip.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .help-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 12px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid #0073CE;
+        }
+
+        .help-tooltip h4 {
+            color: #0073CE;
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-tooltip h4::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(135deg, #0073CE, #FFC220);
+            border-radius: 2px;
+        }
+
+        .help-tooltip p {
+            color: #495057;
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .help-tooltip ul {
+            margin: 8px 0 0 0;
+            padding-left: 16px;
+            color: #495057;
+            font-size: 13px;
+        }
+
+        .help-tooltip li {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .help-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .help-close:hover {
+            color: #dc3545;
+        }
+
         /* Team Report Modal Styles */
         .team-report-overlay {
             position: fixed;
@@ -6168,6 +6287,18 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Executive Summary</h3>
+                                    <button class="help-button" onclick="toggleHelp('help-executive')" title="Learn more about Executive Summary">?</button>
+                                    <div class="help-tooltip" id="help-executive">
+                                        <button class="help-close" onclick="closeHelp('help-executive')">&times;</button>
+                                        <h4>Executive Summary</h4>
+                                        <p>Provides a high-level overview of your team's performance and key insights for executive decision-making.</p>
+                                        <ul>
+                                            <li><strong>Performance Snapshot:</strong> Visual breakdown of ratings across your team</li>
+                                            <li><strong>Key Findings:</strong> AI-generated insights about performance patterns</li>
+                                            <li><strong>Strategic Recommendations:</strong> Priority actions for team improvement</li>
+                                            <li><strong>Immediate Actions:</strong> Critical items requiring immediate attention</li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="executive-summary">
                                     <div class="exec-overview">
@@ -6221,7 +6352,21 @@
 
                             <!-- Bias Detection Heatmap -->
                             <div class="insights-section">
-                                <h3>Bias Detection Analysis</h3>
+                                <div class="section-header">
+                                    <h3>Bias Detection Analysis</h3>
+                                    <button class="help-button" onclick="toggleHelp('help-bias')" title="Learn more about Bias Detection">?</button>
+                                    <div class="help-tooltip" id="help-bias">
+                                        <button class="help-close" onclick="closeHelp('help-bias')">&times;</button>
+                                        <h4>Bias Detection Analysis</h4>
+                                        <p>AI-powered analysis to identify potential biases in evaluation language and patterns.</p>
+                                        <ul>
+                                            <li><strong>Risk Levels:</strong> High (red), Medium (gold), Low (blue)</li>
+                                            <li><strong>Common Biases:</strong> Easy/Hard rater, Gender, Recency, Halo effect</li>
+                                            <li><strong>Bias Score:</strong> Lower scores indicate more objective evaluations</li>
+                                            <li><strong>Instances:</strong> Number of times bias patterns were detected</li>
+                                        </ul>
+                                    </div>
+                                </div>
                                 <div class="bias-heatmap">
                                     ${insights.biasAnalysis.map(bias => `
                                         <div class="bias-indicator ${bias.level}">
@@ -6236,7 +6381,21 @@
                             
                             <!-- Content Quality Trends -->
                             <div class="insights-section">
-                                <h3>Content Quality Trends</h3>
+                                <div class="section-header">
+                                    <h3>Content Quality Trends</h3>
+                                    <button class="help-button" onclick="toggleHelp('help-quality')" title="Learn more about Content Quality">?</button>
+                                    <div class="help-tooltip" id="help-quality">
+                                        <button class="help-close" onclick="closeHelp('help-quality')">&times;</button>
+                                        <h4>Content Quality Trends</h4>
+                                        <p>Measures the quality and depth of evaluation content across different metrics.</p>
+                                        <ul>
+                                            <li><strong>Objectivity:</strong> How fact-based vs. opinion-based the evaluations are</li>
+                                            <li><strong>Specificity:</strong> Level of detail and concrete examples provided</li>
+                                            <li><strong>Completion Rate:</strong> Percentage of fully completed evaluation sections</li>
+                                            <li><strong>Trends:</strong> Arrows show improvement (↑) or decline (↓) over time</li>
+                                        </ul>
+                                    </div>
+                                </div>
                                 <div class="pattern-grid">
                                     <div class="pattern-card">
                                         <div class="pattern-title">Average Objectivity</div>
@@ -6267,7 +6426,21 @@
                             
                             <!-- Anomaly Detection -->
                             <div class="insights-section">
-                                <h3>Anomaly Pattern Detection</h3>
+                                <div class="section-header">
+                                    <h3>Anomaly Pattern Detection</h3>
+                                    <button class="help-button" onclick="toggleHelp('help-anomaly')" title="Learn more about Anomaly Detection">?</button>
+                                    <div class="help-tooltip" id="help-anomaly">
+                                        <button class="help-close" onclick="closeHelp('help-anomaly')">&times;</button>
+                                        <h4>Anomaly Pattern Detection</h4>
+                                        <p>Identifies unusual patterns in evaluations that may indicate inconsistencies or areas needing attention.</p>
+                                        <ul>
+                                            <li><strong>Severity Levels:</strong> High (urgent), Medium (moderate), Low (minor)</li>
+                                            <li><strong>Pattern Types:</strong> Rating inconsistencies, unusual language patterns, incomplete data</li>
+                                            <li><strong>Affected Count:</strong> Number of employees impacted by each anomaly</li>
+                                            <li><strong>Risk Score:</strong> Overall assessment of evaluation consistency (0-100)</li>
+                                        </ul>
+                                    </div>
+                                </div>
                                 <div class="anomaly-detection-grid">
                                     ${insights.anomalyDetection.map(anomaly => `
                                         <div class="anomaly-card ${anomaly.severity}">
@@ -6318,6 +6491,38 @@
                 }
             }
         }
+
+        // Help Tooltip Functions
+        function toggleHelp(helpId) {
+            // Close all other tooltips first
+            document.querySelectorAll('.help-tooltip').forEach(tooltip => {
+                if (tooltip.id !== helpId) {
+                    tooltip.classList.remove('show');
+                }
+            });
+            
+            // Toggle the requested tooltip
+            const tooltip = document.getElementById(helpId);
+            if (tooltip) {
+                tooltip.classList.toggle('show');
+            }
+        }
+
+        function closeHelp(helpId) {
+            const tooltip = document.getElementById(helpId);
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
+        // Close tooltips when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.help-button') && !event.target.closest('.help-tooltip')) {
+                document.querySelectorAll('.help-tooltip').forEach(tooltip => {
+                    tooltip.classList.remove('show');
+                });
+            }
+        });
         
         function generateInsights(employees) {
             const completedEmployees = employees.filter(emp => emp.status === 'completed' && emp.evaluationData);
