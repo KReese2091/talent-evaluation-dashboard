@@ -2197,6 +2197,17 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* Force visible positioning for problematic cases */
+        .help-tooltip.force-visible {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            right: auto !important;
+            bottom: auto !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 3000 !important;
+        }
+
         .help-tooltip::before {
             content: '';
             position: absolute;
@@ -6300,7 +6311,7 @@
             // Close all other tooltips first
             document.querySelectorAll('.help-tooltip').forEach(tooltip => {
                 if (tooltip.id !== helpId) {
-                    tooltip.classList.remove('show', 'position-up', 'position-left');
+                    tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
                 }
             });
             
@@ -6313,29 +6324,48 @@
                     // Reset positioning classes
                     tooltip.classList.remove('position-up', 'position-left');
                     
-                    // Calculate positioning
+                    // Show tooltip temporarily to calculate its actual dimensions
+                    tooltip.style.visibility = 'hidden';
+                    tooltip.style.opacity = '1';
+                    tooltip.classList.add('show');
+                    
+                    // Calculate positioning with actual dimensions
                     const helpButton = tooltip.parentElement.querySelector('.help-button');
                     if (helpButton) {
                         const buttonRect = helpButton.getBoundingClientRect();
+                        const tooltipRect = tooltip.getBoundingClientRect();
                         const viewportHeight = window.innerHeight;
                         const viewportWidth = window.innerWidth;
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                         
-                        // Check if tooltip would extend below viewport (with some margin)
-                        const spaceBelow = viewportHeight - buttonRect.bottom;
-                        const tooltipHeight = 300; // Approximate height
+                        // Check if tooltip would extend below visible viewport
+                        const tooltipBottom = buttonRect.bottom + tooltipRect.height + 30; // 30px for top offset
+                        const viewportBottom = scrollTop + viewportHeight;
                         
-                        if (spaceBelow < tooltipHeight && buttonRect.top > tooltipHeight) {
+                        if (tooltipBottom > viewportBottom && buttonRect.top > (tooltipRect.height + 60)) {
                             tooltip.classList.add('position-up');
                         }
                         
-                        // Check if tooltip would extend beyond right edge (with margin)
-                        const spaceRight = viewportWidth - buttonRect.right;
-                        const tooltipWidth = 320;
-                        
-                        if (spaceRight < (tooltipWidth + 20)) { // 20px margin
+                        // Check if tooltip would extend beyond right edge
+                        const tooltipRight = buttonRect.right + tooltipRect.width;
+                        if (tooltipRight > viewportWidth) {
                             tooltip.classList.add('position-left');
                         }
+                        
+                        // Final check - if tooltip would still be problematic, use center positioning
+                        const finalTooltipRect = tooltip.getBoundingClientRect();
+                        if (finalTooltipRect.bottom > viewportBottom || 
+                            finalTooltipRect.right > viewportWidth ||
+                            finalTooltipRect.left < 0 ||
+                            finalTooltipRect.top < scrollTop) {
+                            tooltip.classList.add('force-visible');
+                        }
                     }
+                    
+                    // Reset visibility and show state for proper animation
+                    tooltip.classList.remove('show');
+                    tooltip.style.visibility = '';
+                    tooltip.style.opacity = '';
                 }
                 
                 tooltip.classList.toggle('show');
@@ -6345,7 +6375,7 @@
         function closeHelp(helpId) {
             const tooltip = document.getElementById(helpId);
             if (tooltip) {
-                tooltip.classList.remove('show', 'position-up', 'position-left');
+                tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
             }
         }
 
@@ -6360,7 +6390,7 @@
             const clickOutsideHandler = function(event) {
                 if (!event.target.closest('.help-button') && !event.target.closest('.help-tooltip')) {
                     document.querySelectorAll('.help-tooltip').forEach(tooltip => {
-                        tooltip.classList.remove('show', 'position-up', 'position-left');
+                        tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
                     });
                 }
             };
