@@ -886,6 +886,107 @@
             font-style: italic;
         }
 
+        /* Employee Search Dropdown Styles */
+        .employee-search-container {
+            position: relative;
+            padding: 0 20px;
+            margin-bottom: 15px;
+        }
+
+        .employee-search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .employee-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .employee-search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00AFD7;
+            box-shadow: 0 0 0 2px rgba(0, 175, 215, 0.3);
+        }
+
+        .employee-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 4px;
+        }
+
+        .employee-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f3f6;
+            transition: background-color 0.2s ease;
+        }
+
+        .employee-option:last-child {
+            border-bottom: none;
+        }
+
+        .employee-option:hover, .employee-option.highlighted {
+            background-color: #f0f8ff;
+        }
+
+        .employee-option.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #0073CE;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .employee-status-info {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .status-indicator.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-indicator.in-progress {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-indicator.not-started {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .reviewer-info {
             padding: 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -988,36 +1089,7 @@
 
 
 
-        .employee-dropdown {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .employee-dropdown:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .employee-dropdown:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.25);
-            border-color: #007bff;
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
-        }
-
-        .employee-dropdown option {
-            background: #2c3e50;
-            color: white;
-            padding: 8px;
-        }
+        /* Old employee dropdown styles - replaced by new searchable dropdown */
 
         .employee-actions-panel {
             background: rgba(255, 255, 255, 0.1);
@@ -4786,31 +4858,18 @@
                     <div class="employee-list">
                         <h4>Direct Reports (${employees.length})</h4>
                         
-                        <!-- Search Section -->
+                        <!-- Unified Employee Search/Select -->
                         <div class="search-section">
-                            <div class="search-container">
-                                <input type="text" class="employee-search" placeholder="Search employees..." oninput="filterEmployees()" id="employeeSearch">
-                                <span class="search-icon">🔍</span>
-                                <button class="clear-search" onclick="clearSearch()" title="Clear search" style="display: none;">×</button>
+                            <div class="employee-search-container">
+                                <input type="text" id="employeeSearch" placeholder="Type to search team members..." 
+                                       oninput="searchEmployees()" onfocus="showEmployeeDropdown()" 
+                                       onkeypress="if(event.key==='Enter') selectFirstEmployee()"
+                                       autocomplete="off" class="employee-search-input">
+                                <div class="employee-dropdown" id="employeeDropdown" style="display: none;">
+                                    <div class="dropdown-loading">Loading team members...</div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <select class="employee-dropdown" onchange="handleEmployeeSelection(this.value)" id="employeeDropdown">
-                            <option value="">Select an employee...</option>
-                            ${employees
-                                .sort((a, b) => {
-                                    // Sort alphabetically by last name
-                                    const lastNameA = a.name.split(' ').pop().toLowerCase();
-                                    const lastNameB = b.name.split(' ').pop().toLowerCase();
-                                    return lastNameA.localeCompare(lastNameB);
-                                })
-                                .map(emp => `
-                                <option value="${emp.id}" data-status="${emp.status}" data-rating="${emp.evaluationData?.overallRating || 'not-set'}" data-name="${emp.name.toLowerCase()}">
-                                    ${emp.name} - ${emp.status === 'completed' ? '✓ Complete' : 
-                                      emp.status === 'in-progress' ? '⏱ In Progress' : '○ Not Started'}
-                                </option>
-                            `).join('')}
-                        </select>
                         
                         <div class="employee-actions-panel" id="employee-actions-panel" style="display: none;">
                             <div class="smart-actions-list">
@@ -5955,10 +6014,9 @@
 
 
 
-        // Dropdown-related functions
-        let selectedEmployeeId = null;
-
-        function handleEmployeeSelection(employeeId) {
+        // Dropdown-related functions (using new searchable dropdown)
+        
+        function handleEmployeeSelectionOld(employeeId) {
             selectedEmployeeId = employeeId;
             const actionsPanel = document.getElementById('employee-actions-panel');
             
@@ -8321,6 +8379,200 @@
             options.forEach((option, index) => {
                 option.classList.remove('highlighted');
                 if (index === highlightedIndex) {
+                    option.classList.add('highlighted');
+                    option.scrollIntoView({ block: 'nearest' });
+                }
+            });
+        }
+
+        // Employee Search Variables
+        let selectedEmployeeId = null;
+        let employeeHighlightedIndex = -1;
+        let currentEmployees = [];
+
+        // Employee Search Functions
+        function showEmployeeDropdown() {
+            const dropdown = document.getElementById('employeeDropdown');
+            if (dropdown) {
+                dropdown.style.display = 'block';
+                updateEmployeeDropdownContent('');
+            }
+        }
+
+        function searchEmployees() {
+            const searchTerm = document.getElementById('employeeSearch').value;
+            updateEmployeeDropdownContent(searchTerm);
+            employeeHighlightedIndex = -1;
+        }
+
+        function updateEmployeeDropdownContent(searchTerm) {
+            const dropdown = document.getElementById('employeeDropdown');
+            if (!dropdown) return;
+            
+            // Get current employees from reviewer data
+            const reviewer = reviewerData[currentReviewer];
+            if (!reviewer || !reviewer.employees) {
+                dropdown.innerHTML = '<div class="dropdown-loading">No team members found...</div>';
+                return;
+            }
+            
+            currentEmployees = Object.values(reviewer.employees)
+                .filter(emp => !emp.archived)
+                .sort((a, b) => {
+                    const lastNameA = a.name.split(' ').pop().toLowerCase();
+                    const lastNameB = b.name.split(' ').pop().toLowerCase();
+                    return lastNameA.localeCompare(lastNameB);
+                });
+            
+            const filteredEmployees = currentEmployees.filter(emp => 
+                emp.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            if (filteredEmployees.length === 0) {
+                dropdown.innerHTML = '<div class="no-results">No team members found matching your search</div>';
+                return;
+            }
+            
+            dropdown.innerHTML = filteredEmployees.map((emp, index) => {
+                const statusText = emp.status === 'completed' ? '✓ Complete' : 
+                                 emp.status === 'in-progress' ? '⏱ In Progress' : '○ Not Started';
+                const statusClass = emp.status.replace('-', '');
+                
+                return `
+                    <div class="employee-option" data-employee-id="${emp.id}" onclick="selectEmployee('${emp.id}', '${emp.name}')">
+                        <div class="employee-name">${emp.name}</div>
+                        <div class="employee-status-info">
+                            <span class="status-indicator ${statusClass}">${statusText}</span>
+                            <span>${emp.position || 'Team Member'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectEmployee(employeeId, employeeName) {
+            selectedEmployeeId = employeeId;
+            document.getElementById('employeeSearch').value = employeeName;
+            document.getElementById('employeeDropdown').style.display = 'none';
+            
+            // Highlight selected option
+            document.querySelectorAll('.employee-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`[data-employee-id="${employeeId}"]`)?.classList.add('selected');
+            
+            // Show employee actions panel
+            handleEmployeeSelection(employeeId);
+        }
+
+        function selectFirstEmployee() {
+            const firstOption = document.querySelector('.employee-option');
+            if (firstOption) {
+                const employeeId = firstOption.getAttribute('data-employee-id');
+                const employeeName = firstOption.querySelector('.employee-name').textContent;
+                selectEmployee(employeeId, employeeName);
+            }
+        }
+
+        // Enhanced handleEmployeeSelection for the new dropdown
+        function handleEmployeeSelection(employeeId) {
+            selectedEmployeeId = employeeId;
+            const actionsPanel = document.getElementById('employee-actions-panel');
+            
+            if (employeeId) {
+                const employee = reviewerData[currentReviewer]?.employees[employeeId];
+                if (employee) {
+                    // Show actions panel if it exists
+                    if (actionsPanel) {
+                        actionsPanel.style.display = 'block';
+                        
+                        // Update download functionality based on employee data
+                        const hasEvalData = employee.evaluationData && Object.keys(employee.evaluationData).length > 0;
+                        const downloadBtn = actionsPanel.querySelector('.smart-action-item:nth-child(2)');
+                        if (downloadBtn) {
+                            downloadBtn.style.opacity = hasEvalData ? '1' : '0.5';
+                            downloadBtn.style.pointerEvents = hasEvalData ? 'auto' : 'none';
+                        }
+                    }
+                }
+            } else if (actionsPanel) {
+                actionsPanel.style.display = 'none';
+            }
+        }
+
+        // Hide employee dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const employeeContainer = event.target.closest('.employee-search-container');
+            const reviewerContainer = event.target.closest('.reviewer-search-container');
+            
+            if (!employeeContainer) {
+                const employeeDropdown = document.getElementById('employeeDropdown');
+                if (employeeDropdown) {
+                    employeeDropdown.style.display = 'none';
+                }
+            }
+            
+            if (!reviewerContainer) {
+                const reviewerDropdown = document.getElementById('reviewerDropdown');
+                if (reviewerDropdown) {
+                    reviewerDropdown.style.display = 'none';
+                }
+            }
+        });
+
+        // Enhanced keyboard navigation for both dropdowns
+        document.addEventListener('keydown', function(event) {
+            // Handle reviewer dropdown
+            const reviewerDropdown = document.getElementById('reviewerDropdown');
+            if (reviewerDropdown && reviewerDropdown.style.display !== 'none') {
+                const options = reviewerDropdown.querySelectorAll('.reviewer-option');
+                if (options.length > 0) {
+                    if (event.key === 'ArrowDown') {
+                        event.preventDefault();
+                        highlightedIndex = Math.min(highlightedIndex + 1, options.length - 1);
+                        updateHighlight(options);
+                    } else if (event.key === 'ArrowUp') {
+                        event.preventDefault();
+                        highlightedIndex = Math.max(highlightedIndex - 1, -1);
+                        updateHighlight(options);
+                    } else if (event.key === 'Enter' && highlightedIndex >= 0) {
+                        event.preventDefault();
+                        const selectedOption = options[highlightedIndex];
+                        const managerName = selectedOption.getAttribute('data-manager');
+                        selectReviewer(managerName);
+                    }
+                }
+                return;
+            }
+            
+            // Handle employee dropdown
+            const employeeDropdown = document.getElementById('employeeDropdown');
+            if (employeeDropdown && employeeDropdown.style.display !== 'none') {
+                const options = employeeDropdown.querySelectorAll('.employee-option');
+                if (options.length > 0) {
+                    if (event.key === 'ArrowDown') {
+                        event.preventDefault();
+                        employeeHighlightedIndex = Math.min(employeeHighlightedIndex + 1, options.length - 1);
+                        updateEmployeeHighlight(options);
+                    } else if (event.key === 'ArrowUp') {
+                        event.preventDefault();
+                        employeeHighlightedIndex = Math.max(employeeHighlightedIndex - 1, -1);
+                        updateEmployeeHighlight(options);
+                    } else if (event.key === 'Enter' && employeeHighlightedIndex >= 0) {
+                        event.preventDefault();
+                        const selectedOption = options[employeeHighlightedIndex];
+                        const employeeId = selectedOption.getAttribute('data-employee-id');
+                        const employeeName = selectedOption.querySelector('.employee-name').textContent;
+                        selectEmployee(employeeId, employeeName);
+                    }
+                }
+            }
+        });
+
+        function updateEmployeeHighlight(options) {
+            options.forEach((option, index) => {
+                option.classList.remove('highlighted');
+                if (index === employeeHighlightedIndex) {
                     option.classList.add('highlighted');
                     option.scrollIntoView({ block: 'nearest' });
                 }
