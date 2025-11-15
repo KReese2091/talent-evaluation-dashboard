@@ -810,6 +810,82 @@
             border-radius: 4px;
         }
 
+        /* Enhanced Reviewer Search Styles */
+        .reviewer-search-container {
+            position: relative;
+        }
+
+        .reviewer-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 4px;
+        }
+
+        .dropdown-loading {
+            padding: 15px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .reviewer-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f3f6;
+            transition: background-color 0.2s ease;
+        }
+
+        .reviewer-option:last-child {
+            border-bottom: none;
+        }
+
+        .reviewer-option:hover, .reviewer-option.highlighted {
+            background-color: #f0f8ff;
+        }
+
+        .reviewer-option.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #0073CE;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .reviewer-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .team-size {
+            display: inline-block;
+            background: #0073CE;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+
         .reviewer-info {
             padding: 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -3750,14 +3826,22 @@
                 <div class="login-container">
                     <div class="login-card">
                         <h2>Reviewer Access</h2>
-                        <p>Enter your name to access your team's evaluations</p>
+                        <p>Search or select your name from the organization directory</p>
                         
                         <div class="form-group">
-                            <label for="reviewerName">Full Name:</label>
-                            <input type="text" id="reviewerName" placeholder="Enter your full name (e.g., Sarah Johnson)" onkeypress="if(event.key==='Enter') loginReviewer()">
+                            <label for="reviewerSearch">Manager/Reviewer Name:</label>
+                            <div class="reviewer-search-container">
+                                <input type="text" id="reviewerSearch" placeholder="Type to search managers..." 
+                                       oninput="searchReviewers()" onfocus="showReviewerDropdown()" 
+                                       onkeypress="if(event.key==='Enter') selectFirstReviewer()"
+                                       autocomplete="off">
+                                <div class="reviewer-dropdown" id="reviewerDropdown" style="display: none;">
+                                    <div class="dropdown-loading">Loading organization data...</div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <button class="btn btn-primary" onclick="loginReviewer()">Access Dashboard</button>
+                        <button class="btn btn-primary" id="accessBtn" onclick="loginSelectedReviewer()" disabled>Access Dashboard</button>
                         
                         <div class="demo-reviewers">
                             <h4>Demo Reviewer Accounts:</h4>
@@ -7973,6 +8057,274 @@
             
             // Call the improved downloadIndividualEvaluationPDF function
             downloadIndividualEvaluationPDF(currentEmployee, null);
+        }
+
+        // Organization Data - will be populated from CSV
+        let organizationData = {};
+        let allManagers = [];
+        let selectedReviewer = null;
+        let highlightedIndex = -1;
+
+        // Enhanced Reviewer Search Functions
+        async function loadOrganizationData() {
+            try {
+                const response = await fetch('Org Roster .csv');
+                const csvText = await response.text();
+                parseOrganizationCSV(csvText);
+            } catch (error) {
+                console.error('Error loading organization data:', error);
+                // Fallback to demo data
+                loadDemoOrganizationData();
+            }
+        }
+
+        function parseOrganizationCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',');
+            
+            // Clear existing data
+            organizationData = {};
+            allManagers = [];
+            
+            // Process each employee row
+            for (let i = 1; i < lines.length; i++) {
+                const row = parseCSVRow(lines[i]);
+                if (row.length < 5) continue; // Skip incomplete rows
+                
+                const employee = {
+                    firstName: row[0]?.trim() || '',
+                    lastName: row[1]?.trim() || '',
+                    level: row[2]?.trim() || '',
+                    position: row[3]?.trim() || '',
+                    manager: row[4]?.trim() || ''
+                };
+                
+                // Skip if no manager or employee name
+                if (!employee.manager || (!employee.firstName && !employee.lastName)) continue;
+                
+                const fullName = `${employee.firstName} ${employee.lastName}`.trim();
+                const manager = employee.manager;
+                
+                // Initialize manager entry if doesn't exist
+                if (!organizationData[manager]) {
+                    organizationData[manager] = [];
+                    allManagers.push(manager);
+                }
+                
+                // Add employee to manager's team
+                organizationData[manager].push({
+                    id: `emp_${i}`,
+                    name: fullName,
+                    position: employee.position,
+                    level: employee.level,
+                    status: 'not-started',
+                    evaluationData: {},
+                    lastUpdated: new Date().toISOString()
+                });
+            }
+            
+            // Sort managers alphabetically and remove duplicates
+            allManagers = [...new Set(allManagers)].sort();
+            
+            console.log(`Loaded ${allManagers.length} managers with ${Object.values(organizationData).reduce((sum, team) => sum + team.length, 0)} total employees`);
+        }
+
+        function parseCSVRow(row) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < row.length; i++) {
+                const char = row[i];
+                
+                if (char === '"' && (i === 0 || row[i-1] === ',')) {
+                    inQuotes = true;
+                } else if (char === '"' && inQuotes && (i === row.length - 1 || row[i+1] === ',')) {
+                    inQuotes = false;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            return result;
+        }
+
+        function loadDemoOrganizationData() {
+            // Fallback demo data if CSV fails to load
+            organizationData = {
+                'Sarah Johnson': [
+                    { id: 'emp1', name: 'Alice Thompson', position: 'Marketing Specialist', level: 'H', status: 'not-started' },
+                    { id: 'emp2', name: 'Bob Wilson', position: 'Brand Analyst', level: 'I', status: 'not-started' }
+                ],
+                'Mike Chen': [
+                    { id: 'emp3', name: 'Carol Davis', position: 'Creative Director', level: 'G', status: 'not-started' },
+                    { id: 'emp4', name: 'David Lee', position: 'UX Designer', level: 'H', status: 'not-started' }
+                ],
+                'Lisa Williams': [
+                    { id: 'emp5', name: 'Emily Brown', position: 'Marketing Manager', level: 'F', status: 'not-started' }
+                ]
+            };
+            allManagers = Object.keys(organizationData).sort();
+        }
+
+        function showReviewerDropdown() {
+            const dropdown = document.getElementById('reviewerDropdown');
+            if (dropdown && allManagers.length === 0) {
+                loadOrganizationData();
+            }
+            
+            setTimeout(() => {
+                if (dropdown) {
+                    dropdown.style.display = 'block';
+                    updateDropdownContent('');
+                }
+            }, 100);
+        }
+
+        function searchReviewers() {
+            const searchTerm = document.getElementById('reviewerSearch').value;
+            updateDropdownContent(searchTerm);
+            highlightedIndex = -1;
+        }
+
+        function updateDropdownContent(searchTerm) {
+            const dropdown = document.getElementById('reviewerDropdown');
+            if (!dropdown) return;
+            
+            if (allManagers.length === 0) {
+                dropdown.innerHTML = '<div class="dropdown-loading">Loading organization data...</div>';
+                return;
+            }
+            
+            const filteredManagers = allManagers.filter(manager => 
+                manager.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            if (filteredManagers.length === 0) {
+                dropdown.innerHTML = '<div class="no-results">No managers found matching your search</div>';
+                return;
+            }
+            
+            dropdown.innerHTML = filteredManagers.map((manager, index) => {
+                const teamSize = organizationData[manager] ? organizationData[manager].length : 0;
+                return `
+                    <div class="reviewer-option" data-manager="${manager}" onclick="selectReviewer('${manager}')">
+                        <div class="reviewer-name">${manager}</div>
+                        <div class="reviewer-info">
+                            Team Size: ${teamSize} direct reports
+                            <span class="team-size">${teamSize}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectReviewer(managerName) {
+            selectedReviewer = managerName;
+            document.getElementById('reviewerSearch').value = managerName;
+            document.getElementById('reviewerDropdown').style.display = 'none';
+            document.getElementById('accessBtn').disabled = false;
+            
+            // Highlight selected option
+            document.querySelectorAll('.reviewer-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`[data-manager="${managerName}"]`)?.classList.add('selected');
+        }
+
+        function selectFirstReviewer() {
+            const firstOption = document.querySelector('.reviewer-option');
+            if (firstOption) {
+                const managerName = firstOption.getAttribute('data-manager');
+                selectReviewer(managerName);
+            }
+        }
+
+        function loginSelectedReviewer() {
+            if (!selectedReviewer) {
+                alert('Please select a manager from the list');
+                return;
+            }
+            
+            // Auto-generate reviewer ID from name
+            const reviewerId = selectedReviewer.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '');
+            
+            currentReviewer = reviewerId;
+            
+            // Initialize reviewer data with their actual team from CSV
+            if (!reviewerData[reviewerId]) {
+                const teamData = {};
+                const employees = organizationData[selectedReviewer] || [];
+                
+                employees.forEach(emp => {
+                    teamData[emp.id] = {
+                        ...emp,
+                        lastUpdated: new Date().toISOString()
+                    };
+                });
+                
+                reviewerData[reviewerId] = {
+                    name: selectedReviewer,
+                    employees: teamData,
+                    createdDate: new Date().toISOString()
+                };
+                saveReviewerData();
+            }
+            
+            // Update URL and load dashboard
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('reviewer', reviewerId);
+            window.history.pushState({}, '', newUrl);
+            
+            loadReviewerDashboard();
+        }
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = event.target.closest('.reviewer-search-container');
+            if (!container) {
+                const dropdown = document.getElementById('reviewerDropdown');
+                if (dropdown) {
+                    dropdown.style.display = 'none';
+                }
+            }
+        });
+
+        // Keyboard navigation for dropdown
+        document.addEventListener('keydown', function(event) {
+            const dropdown = document.getElementById('reviewerDropdown');
+            if (!dropdown || dropdown.style.display === 'none') return;
+            
+            const options = dropdown.querySelectorAll('.reviewer-option');
+            if (options.length === 0) return;
+            
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                highlightedIndex = Math.min(highlightedIndex + 1, options.length - 1);
+                updateHighlight(options);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                highlightedIndex = Math.max(highlightedIndex - 1, -1);
+                updateHighlight(options);
+            } else if (event.key === 'Enter' && highlightedIndex >= 0) {
+                event.preventDefault();
+                const selectedOption = options[highlightedIndex];
+                const managerName = selectedOption.getAttribute('data-manager');
+                selectReviewer(managerName);
+            }
+        });
+
+        function updateHighlight(options) {
+            options.forEach((option, index) => {
+                option.classList.remove('highlighted');
+                if (index === highlightedIndex) {
+                    option.classList.add('highlighted');
+                    option.scrollIntoView({ block: 'nearest' });
+                }
+            });
         }
 
         // Initialize the system
