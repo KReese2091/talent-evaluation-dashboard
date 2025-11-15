@@ -2144,9 +2144,9 @@
         }
 
         .help-tooltip {
-            position: absolute;
+            position: fixed;
             top: 30px;
-            right: 0;
+            right: 20px;
             background: white;
             border: 2px solid #0073CE;
             border-radius: 12px;
@@ -2156,7 +2156,7 @@
             max-width: calc(100vw - 40px);
             max-height: 400px;
             overflow-y: auto;
-            z-index: 2000;
+            z-index: 9999;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
@@ -2170,31 +2170,11 @@
         }
 
         .help-tooltip.position-up {
-            top: auto;
-            bottom: 30px;
             transform: translateY(10px);
         }
 
         .help-tooltip.position-up.show {
             transform: translateY(0);
-        }
-
-        .help-tooltip.position-left {
-            right: auto;
-            left: 50%;
-            transform: translateX(-50%) translateY(-10px);
-        }
-
-        .help-tooltip.position-left.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .help-tooltip.position-left.position-up {
-            transform: translateX(-50%) translateY(10px);
-        }
-
-        .help-tooltip.position-left.position-up.show {
-            transform: translateX(-50%) translateY(0);
         }
 
         /* Force visible positioning for problematic cases */
@@ -2205,14 +2185,14 @@
             right: auto !important;
             bottom: auto !important;
             transform: translate(-50%, -50%) !important;
-            z-index: 3000 !important;
+            z-index: 10000 !important;
         }
 
         .help-tooltip::before {
             content: '';
             position: absolute;
             top: -8px;
-            right: 12px;
+            right: 20px;
             width: 0;
             height: 0;
             border-left: 8px solid transparent;
@@ -2225,12 +2205,6 @@
             bottom: -8px;
             border-bottom: none;
             border-top: 8px solid #0073CE;
-        }
-
-        .help-tooltip.position-left::before {
-            right: auto;
-            left: 50%;
-            transform: translateX(-50%);
         }
 
         .help-tooltip h4 {
@@ -6321,51 +6295,46 @@
                 const isShowing = tooltip.classList.contains('show');
                 
                 if (!isShowing) {
-                    // Reset positioning classes
-                    tooltip.classList.remove('position-up', 'position-left');
+                    // Reset positioning classes and styles
+                    tooltip.classList.remove('position-up', 'position-left', 'force-visible');
+                    tooltip.style.top = '';
+                    tooltip.style.left = '';
+                    tooltip.style.right = '';
+                    tooltip.style.bottom = '';
                     
-                    // Show tooltip temporarily to calculate its actual dimensions
-                    tooltip.style.visibility = 'hidden';
-                    tooltip.style.opacity = '1';
-                    tooltip.classList.add('show');
-                    
-                    // Calculate positioning with actual dimensions
+                    // Calculate positioning with fixed positioning
                     const helpButton = tooltip.parentElement.querySelector('.help-button');
                     if (helpButton) {
                         const buttonRect = helpButton.getBoundingClientRect();
-                        const tooltipRect = tooltip.getBoundingClientRect();
                         const viewportHeight = window.innerHeight;
                         const viewportWidth = window.innerWidth;
-                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                         
-                        // Check if tooltip would extend below visible viewport
-                        const tooltipBottom = buttonRect.bottom + tooltipRect.height + 30; // 30px for top offset
-                        const viewportBottom = scrollTop + viewportHeight;
+                        // Position tooltip near the help button
+                        let tooltipTop = buttonRect.bottom + 10;
+                        let tooltipLeft = Math.min(buttonRect.right - 320, viewportWidth - 340); // 320px width + 20px margin
                         
-                        if (tooltipBottom > viewportBottom && buttonRect.top > (tooltipRect.height + 60)) {
+                        // Ensure tooltip doesn't go off left edge
+                        tooltipLeft = Math.max(20, tooltipLeft);
+                        
+                        // If tooltip would extend below viewport, position it above the button
+                        if (tooltipTop + 300 > viewportHeight && buttonRect.top > 320) {
+                            tooltipTop = buttonRect.top - 310; // 300px height + 10px margin
                             tooltip.classList.add('position-up');
                         }
                         
-                        // Check if tooltip would extend beyond right edge
-                        const tooltipRight = buttonRect.right + tooltipRect.width;
-                        if (tooltipRight > viewportWidth) {
-                            tooltip.classList.add('position-left');
-                        }
+                        // Apply calculated positioning
+                        tooltip.style.top = tooltipTop + 'px';
+                        tooltip.style.left = tooltipLeft + 'px';
+                        tooltip.style.right = 'auto';
                         
-                        // Final check - if tooltip would still be problematic, use center positioning
-                        const finalTooltipRect = tooltip.getBoundingClientRect();
-                        if (finalTooltipRect.bottom > viewportBottom || 
-                            finalTooltipRect.right > viewportWidth ||
-                            finalTooltipRect.left < 0 ||
-                            finalTooltipRect.top < scrollTop) {
+                        // Final safety check - if still problematic, center it
+                        if (tooltipTop < 0 || tooltipLeft < 0 || tooltipLeft + 320 > viewportWidth) {
                             tooltip.classList.add('force-visible');
+                            tooltip.style.top = '';
+                            tooltip.style.left = '';
+                            tooltip.style.right = '';
                         }
                     }
-                    
-                    // Reset visibility and show state for proper animation
-                    tooltip.classList.remove('show');
-                    tooltip.style.visibility = '';
-                    tooltip.style.opacity = '';
                 }
                 
                 tooltip.classList.toggle('show');
