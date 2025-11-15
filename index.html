@@ -2145,9 +2145,7 @@
         }
 
         .help-tooltip {
-            position: absolute;
-            top: 100%;
-            right: 0;
+            position: fixed;
             background: white;
             border: 2px solid #0073CE;
             border-radius: 12px;
@@ -2157,12 +2155,11 @@
             max-width: 90vw;
             max-height: 400px;
             overflow-y: auto;
-            z-index: 10000;
+            z-index: 999999;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
             transition: all 0.3s ease;
-            margin-top: 8px;
         }
 
         .help-tooltip.show {
@@ -2175,12 +2172,19 @@
             content: '';
             position: absolute;
             top: -8px;
-            right: 12px;
+            right: 20px;
             width: 0;
             height: 0;
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
             border-bottom: 8px solid #0073CE;
+        }
+        
+        .help-tooltip.positioned-above::before {
+            top: auto;
+            bottom: -8px;
+            border-bottom: none;
+            border-top: 8px solid #0073CE;
         }
 
         .help-tooltip h4 {
@@ -6278,6 +6282,40 @@
             // Toggle the requested tooltip
             const tooltip = document.getElementById(helpId);
             if (tooltip) {
+                const isShowing = tooltip.classList.contains('show');
+                
+                if (!isShowing) {
+                    // Position the tooltip relative to its help button
+                    const helpButton = tooltip.parentElement.querySelector('.help-button');
+                    if (helpButton) {
+                        const buttonRect = helpButton.getBoundingClientRect();
+                        const tooltipWidth = 320;
+                        const viewportWidth = window.innerWidth;
+                        const viewportHeight = window.innerHeight;
+                        
+                        // Calculate position
+                        let left = buttonRect.right - tooltipWidth;
+                        let top = buttonRect.bottom + 8;
+                        
+                        // Adjust if tooltip would go off the right edge
+                        if (left < 20) {
+                            left = 20;
+                        }
+                        
+                        // Adjust if tooltip would go off the bottom
+                        if (top + 400 > viewportHeight - 20) {
+                            top = buttonRect.top - 400 - 8; // Position above
+                            tooltip.classList.add('positioned-above');
+                        } else {
+                            tooltip.classList.remove('positioned-above');
+                        }
+                        
+                        // Apply positioning
+                        tooltip.style.left = left + 'px';
+                        tooltip.style.top = top + 'px';
+                    }
+                }
+                
                 tooltip.classList.toggle('show');
             }
         }
