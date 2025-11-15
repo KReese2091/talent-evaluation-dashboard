@@ -2153,7 +2153,7 @@
             padding: 16px;
             box-shadow: 0 8px 24px rgba(0, 115, 206, 0.2);
             width: 320px;
-            max-width: 90vw;
+            max-width: calc(100vw - 40px);
             max-height: 400px;
             overflow-y: auto;
             z-index: 2000;
@@ -2181,7 +2181,20 @@
 
         .help-tooltip.position-left {
             right: auto;
-            left: -300px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        .help-tooltip.position-left.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .help-tooltip.position-left.position-up {
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        .help-tooltip.position-left.position-up.show {
+            transform: translateX(-50%) translateY(0);
         }
 
         .help-tooltip::before {
@@ -2205,7 +2218,8 @@
 
         .help-tooltip.position-left::before {
             right: auto;
-            left: 12px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .help-tooltip h4 {
@@ -6301,24 +6315,26 @@
                     
                     // Calculate positioning
                     const helpButton = tooltip.parentElement.querySelector('.help-button');
-                    const buttonRect = helpButton.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-                    const viewportWidth = window.innerWidth;
-                    
-                    // Check if tooltip would extend below viewport
-                    const spaceBelow = viewportHeight - buttonRect.bottom;
-                    const tooltipHeight = 300; // Approximate height
-                    
-                    if (spaceBelow < tooltipHeight && buttonRect.top > tooltipHeight) {
-                        tooltip.classList.add('position-up');
-                    }
-                    
-                    // Check if tooltip would extend beyond right edge
-                    const spaceRight = viewportWidth - buttonRect.right;
-                    const tooltipWidth = 320;
-                    
-                    if (spaceRight < tooltipWidth) {
-                        tooltip.classList.add('position-left');
+                    if (helpButton) {
+                        const buttonRect = helpButton.getBoundingClientRect();
+                        const viewportHeight = window.innerHeight;
+                        const viewportWidth = window.innerWidth;
+                        
+                        // Check if tooltip would extend below viewport (with some margin)
+                        const spaceBelow = viewportHeight - buttonRect.bottom;
+                        const tooltipHeight = 300; // Approximate height
+                        
+                        if (spaceBelow < tooltipHeight && buttonRect.top > tooltipHeight) {
+                            tooltip.classList.add('position-up');
+                        }
+                        
+                        // Check if tooltip would extend beyond right edge (with margin)
+                        const spaceRight = viewportWidth - buttonRect.right;
+                        const tooltipWidth = 320;
+                        
+                        if (spaceRight < (tooltipWidth + 20)) { // 20px margin
+                            tooltip.classList.add('position-left');
+                        }
                     }
                 }
                 
