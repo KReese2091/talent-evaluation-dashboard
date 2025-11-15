@@ -2121,236 +2121,11 @@
             margin-bottom: 16px;
         }
 
-        .help-button {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0073CE, #FFC220);
-            border: none;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        .help-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 115, 206, 0.3);
-        }
 
-        .help-tooltip {
-            position: absolute;
-            top: 35px;
-            right: 0;
-            background: white;
-            border: 2px solid #0073CE;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 8px 24px rgba(0, 115, 206, 0.2);
-            width: 320px;
-            max-width: calc(100vw - 40px);
-            max-height: 350px;
-            overflow-y: auto;
-            z-index: 999999;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-        }
 
-        .help-tooltip.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
 
-        .help-tooltip.position-up {
-            bottom: 100%;
-            top: auto;
-            margin-bottom: 50px;
-            transform: translateY(10px);
-            z-index: 999999 !important;
-            visibility: visible !important;
-            opacity: 0;
-        }
 
-        .help-tooltip.position-up.show {
-            transform: translateY(0);
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-
-        /* Force visible positioning for problematic cases */
-        .help-tooltip.force-visible {
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            right: auto !important;
-            bottom: auto !important;
-            width: 300px !important;
-            max-height: 400px !important;
-            transform: translate(-50%, -50%) !important;
-            z-index: 999999 !important;
-        }
-
-        .help-tooltip.force-visible.show {
-            transform: translate(-50%, -50%) !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-
-        /* Special handling for Content Quality Trends tooltip */
-        #help-quality.help-tooltip {
-            z-index: 9999999 !important;
-            position: absolute !important;
-        }
-        
-        #help-quality.help-tooltip.position-up {
-            bottom: 100% !important;
-            top: auto !important;
-            margin-bottom: 70px !important;
-            right: 0 !important;
-            left: auto !important;
-            width: 300px !important;
-            max-height: 350px !important;
-        }
-        
-        #help-quality.help-tooltip.position-up.show {
-            visibility: visible !important;
-            opacity: 1 !important;
-            display: block !important;
-            transform: translateY(0) !important;
-        }
-        
-        /* Global tooltip container - outside modal DOM */
-        #global-tooltip-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10000000;
-        }
-        
-        .global-tooltip {
-            position: fixed !important;
-            pointer-events: auto;
-            background: white;
-            border: 2px solid #0073CE;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-            padding: 15px;
-            width: 300px;
-            max-height: 350px;
-            overflow-y: auto;
-            z-index: 10000001 !important;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
-        }
-        
-        .global-tooltip.show {
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-        
-        .global-tooltip::before {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 8px solid #0073CE;
-            top: -8px;
-            right: 20px;
-        }
-        
-        .global-tooltip.arrow-below::before {
-            top: auto;
-            bottom: -8px;
-            border-bottom: none;
-            border-top: 8px solid #0073CE;
-        }
-
-        .help-tooltip::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            right: 12px;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 8px solid #0073CE;
-        }
-
-        .help-tooltip.position-up::before {
-            top: auto;
-            bottom: -8px;
-            border-bottom: none;
-            border-top: 8px solid #0073CE;
-        }
-
-        .help-tooltip h4 {
-            color: #0073CE;
-            margin: 0 0 8px 0;
-            font-size: 16px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .help-tooltip h4::before {
-            content: '';
-            width: 4px;
-            height: 16px;
-            background: linear-gradient(135deg, #0073CE, #FFC220);
-            border-radius: 2px;
-        }
-
-        .help-tooltip p {
-            color: #495057;
-            margin: 0 0 8px 0;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .help-tooltip ul {
-            margin: 8px 0 0 0;
-            padding-left: 16px;
-            color: #495057;
-            font-size: 13px;
-        }
-
-        .help-tooltip li {
-            margin-bottom: 4px;
-            line-height: 1.4;
-        }
-
-        .help-close {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: none;
-            border: none;
-            color: #6c757d;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px;
-            line-height: 1;
-        }
-
-        .help-close:hover {
-            color: #dc3545;
-        }
 
         /* Team Report Modal Styles */
         .team-report-overlay {
@@ -6372,192 +6147,7 @@
         }
 
         // Help Tooltip Functions (Global scope for Analytics)
-        function toggleHelp(helpId) {
-            console.log('toggleHelp called for:', helpId);
-            
-            // Close all other tooltips first
-            document.querySelectorAll('.help-tooltip').forEach(tooltip => {
-                if (tooltip.id !== helpId) {
-                    tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
-                }
-            });
-            
-            // Toggle the requested tooltip
-            const tooltip = document.getElementById(helpId);
-            console.log('Found tooltip element:', tooltip);
-            if (tooltip) {
-                const isShowing = tooltip.classList.contains('show');
-                
-                if (!isShowing) {
-                    // Reset positioning classes
-                    tooltip.classList.remove('position-up', 'position-left', 'force-visible');
-                    
-                    // Enhanced positioning logic for regular tooltips
-                    const helpButton = tooltip.parentElement.querySelector('.help-button');
-                    console.log('Found help button for', helpId, ':', helpButton);
-                    if (helpButton) {
-                        const buttonRect = helpButton.getBoundingClientRect();
-                        const viewportHeight = window.innerHeight;
-                        
-                        // Calculate available space below the button
-                        const spaceBelow = viewportHeight - buttonRect.bottom;
-                        const tooltipHeight = 350; // Max height of tooltip
-                        
-                        // Position above if insufficient space below OR button is in bottom 60% of viewport
-                        const buttonFromTop = buttonRect.top;
-                        const inBottomHalf = buttonFromTop > (viewportHeight * 0.4);
-                        
-                        if (spaceBelow < tooltipHeight || inBottomHalf) {
-                            // Only position above if there's enough space above
-                            const spaceAbove = buttonRect.top;
-                            if (spaceAbove > 100) { // Ensure minimum space above
-                                tooltip.classList.add('position-up');
-                            } else {
-                                // If no good space above or below, use center fallback
-                                tooltip.classList.add('force-visible');
-                            }
-                        }
-                    }
-                }
-                
-                console.log('About to show tooltip for:', helpId);
-                
-                // Force simple show without complex positioning for debugging
-                tooltip.style.display = 'block';
-                tooltip.style.position = 'absolute';
-                tooltip.style.zIndex = '999999';
-                tooltip.style.opacity = '1';
-                tooltip.style.visibility = 'visible';
-                
-                tooltip.classList.add('show');
-                console.log('Tooltip classes after show:', tooltip.className);
-                console.log('Tooltip computed styles:', {
-                    display: window.getComputedStyle(tooltip).display,
-                    opacity: window.getComputedStyle(tooltip).opacity,
-                    visibility: window.getComputedStyle(tooltip).visibility,
-                    zIndex: window.getComputedStyle(tooltip).zIndex
-                });
-            } else {
-                console.log('Hiding tooltip for:', helpId);
-                tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
-            }
-        }
 
-        function closeHelp(helpId) {
-            const tooltip = document.getElementById(helpId);
-            if (tooltip) {
-                tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
-            }
-        }
-
-        // Global tooltip functions for problematic tooltips
-        function toggleGlobalHelp(helpId, buttonElement) {
-            console.log('toggleGlobalHelp called with:', helpId, buttonElement);
-            const globalTooltip = document.getElementById(helpId + '-global');
-            if (!globalTooltip) {
-                console.error('Global tooltip not found:', helpId + '-global');
-                return;
-            }
-            
-            const isShowing = globalTooltip.classList.contains('show');
-            
-            // Close other global tooltips only
-            document.querySelectorAll('.global-tooltip').forEach(tooltip => {
-                if (tooltip !== globalTooltip) {
-                    tooltip.classList.remove('show');
-                }
-            });
-            
-            if (!isShowing) {
-                // Calculate position relative to the button
-                const buttonRect = buttonElement.getBoundingClientRect();
-                const tooltipWidth = 300;
-                const tooltipHeight = 350;
-                
-                // Position above the button with some margin
-                let top = buttonRect.top - tooltipHeight - 20;
-                let left = buttonRect.right - tooltipWidth; // Align right edge with button
-                let isBelow = false;
-                
-                // Adjust if tooltip would go off screen
-                if (top < 20) {
-                    top = buttonRect.bottom + 20; // Position below if no room above
-                    isBelow = true;
-                }
-                
-                if (left < 20) {
-                    left = 20; // Ensure it's not off the left edge
-                }
-                
-                if (left + tooltipWidth > window.innerWidth - 20) {
-                    left = window.innerWidth - tooltipWidth - 20; // Adjust if too far right
-                }
-                
-                // Apply calculated position
-                globalTooltip.style.top = top + 'px';
-                globalTooltip.style.left = left + 'px';
-                
-                // Set arrow direction
-                globalTooltip.classList.remove('arrow-below');
-                if (isBelow) {
-                    globalTooltip.classList.add('arrow-below');
-                }
-                
-                // Show the tooltip
-                globalTooltip.classList.add('show');
-                console.log('Global tooltip shown for:', helpId, 'at position:', {top, left});
-            }
-        }
-        
-        function closeGlobalHelp(helpId) {
-            const globalTooltip = document.getElementById(helpId + '-global');
-            if (globalTooltip) {
-                globalTooltip.classList.remove('show');
-                console.log('Global tooltip closed for:', helpId);
-            }
-        }
-        
-        function closeAllHelp() {
-            // Close regular tooltips
-            const tooltips = document.querySelectorAll('.help-tooltip');
-            tooltips.forEach(tooltip => {
-                tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
-            });
-            
-            // Close global tooltips
-            const globalTooltips = document.querySelectorAll('.global-tooltip');
-            globalTooltips.forEach(tooltip => {
-                tooltip.classList.remove('show');
-            });
-        }
-
-        function initializeHelpTooltips() {
-            // Remove any existing event listeners to prevent duplicates
-            const existingListener = document.helpTooltipListener;
-            if (existingListener) {
-                document.removeEventListener('click', existingListener);
-            }
-            
-            // Create new click outside handler
-            const clickOutsideHandler = function(event) {
-                if (!event.target.closest('.help-button') && 
-                    !event.target.closest('.help-tooltip') && 
-                    !event.target.closest('.global-tooltip')) {
-                    // Close regular tooltips
-                    document.querySelectorAll('.help-tooltip').forEach(tooltip => {
-                        tooltip.classList.remove('show', 'position-up', 'position-left', 'force-visible');
-                    });
-                    // Close global tooltips
-                    document.querySelectorAll('.global-tooltip').forEach(tooltip => {
-                        tooltip.classList.remove('show');
-                    });
-                }
-            };
-            
-            // Store reference and add listener
-            document.helpTooltipListener = clickOutsideHandler;
-            document.addEventListener('click', clickOutsideHandler);
-        }
 
         // Analytics & Insights Function
         function showAnalyticsInsights() {
@@ -6595,18 +6185,6 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Executive Summary</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-executive')" title="Learn more about Executive Summary">?</button>
-                                    <div class="help-tooltip" id="help-executive">
-                                        <button class="help-close" onclick="closeHelp('help-executive')">&times;</button>
-                                        <h4>Executive Summary</h4>
-                                        <p>Provides a high-level overview of your team's performance and key insights for executive decision-making.</p>
-                                        <ul>
-                                            <li><strong>Performance Snapshot:</strong> Visual breakdown of ratings across your team</li>
-                                            <li><strong>Key Findings:</strong> AI-generated insights about performance patterns</li>
-                                            <li><strong>Strategic Recommendations:</strong> Priority actions for team improvement</li>
-                                            <li><strong>Immediate Actions:</strong> Critical items requiring immediate attention</li>
-                                        </ul>
-                                    </div>
                                 </div>
                                 <div class="executive-summary">
                                     <div class="exec-overview">
@@ -6662,18 +6240,6 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Bias Detection Analysis</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-bias')" title="Learn more about Bias Detection">?</button>
-                                    <div class="help-tooltip" id="help-bias">
-                                        <button class="help-close" onclick="closeHelp('help-bias')">&times;</button>
-                                        <h4>Bias Detection Analysis</h4>
-                                        <p>AI-powered analysis to identify potential biases in evaluation language and patterns.</p>
-                                        <ul>
-                                            <li><strong>Risk Levels:</strong> High (red), Medium (gold), Low (blue)</li>
-                                            <li><strong>Common Biases:</strong> Easy/Hard rater, Gender, Recency, Halo effect</li>
-                                            <li><strong>Bias Score:</strong> Lower scores indicate more objective evaluations</li>
-                                            <li><strong>Instances:</strong> Number of times bias patterns were detected</li>
-                                        </ul>
-                                    </div>
                                 </div>
                                 <div class="bias-heatmap">
                                     ${insights.biasAnalysis.map(bias => `
@@ -6691,8 +6257,6 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Content Quality Trends</h3>
-                                    <button class="help-button" id="help-quality-button" onclick="toggleGlobalHelp('help-quality', this)" title="Learn more about Content Quality">?</button>
-                                    <!-- Original tooltip removed - now using global tooltip -->
                                 </div>
                                 <div class="pattern-grid">
                                     <div class="pattern-card">
@@ -6726,18 +6290,6 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Anomaly Pattern Detection</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-anomaly')" title="Learn more about Anomaly Detection">?</button>
-                                    <div class="help-tooltip" id="help-anomaly">
-                                        <button class="help-close" onclick="closeHelp('help-anomaly')">&times;</button>
-                                        <h4>Anomaly Pattern Detection</h4>
-                                        <p>Identifies unusual patterns in evaluations that may indicate inconsistencies or areas needing attention.</p>
-                                        <ul>
-                                            <li><strong>Severity Levels:</strong> High (urgent), Medium (moderate), Low (minor)</li>
-                                            <li><strong>Pattern Types:</strong> Rating inconsistencies, unusual language patterns, incomplete data</li>
-                                            <li><strong>Affected Count:</strong> Number of employees impacted by each anomaly</li>
-                                            <li><strong>Risk Score:</strong> Overall assessment of evaluation consistency (0-100)</li>
-                                        </ul>
-                                    </div>
                                 </div>
                                 <div class="anomaly-detection-grid">
                                     ${insights.anomalyDetection.map(anomaly => `
@@ -6772,9 +6324,6 @@
             `;
             
             document.body.insertAdjacentHTML('beforeend', analyticsHTML);
-            
-            // Initialize help tooltips after analytics HTML is inserted
-            initializeHelpTooltips();
         }
         
         function closeAnalytics(event) {
@@ -8123,20 +7672,6 @@
         });
     </script>
     
-    <!-- Global tooltip container for problematic tooltips -->
-    <div id="global-tooltip-container">
-        <!-- Content Quality Trends tooltip moved outside modal -->
-        <div class="help-tooltip global-tooltip" id="help-quality-global" style="display: none;">
-            <button class="help-close" onclick="closeGlobalHelp('help-quality')">&times;</button>
-            <h4>Content Quality Trends</h4>
-            <p>Measures the quality and depth of evaluation content across different metrics.</p>
-            <ul>
-                <li><strong>Objectivity:</strong> How fact-based vs. opinion-based the evaluations are</li>
-                <li><strong>Specificity:</strong> Level of detail and concrete examples provided</li>
-                <li><strong>Completion Rate:</strong> Percentage of fully completed evaluation sections</li>
-                <li><strong>Trends:</strong> Arrows show improvement (↑) or decline (↓) over time</li>
-            </ul>
-        </div>
-    </div>
+
 </body>
 </html>
