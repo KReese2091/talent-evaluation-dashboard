@@ -2859,6 +2859,65 @@
         .legend-color.opportunity {
             background: #FFC220;
         }
+
+        /* Rating Distribution Bars (from original section) */
+        .rating-distribution {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding: 20px 0;
+            min-height: 120px;
+        }
+
+        .rating-bar {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .rating-bar-fill {
+            background: #f0f0f0;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            min-height: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .rating-bar-fill.exemplary {
+            background: #28a745;
+        }
+
+        .rating-bar-fill.successful {
+            background: #0073CE;
+        }
+
+        .rating-bar-fill.opportunity {
+            background: #FFC220;
+            color: #2c3e50;
+        }
+
+        .rating-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .rating-percentage {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .rating-visualization {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f3f6;
+        }
     </style>
 </head>
 <body>
@@ -5924,39 +5983,38 @@
                                             <div class="pattern-description">${pattern.description}</div>
                                             <div class="pattern-data">${pattern.data}</div>
                                             ${pattern.chart ? `
-                                                <div class="mini-chart">
-                                                    <div class="chart-bar">
-                                                        <div class="bar-segment exemplary" style="width: ${pattern.chart.exemplary}%"></div>
-                                                        <div class="bar-segment successful" style="width: ${pattern.chart.successful}%"></div>
-                                                        <div class="bar-segment opportunity" style="width: ${pattern.chart.opportunity}%"></div>
-                                                    </div>
-                                                    <div class="chart-legend">
-                                                        <span class="legend-item"><span class="legend-color exemplary"></span>Exemplary</span>
-                                                        <span class="legend-item"><span class="legend-color successful"></span>Successful</span>
-                                                        <span class="legend-item"><span class="legend-color opportunity"></span>Opportunity</span>
-                                                    </div>
+                                                <div class="rating-visualization">
+                                                    ${pattern.showBars ? `
+                                                        <div class="rating-distribution">
+                                                            ${Object.entries(pattern.distributionData).map(([rating, data]) => `
+                                                                <div class="rating-bar">
+                                                                    <div class="rating-bar-fill ${rating}" style="height: ${Math.max(20, data.percentage * 2)}px;">
+                                                                        ${data.count}
+                                                                    </div>
+                                                                    <div class="rating-label">${rating.charAt(0).toUpperCase() + rating.slice(1)}</div>
+                                                                    <div class="rating-percentage">${data.percentage}%</div>
+                                                                </div>
+                                                            `).join('')}
+                                                        </div>
+                                                    ` : `
+                                                        <div class="mini-chart">
+                                                            <div class="chart-bar">
+                                                                <div class="bar-segment exemplary" style="width: ${pattern.chart.exemplary}%"></div>
+                                                                <div class="bar-segment successful" style="width: ${pattern.chart.successful}%"></div>
+                                                                <div class="bar-segment opportunity" style="width: ${pattern.chart.opportunity}%"></div>
+                                                            </div>
+                                                            <div class="chart-legend">
+                                                                <span class="legend-item"><span class="legend-color exemplary"></span>Exemplary</span>
+                                                                <span class="legend-item"><span class="legend-color successful"></span>Successful</span>
+                                                                <span class="legend-item"><span class="legend-color opportunity"></span>Opportunity</span>
+                                                            </div>
+                                                        </div>
+                                                    `}
                                                 </div>
                                             ` : ''}
                                         </div>
                                     `).join('')}
                                 </div>
-                            </div>
-                            
-                            <!-- Rating Distribution -->
-                            <div class="insights-section">
-                                <h3>📈 Rating Distribution Analysis</h3>
-                                <div class="rating-distribution">
-                                    ${Object.entries(insights.ratingDistribution).map(([rating, data]) => `
-                                        <div class="rating-bar">
-                                            <div class="rating-bar-fill ${rating}" style="height: ${Math.max(20, data.percentage)}px;">
-                                                ${data.count}
-                                            </div>
-                                            <div>${rating.charAt(0).toUpperCase() + rating.slice(1)}</div>
-                                            <div>${data.percentage}%</div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                                <p><strong>Insight:</strong> ${insights.ratingInsight}</p>
                             </div>
                             
                             <!-- Bias Detection Heatmap -->
@@ -6102,22 +6160,34 @@
             // Performance Patterns Analysis
             const performancePatterns = [];
             
-            // Rating Distribution Pattern
+            // Rating Distribution Pattern with Enhanced Insights
             if (completedEmployees.length > 0) {
-                const exemplaryPct = Math.round((ratingDistribution.exemplary.count / completedEmployees.length) * 100);
-                const successfulPct = Math.round((ratingDistribution.successful.count / completedEmployees.length) * 100);
-                const opportunityPct = Math.round((ratingDistribution.opportunity.count / completedEmployees.length) * 100);
+                const exemplaryPct = ratingDistribution.exemplary.percentage;
+                const successfulPct = ratingDistribution.successful.percentage;
+                const opportunityPct = ratingDistribution.opportunity.percentage;
+                
+                // Generate rating insight (moved from Rating Distribution Analysis)
+                let ratingInsight = '';
+                if (ratingDistribution.exemplary.percentage > 50) {
+                    ratingInsight = 'High concentration of top performers - consider stretch assignments and leadership development.';
+                } else if (ratingDistribution.opportunity.percentage > 30) {
+                    ratingInsight = 'Significant development needs identified - focus on targeted improvement plans.';
+                } else {
+                    ratingInsight = 'Balanced performance distribution across the team.';
+                }
                 
                 performancePatterns.push({
                     type: 'chart',
-                    title: 'Performance Distribution',
-                    description: 'Overall team rating breakdown',
-                    data: `${exemplaryPct}% Exemplary • ${successfulPct}% Successful • ${opportunityPct}% Opportunity`,
+                    title: 'Rating Distribution Analysis',
+                    description: ratingInsight,
+                    data: `${ratingDistribution.exemplary.count} Exemplary • ${ratingDistribution.successful.count} Successful • ${ratingDistribution.opportunity.count} Opportunity`,
                     chart: {
                         exemplary: exemplaryPct,
                         successful: successfulPct,
                         opportunity: opportunityPct
-                    }
+                    },
+                    distributionData: ratingDistribution,
+                    showBars: true
                 });
             }
             
@@ -6159,15 +6229,7 @@
             // AI Recommendations
             const recommendations = generateRecommendations(employees, ratingDistribution, biasAnalysis, contentQuality);
             
-            // Rating Distribution Insight
-            let ratingInsight = '';
-            if (ratingDistribution.exemplary.percentage > 50) {
-                ratingInsight = 'High concentration of top performers - consider stretch assignments and leadership development.';
-            } else if (ratingDistribution.opportunity.percentage > 30) {
-                ratingInsight = 'Significant development needs identified - focus on targeted improvement plans.';
-            } else {
-                ratingInsight = 'Balanced performance distribution across the team.';
-            }
+            // Rating insight now handled within Performance Patterns section
             
             // Anomaly Detection Analysis
             const anomalyDetection = analyzeAnomalyPatterns(employees, completedEmployees, ratingDistribution, biasAnalysis);
@@ -6179,7 +6241,6 @@
             return {
                 performancePatterns,
                 ratingDistribution,
-                ratingInsight,
                 biasAnalysis,
                 contentQuality,
                 recommendations,
