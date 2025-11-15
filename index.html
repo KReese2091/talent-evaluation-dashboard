@@ -931,13 +931,10 @@
         }
 
         .employee-option {
-            padding: 8px 12px;
+            padding: 12px 16px;
             cursor: pointer;
             border-bottom: 1px solid #f0f3f6;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            transition: background-color 0.2s ease;
         }
 
         .employee-option:last-child {
@@ -945,65 +942,49 @@
         }
 
         .employee-option:hover, .employee-option.highlighted {
-            background-color: #f0f8ff;
-            border-left: 3px solid #0073CE;
-            padding-left: 9px;
+            background-color: #f8f9fa;
         }
 
         .employee-option.selected {
-            background-color: #e3f2fd;
+            background-color: #f1f3f4;
             border-left: 3px solid #0073CE;
-            padding-left: 9px;
-        }
-
-        .employee-main-info {
-            flex: 1;
         }
 
         .employee-name {
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 1px;
-            font-size: 14px;
-        }
-
-        .employee-position {
-            font-size: 11px;
-            color: #666;
-            font-style: italic;
+            margin-bottom: 4px;
         }
 
         .employee-status-info {
+            font-size: 12px;
+            color: #666;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .status-indicator {
             display: inline-block;
-            padding: 1px 5px;
-            border-radius: 8px;
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            min-width: 50px;
-            text-align: center;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
         }
 
         .status-indicator.completed {
-            background: #28a745;
-            color: white;
+            background: #e8f5e8;
+            color: #2e7d2e;
         }
 
         .status-indicator.inprogress {
-            background: #0073CE;
-            color: white;
+            background: #e3f2fd;
+            color: #1565c0;
         }
 
         .status-indicator.notstarted {
-            background: #6c757d;
-            color: white;
+            background: #f5f5f5;
+            color: #666;
         }
 
         .reviewer-info {
@@ -4880,7 +4861,7 @@
                         <!-- Unified Employee Search/Select -->
                         <div class="search-section">
                             <div class="employee-search-container">
-                                <input type="text" id="employeeSearch" placeholder="Type to search..." 
+                                <input type="text" id="employeeSearch" placeholder="Type to search team members..." 
                                        oninput="searchEmployees()" onfocus="showEmployeeDropdown()" 
                                        onkeypress="if(event.key==='Enter') selectFirstEmployee()"
                                        autocomplete="off" class="employee-search-input">
@@ -8453,16 +8434,13 @@
             }
             
             dropdown.innerHTML = filteredEmployees.map((emp, index) => {
-                const statusText = emp.status === 'completed' ? 'Done' : 
-                                 emp.status === 'in-progress' ? 'Active' : 'Pending';
+                const statusText = emp.status === 'completed' ? 'Complete' : 
+                                 emp.status === 'in-progress' ? 'In Progress' : 'Not Started';
                 const statusClass = emp.status.replace('-', '');
                 
                 return `
                     <div class="employee-option" data-employee-id="${emp.id}" onclick="selectEmployee('${emp.id}', '${emp.name}')">
-                        <div class="employee-main-info">
-                            <div class="employee-name">${emp.name}</div>
-                            <div class="employee-position">${emp.position || 'Team Member'}</div>
-                        </div>
+                        <div class="employee-name">${emp.name}</div>
                         <div class="employee-status-info">
                             <span class="status-indicator ${statusClass}">${statusText}</span>
                         </div>
