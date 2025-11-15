@@ -2171,7 +2171,7 @@
 
         .help-tooltip.position-up {
             top: auto;
-            bottom: 35px;
+            bottom: 40px;
             transform: translateY(10px);
         }
 
@@ -2186,8 +2186,16 @@
             left: 50% !important;
             right: auto !important;
             bottom: auto !important;
+            width: 300px !important;
+            max-height: 400px !important;
             transform: translate(-50%, -50%) !important;
             z-index: 999999 !important;
+        }
+
+        .help-tooltip.force-visible.show {
+            transform: translate(-50%, -50%) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
         .help-tooltip::before {
@@ -6300,16 +6308,31 @@
                     // Reset positioning classes
                     tooltip.classList.remove('position-up', 'position-left', 'force-visible');
                     
-                    // Simple positioning logic
+                    // Enhanced positioning logic for better edge detection
                     const helpButton = tooltip.parentElement.querySelector('.help-button');
                     if (helpButton) {
                         const buttonRect = helpButton.getBoundingClientRect();
                         const viewportHeight = window.innerHeight;
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                         
-                        // Check if tooltip would go below viewport
+                        // Calculate available space below the button
                         const spaceBelow = viewportHeight - buttonRect.bottom;
-                        if (spaceBelow < 300) {
-                            tooltip.classList.add('position-up');
+                        const tooltipHeight = 350; // Max height of tooltip
+                        
+                        // More aggressive detection for positioning above
+                        // Position above if: insufficient space below OR button is in bottom 60% of viewport
+                        const buttonFromTop = buttonRect.top;
+                        const inBottomHalf = buttonFromTop > (viewportHeight * 0.4);
+                        
+                        if (spaceBelow < tooltipHeight || inBottomHalf) {
+                            // Only position above if there's enough space above
+                            const spaceAbove = buttonRect.top;
+                            if (spaceAbove > 100) { // Ensure minimum space above
+                                tooltip.classList.add('position-up');
+                            } else {
+                                // If no good space above or below, use center fallback
+                                tooltip.classList.add('force-visible');
+                            }
                         }
                     }
                 }
