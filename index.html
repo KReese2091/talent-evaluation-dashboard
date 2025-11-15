@@ -1875,26 +1875,30 @@
 
         .anomaly-card {
             background: white;
-            border-radius: 8px;
-            padding: 15px;
-            border-left: 4px solid #dee2e6;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            border-radius: 6px;
+            padding: 20px;
+            border-left: 4px solid #e0e6ed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e6ed;
+            transition: all 0.2s ease;
         }
 
         .anomaly-card.high {
             border-left-color: #dc3545;
-            background: #fff5f5;
+            background: #fdf2f2;
+            border-color: #f5c6cb;
         }
 
         .anomaly-card.medium {
-            border-left-color: #fd7e14;
-            background: #fff8f0;
+            border-left-color: #FFC220;
+            background: #fffbf0;
+            border-color: #ffe082;
         }
 
         .anomaly-card.low {
             border-left-color: #28a745;
             background: #f8fff8;
+            border-color: #c3e6cb;
         }
 
         .anomaly-header {
@@ -2434,187 +2438,291 @@
             display: block !important;
         }
 
-        /* Executive Summary Styles */
+        /* Unified Design System - Executive Summary */
         .executive-summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0073CE 0%, #004c87 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 115, 206, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .summary-header {
             display: flex;
             align-items: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-size: 20px;
             font-weight: 600;
+            color: white;
         }
 
         .summary-highlights {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
         }
 
         .highlight-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
+            gap: 12px;
+            padding: 16px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            font-size: 0.9em;
+            border-radius: 6px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .highlight-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
         }
 
         .key-insight {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border-left: 4px solid #ffd700;
-            font-style: italic;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #FFC220;
+            font-size: 15px;
+            line-height: 1.5;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .action-items {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .action-items h4 {
-            margin: 0 0 0.5rem 0;
-            color: #ffd700;
+            margin: 0 0 12px 0;
+            color: #FFC220;
+            font-size: 16px;
+            font-weight: 600;
         }
 
         .action-items ul {
             margin: 0;
-            padding-left: 1.2rem;
+            padding-left: 20px;
         }
 
         .action-items li {
-            margin-bottom: 0.3rem;
-            line-height: 1.4;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            font-size: 14px;
         }
 
-        /* Team Roster Styles */
+        /* Unified Design System - Team Roster */
         .team-roster {
-            margin-bottom: 2rem;
+            margin-bottom: 24px;
         }
 
         .roster-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
         }
 
-        .employee-card {
+        .roster-grid .employee-card {
             background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e0e0;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e6ed;
+            transition: all 0.2s ease;
         }
 
-        .employee-card:hover {
+        .roster-grid .employee-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 115, 206, 0.15);
+            border-color: #0073CE;
         }
 
-        .employee-header {
+        .roster-grid .employee-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f3f6;
         }
 
-        .employee-name {
+        .roster-grid .employee-name {
             font-weight: 600;
-            color: #333;
-            font-size: 1.1em;
+            color: #2c3e50;
+            font-size: 16px;
         }
 
-        .employee-status {
-            font-size: 0.85em;
-            color: #666;
+        .roster-grid .employee-status {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
         }
 
-        .employee-rating {
+        .roster-grid .employee-rating {
             display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .employee-rating.exemplary {
-            background: linear-gradient(135deg, #28a745, #20c997);
+        .roster-grid .employee-rating.exemplary {
+            background: #28a745;
             color: white;
         }
 
-        .employee-rating.successful {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+        .roster-grid .employee-rating.successful {
+            background: #0073CE;
             color: white;
         }
 
-        .employee-rating.opportunity {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #333;
+        .roster-grid .employee-rating.opportunity {
+            background: #FFC220;
+            color: #2c3e50;
         }
 
-        .employee-rating.not-rated {
+        .roster-grid .employee-rating.not-rated {
             background: #f8f9fa;
-            color: #666;
-            border: 1px solid #dee2e6;
+            color: #6c757d;
+            border: 1px solid #e0e6ed;
         }
 
-        .employee-highlights {
-            margin-top: 1rem;
+        .roster-grid .employee-highlights {
+            margin-top: 16px;
         }
 
-        .employee-highlights h4 {
-            margin: 0 0 0.5rem 0;
-            font-size: 0.9em;
-            color: #666;
+        .roster-grid .employee-highlights h4 {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            color: #6c757d;
             text-transform: uppercase;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        .employee-highlights p {
+        .roster-grid .employee-highlights p {
             margin: 0;
-            font-size: 0.9em;
-            line-height: 1.4;
-            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #495057;
         }
 
-        .development-areas {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background: #fff3cd;
+        .roster-grid .development-areas {
+            margin-top: 16px;
+            padding: 16px;
+            background: #fff8e1;
             border-radius: 6px;
-            border-left: 3px solid #ffc107;
+            border-left: 4px solid #FFC220;
+            border: 1px solid #ffe082;
         }
 
-        .development-areas h4 {
-            margin: 0 0 0.5rem 0;
-            font-size: 0.9em;
-            color: #856404;
+        .roster-grid .development-areas h4 {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            color: #f57c00;
             text-transform: uppercase;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        .development-areas p {
+        .roster-grid .development-areas p {
             margin: 0;
-            font-size: 0.85em;
-            line-height: 1.4;
-            color: #856404;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #ef6c00;
+        }
+
+        /* Unified Design System - Global Consistency */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e6ed;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .section-header .section-icon {
+            font-size: 20px;
+            color: #0073CE;
+        }
+
+        /* Standardize all chart containers */
+        .chart-section {
+            background: white;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e6ed;
+        }
+
+        /* Standardize metric cards */
+        .metric-card {
+            background: white;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e6ed;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 115, 206, 0.15);
+            border-color: #0073CE;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0073CE;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Unified button styles */
+        .analytics-btn {
+            background: linear-gradient(135deg, #0073CE 0%, #004c87 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 115, 206, 0.2);
+        }
+
+        .analytics-btn:hover {
+            background: linear-gradient(135deg, #005ba3 0%, #003d6b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 115, 206, 0.3);
         }
     </style>
 </head>
@@ -5594,7 +5702,10 @@
                         <div class="analytics-container">
                             <!-- Executive Summary -->
                             <div class="insights-section">
-                                <h3>📋 Executive Summary</h3>
+                                <div class="section-header">
+                                    <span class="section-icon">📋</span>
+                                    <h3>Executive Summary</h3>
+                                </div>
                                 <div class="executive-summary">
                                     <div class="summary-card">
                                         <div class="summary-header">Team Overview</div>
@@ -5627,7 +5738,10 @@
 
                             <!-- Team Roster & Individual Insights -->
                             <div class="insights-section">
-                                <h3>👥 Team Roster & Individual Performance</h3>
+                                <div class="section-header">
+                                    <span class="section-icon">👥</span>
+                                    <h3>Team Roster & Individual Performance</h3>
+                                </div>
                                 <div class="team-roster-grid">
                                     ${insights.teamRoster.map(employee => `
                                         <div class="employee-card ${employee.ratingClass}">
@@ -5657,8 +5771,11 @@
                             </div>
 
                             <!-- Performance Patterns -->
-                            <div class="insights-section">
-                                <h3>🎯 Performance Patterns</h3>
+                            <div class="insights-section chart-section">
+                                <div class="section-header">
+                                    <span class="section-icon">🎯</span>
+                                    <h3>Performance Patterns</h3>
+                                </div>
                                 <div class="pattern-grid">
                                     ${insights.performancePatterns.map(pattern => `
                                         <div class="pattern-card ${pattern.type}">
