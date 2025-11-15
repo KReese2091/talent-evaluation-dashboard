@@ -2206,21 +2206,32 @@
 
         /* Special handling for Content Quality Trends tooltip */
         #help-quality.help-tooltip {
-            z-index: 999999 !important;
+            z-index: 9999999 !important;
+            position: absolute !important;
         }
         
         #help-quality.help-tooltip.position-up {
             bottom: 100% !important;
             top: auto !important;
-            margin-bottom: 60px !important;
+            margin-bottom: 70px !important;
             right: 0 !important;
             left: auto !important;
+            width: 300px !important;
+            max-height: 350px !important;
         }
         
         #help-quality.help-tooltip.position-up.show {
             visibility: visible !important;
             opacity: 1 !important;
             display: block !important;
+            transform: translateY(0) !important;
+        }
+        
+        /* Ensure Content Quality tooltip is above modal overlay */
+        .modal.show ~ * #help-quality.help-tooltip.show,
+        .modal.show + * #help-quality.help-tooltip.show {
+            z-index: 9999999 !important;
+            position: fixed !important;
         }
 
         .help-tooltip::before {
@@ -6337,6 +6348,15 @@
                     if (helpId === 'help-quality') {
                         // Always position this one above or center - it's consistently problematic
                         tooltip.classList.add('position-up');
+                        console.log('Content Quality tooltip - added position-up class');
+                        // Force immediate visibility
+                        setTimeout(() => {
+                            console.log('Content Quality tooltip - forcing visibility');
+                            tooltip.style.visibility = 'visible';
+                            tooltip.style.opacity = '1';
+                            tooltip.style.zIndex = '9999999';
+                            tooltip.style.display = 'block';
+                        }, 10);
                     } else {
                         // Enhanced positioning logic for other tooltips
                         const helpButton = tooltip.parentElement.querySelector('.help-button');
