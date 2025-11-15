@@ -3334,14 +3334,14 @@
                         </div>
                         
                         <div class="quick-guide">
-                            <h4>📋 Quick Guide</h4>
+                            <h4>Quick Guide</h4>
                             <div class="guide-steps">
                                 <div class="guide-step">1. Add employees</div>
                                 <div class="guide-step">2. Select from dropdown</div>
                                 <div class="guide-step">3. Complete 7 evaluation steps</div>
                                 <div class="guide-step">4. Download PDF for calibration</div>
                             </div>
-                            <p class="guide-note">✓ Auto-saves your progress • ⚠️ Detects bias</p>
+                            <p class="guide-note">Auto-saves your progress • Detects bias</p>
                         </div>
                     </div>
                 </div>
@@ -3858,7 +3858,7 @@
                 const hasContext = analyzeGoalContext(text, sentences);
                 
                 if (hasMetrics && !hasContext.meaningful) {
-                    alerts.push('📊 <strong>Metric Without Context:</strong> Numbers provided but missing explanation of how goals connect to role expectations or business impact.');
+                    alerts.push('<strong>Metric Without Context:</strong> Numbers provided but missing explanation of how goals connect to role expectations or business impact.');
                 }
                 
                 if (!hasMetrics && !hasContext.qualitative) {
@@ -3875,7 +3875,7 @@
                 }
                 
                 if (hasMetrics && !impactAnalysis.contextualMeaning) {
-                    alerts.push('📈 <strong>Context Missing:</strong> Numbers lack context. Explain what these results mean compared to targets, previous periods, or industry benchmarks.');
+                    alerts.push('<strong>Context Missing:</strong> Numbers lack context. Explain what these results mean compared to targets, previous periods, or industry benchmarks.');
                 }
                 
                 if (!hasMetrics && !impactAnalysis.qualitativeImpact) {
@@ -3884,7 +3884,7 @@
                 
                 // Check for attribution inflation
                 if (impactAnalysis.inflatedClaims) {
-                    alerts.push('⚠️ <strong>Attribution Bias:</strong> Claims may overstate individual contribution to team/company results. Clarify specific individual role vs. team effort.');
+                    alerts.push('<strong>Attribution Bias:</strong> Claims may overstate individual contribution to team/company results. Clarify specific individual role vs. team effort.');
                 }
             }
             
@@ -3896,7 +3896,7 @@
                 }
                 
                 if (collaborationAnalysis.inflatedTeamwork) {
-                    alerts.push('👥 <strong>Teamwork Inflation:</strong> Claims about collaboration may be overstated. Provide specific examples of how they facilitated, mediated, or contributed to team success.');
+                    alerts.push('<strong>Teamwork Inflation:</strong> Claims about collaboration may be overstated. Provide specific examples of how they facilitated, mediated, or contributed to team success.');
                 }
                 
                 if (collaborationAnalysis.vagueCommunication) {
@@ -3917,11 +3917,11 @@
                 }
                 
                 if (growthAnalysis.trainingMentioned && !growthAnalysis.applicationEvidence) {
-                    alerts.push('🎯 <strong>Training Without Application:</strong> Lists training but doesn\'t show how learning was applied to work. Connect development activities to job performance.');
+                    alerts.push('<strong>Training Without Application:</strong> Lists training but doesn\'t show how learning was applied to work. Connect development activities to job performance.');
                 }
                 
                 if (growthAnalysis.inflatedGrowth) {
-                    alerts.push('📈 <strong>Growth Inflation:</strong> Development claims may be overstated for the time period. Ensure growth described is realistic and observable.');
+                    alerts.push('<strong>Growth Inflation:</strong> Development claims may be overstated for the time period. Ensure growth described is realistic and observable.');
                 }
                 
                 // Check for growth plateau indicators
@@ -3938,7 +3938,7 @@
                 }
                 
                 if (futureAnalysis.genericDevelopment) {
-                    alerts.push('📋 <strong>Generic Development:</strong> Development suggestions are too broad. Connect specific growth areas to role requirements or career progression.');
+                    alerts.push('<strong>Generic Development:</strong> Development suggestions are too broad. Connect specific growth areas to role requirements or career progression.');
                 }
                 
                 if (futureAnalysis.avoidsDifficultConversation) {
@@ -3956,7 +3956,7 @@
             // Sophisticated Easy Rater Detection
             const easyRaterAnalysis = detectEasyRaterPatterns(text, sentences);
             if (easyRaterAnalysis.isEasyRating) {
-                alerts.push(`⚠️ <strong>Easy Rater Pattern:</strong> ${easyRaterAnalysis.reason}`);
+                alerts.push(`<strong>Easy Rater Pattern:</strong> ${easyRaterAnalysis.reason}`);
             }
             
             // Logical consistency check
@@ -3970,7 +3970,7 @@
             const vagueCount = vagueWords.filter(word => lowerText.includes(word)).length;
             
             if (vagueCount >= 2) {
-                alerts.push('⚠️ <strong>Vague Language:</strong> Replace general terms with specific behaviors, outcomes, or examples.');
+                alerts.push('<strong>Vague Language:</strong> Replace general terms with specific behaviors, outcomes, or examples.');
             }
             
             // Gender/Demographic Bias Detection
@@ -3978,7 +3978,7 @@
             const biasFound = biasTerms.some(term => lowerText.includes(term));
             
             if (biasFound) {
-                alerts.push('⚠️ <strong>Potential Bias:</strong> Review language for unconscious bias. Focus on specific behaviors and measurable outcomes.');
+                alerts.push('<strong>Potential Bias:</strong> Review language for unconscious bias. Focus on specific behaviors and measurable outcomes.');
             }
             
             // Recency Bias Detection
@@ -3986,7 +3986,7 @@
             const recentCount = recentWords.filter(word => lowerText.includes(word)).length;
             
             if (recentCount >= 2) {
-                alerts.push('⚠️ <strong>Recency Bias:</strong> Ensure feedback represents the entire review period, not just recent events.');
+                alerts.push('<strong>Recency Bias:</strong> Ensure feedback represents the entire review period, not just recent events.');
             }
             
             return alerts;
@@ -4329,7 +4329,7 @@
                                                 onclick="downloadIndividualEvaluationPDF('${emp.id}', event)" 
                                                 title="Download Evaluation PDF" 
                                                 ${emp.evaluationData && Object.keys(emp.evaluationData).length > 0 ? '' : 'disabled'}>📄</button>
-                                        <button class="btn btn-restore" onclick="restoreEmployee('${emp.id}', event)" title="Restore to Active Team">↩️</button>
+                                        <button class="btn btn-restore" onclick="restoreEmployee('${emp.id}', event)" title="Restore to Active Team">Restore</button>
                                         <button class="btn btn-delete" onclick="deleteEmployee('${emp.id}', event)" title="Delete Permanently">×</button>
                                     </div>
                                 </div>
@@ -5889,7 +5889,7 @@
                                 <button class="btn btn-outline" onclick="closeAnalytics()" style="margin-right: 15px;">← Back to Dashboard</button>
                                 <button class="close-btn" onclick="closeAnalytics()">&times;</button>
                             </div>
-                            <h2>📊 Analytics & Insights Dashboard</h2>
+                            <h2>Analytics & Insights Dashboard</h2>
                             <p>AI-Powered Analysis for ${reviewer.name}'s Team | ${activeEmployees.length} Team Members</p>
                         </div>
                         
@@ -5897,7 +5897,6 @@
                             <!-- Executive Summary -->
                             <div class="insights-section">
                                 <div class="section-header">
-                                    <span class="section-icon">📋</span>
                                     <h3>Executive Summary</h3>
                                 </div>
                                 <div class="executive-summary">
@@ -5933,7 +5932,6 @@
                             <!-- Performance Patterns -->
                             <div class="insights-section chart-section">
                                 <div class="section-header">
-                                    <span class="section-icon">🎯</span>
                                     <h3>Performance Patterns</h3>
                                 </div>
                                 <div class="pattern-grid">
@@ -5941,10 +5939,10 @@
                                         <div class="pattern-card ${pattern.type}">
                                             <div class="pattern-header">
                                                 <div class="pattern-title">${pattern.title}</div>
-                                                ${pattern.type === 'chart' ? '<div class="pattern-icon">📊</div>' : 
-                                                  pattern.type === 'strength' ? '<div class="pattern-icon">💪</div>' : 
-                                                  pattern.type === 'warning' ? '<div class="pattern-icon">⚠️</div>' : 
-                                                  '<div class="pattern-icon">ℹ️</div>'}
+                                                ${pattern.type === 'chart' ? '' : 
+                                                  pattern.type === 'strength' ? '' : 
+                                                  pattern.type === 'warning' ? '' : 
+                                                  ''}
                                             </div>
                                             <div class="pattern-description">${pattern.description}</div>
                                             <div class="pattern-data">${pattern.data}</div>
@@ -5985,7 +5983,7 @@
                             
                             <!-- Bias Detection Heatmap -->
                             <div class="insights-section">
-                                <h3>⚠️ Bias Detection Analysis</h3>
+                                <h3>Bias Detection Analysis</h3>
                                 <div class="bias-heatmap">
                                     ${insights.biasAnalysis.map(bias => `
                                         <div class="bias-indicator ${bias.level}">
@@ -6060,7 +6058,7 @@
                             
                             <!-- AI Recommendations -->
                             <div class="insights-section">
-                                <h3>🤖 AI Recommendations</h3>
+                                <h3>AI Recommendations</h3>
                                 <ul class="recommendations-list">
                                     ${insights.recommendations.map(rec => `
                                         <li>
@@ -6470,20 +6468,20 @@
             
             // Completion status highlight
             if (completionRate >= 80) {
-                highlights.push({ icon: '✅', text: `${completionRate}% evaluation completion rate` });
+                highlights.push({ icon: '', text: `${completionRate}% evaluation completion rate` });
             } else if (completionRate >= 50) {
-                highlights.push({ icon: '⚠️', text: `${completionRate}% completion rate - in progress` });
+                highlights.push({ icon: '', text: `${completionRate}% completion rate - in progress` });
             } else {
-                highlights.push({ icon: '🔄', text: `${completionRate}% completion rate - needs attention` });
+                highlights.push({ icon: '', text: `${completionRate}% completion rate - needs attention` });
             }
             
             // Performance distribution highlight
             if (topPerformers.length > 0) {
-                highlights.push({ icon: '🌟', text: `${topPerformers.length} exemplary performer${topPerformers.length !== 1 ? 's' : ''}` });
+                highlights.push({ icon: '', text: `${topPerformers.length} exemplary performer${topPerformers.length !== 1 ? 's' : ''}` });
             }
             
             if (developmentNeeds.length > 0) {
-                highlights.push({ icon: '📈', text: `${developmentNeeds.length} team member${developmentNeeds.length !== 1 ? 's' : ''} with development opportunities` });
+                highlights.push({ icon: '', text: `${developmentNeeds.length} team member${developmentNeeds.length !== 1 ? 's' : ''} with development opportunities` });
             }
             
             // Generate key insight
