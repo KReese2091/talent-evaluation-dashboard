@@ -2155,7 +2155,7 @@
             max-width: 90vw;
             max-height: 400px;
             overflow-y: auto;
-            z-index: 999999;
+            z-index: 99999999 !important;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
@@ -2166,6 +2166,13 @@
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+            z-index: 99999999 !important;
+        }
+
+        /* Ensure tooltip content is above everything */
+        .help-tooltip * {
+            position: relative;
+            z-index: 1;
         }
 
         .help-tooltip::before {
@@ -6313,7 +6320,15 @@
                         // Apply positioning
                         tooltip.style.left = left + 'px';
                         tooltip.style.top = top + 'px';
+                        
+                        // Force high z-index
+                        tooltip.style.zIndex = '99999999';
                     }
+                }
+                
+                if (!isShowing) {
+                    // Force z-index when showing
+                    tooltip.style.zIndex = '99999999';
                 }
                 
                 tooltip.classList.toggle('show');
