@@ -4200,16 +4200,91 @@
             const textarea = document.getElementById(fieldId);
             const hasSuggestions = textarea && textarea.getAttribute('data-has-suggestions') === 'true';
             
-            // Expanded subjective words list for better detection
-            const subjectiveWords = ['good', 'bad', 'great', 'poor', 'nice', 'awesome', 'terrible', 'amazing', 'horrible', 'fantastic', 'awful', 'disappointing', 'impressive', 'wonderful', 'brilliant', 'mediocre', 'excellent', 'outstanding', 'exceptional', 'superb', 'magnificent', 'fabulous', 'marvelous', 'tremendous', 'incredible', 'unbelievable', 'phenomenal', 'remarkable', 'extraordinary', 'sensational', 'spectacular', 'dreadful', 'appalling', 'atrocious', 'abysmal', 'horrendous', 'ghastly', 'abominable'];
+            // Different objectivity standards for different question types
+            const isEvaluativeSection = fieldId === 'growth' || fieldId === 'lookingAhead';
             
-            // More realistic objective indicators
+            if (isEvaluativeSection) {
+                // For evaluative sections (Growth & Looking Ahead): professional judgment objectivity
+                return calculateEvaluativeObjectivity(text, fieldId, hasSuggestions);
+            } else {
+                // For performance sections (Key Priorities & Collaboration): data-driven objectivity
+                return calculatePerformanceObjectivity(text, fieldId, hasSuggestions);
+            }
+        }
+        
+        function calculateEvaluativeObjectivity(text, fieldId, hasSuggestions) {
+            // Professional judgment indicators for evaluative content
+            const reasoningIndicators = ['because', 'since', 'due to', 'given that', 'in order to', 'so that', 'which would', 'this would', 'to build', 'to develop', 'to enhance', 'to strengthen'];
+            const specificityIndicators = ['specific', 'particular', 'focused on', 'targeted', 'specialized in', 'concentrated on', 'dedicated to'];
+            const assessmentLanguage = ['recommend', 'suggest', 'propose', 'should', 'needs to', 'would benefit from', 'critical for', 'essential for', 'important for'];
+            const balancedIndicators = ['while', 'however', 'although', 'but also', 'on the other hand', 'additionally', 'furthermore', 'nonetheless'];
+            
+            const words = text.toLowerCase().split(/\W+/);
+            const phrases = text.toLowerCase();
+            
+            // Count professional judgment indicators
+            let reasoningCount = 0;
+            reasoningIndicators.forEach(indicator => {
+                if (phrases.includes(indicator)) reasoningCount++;
+            });
+            
+            let specificityCount = 0;
+            specificityIndicators.forEach(indicator => {
+                if (phrases.includes(indicator)) specificityCount++;
+            });
+            
+            let assessmentCount = 0;
+            assessmentLanguage.forEach(indicator => {
+                if (phrases.includes(indicator)) assessmentCount++;
+            });
+            
+            let balanceCount = 0;
+            balancedIndicators.forEach(indicator => {
+                if (phrases.includes(indicator)) balanceCount++;
+            });
+            
+            // Count subjective words that are inappropriate for professional evaluation
+            const inappropriateSubjective = ['amazing', 'awesome', 'terrible', 'horrible', 'fantastic', 'awful'];
+            const inappropriateCount = words.filter(word => inappropriateSubjective.includes(word)).length;
+            
+            // Count vague assessment language
+            const vagueAssessment = ['good', 'bad', 'nice', 'okay', 'fine', 'decent', 'alright'];
+            const vagueCount = words.filter(word => vagueAssessment.includes(word)).length;
+            
+            // Calculate base score for professional judgment
+            let objectivityScore = 50; // Start with moderate baseline
+            
+            // Add points for good professional judgment elements
+            objectivityScore += (reasoningCount * 10); // Reasoning is critical
+            objectivityScore += (specificityCount * 8);
+            objectivityScore += (assessmentCount * 6);
+            objectivityScore += (balanceCount * 5);
+            
+            // Subtract points for issues
+            objectivityScore -= (inappropriateCount * 15);
+            objectivityScore -= (vagueCount * 8);
+            
+            // Bonus for detailed professional reasoning
+            if (text.length > 150 && reasoningCount >= 2 && assessmentCount >= 1) {
+                objectivityScore += 10;
+            }
+            
+            // Penalty for suggestion-only content
+            if (hasSuggestions && text.length < 100) {
+                objectivityScore -= 15;
+            }
+            
+            // Cap and floor the score appropriately for evaluative content
+            return Math.min(90, Math.max(35, objectivityScore));
+        }
+        
+        function calculatePerformanceObjectivity(text, fieldId, hasSuggestions) {
+            // Data-driven objectivity for performance sections
+            const subjectiveWords = ['good', 'bad', 'great', 'poor', 'nice', 'awesome', 'terrible', 'amazing', 'horrible', 'fantastic', 'awful', 'disappointing', 'impressive', 'wonderful', 'brilliant', 'mediocre', 'excellent', 'outstanding', 'exceptional', 'superb'];
+            
             const objectiveIndicators = {
                 keyPriorities: ['achieved target of', 'completed by deadline', 'delivered on time', 'met milestone', 'exceeded target', 'on schedule', 'within budget', 'project completed', 'goal reached', 'objective met'],
-                resultsImpact: ['increased by X%', 'decreased costs by', 'generated $X', 'saved $X', 'improved efficiency by', 'ROI of X%', 'KPI improved from X to Y', 'revenue increased', 'market share gained', 'customer satisfaction score'],
-                collaboration: ['collaborated with [specific team]', 'facilitated X meetings', 'coordinated project with', 'resolved conflict between', 'improved team efficiency by', 'established partnership with'],
-                growth: ['completed [specific] training', 'earned [specific] certification', 'developed competency in', 'mastered [specific] skill', 'improved performance by', 'learned [specific] technology'],
-                lookingAhead: ['needs development in [specific area]', 'training required for', 'stretch assignment in', 'skill gap identified in', 'next role preparation', 'development plan for']
+                collaboration: ['collaborated with [specific team]', 'facilitated X meetings', 'coordinated project with', 'resolved conflict between', 'improved team efficiency by', 'established partnership with']
             };
             
             const words = text.toLowerCase().split(/\W+/);
@@ -4218,8 +4293,8 @@
             // Count subjective words
             const subjectiveCount = words.filter(word => subjectiveWords.includes(word)).length;
             
-            // Count vague phrases that reduce objectivity
-            const vagueIndicators = ['did well', 'performed good', 'worked hard', 'tried their best', 'made an effort', 'showed improvement', 'was successful', 'did a good job', 'performed as expected', 'met expectations'];
+            // Count vague phrases
+            const vagueIndicators = ['did well', 'performed good', 'worked hard', 'tried their best', 'made an effort', 'showed improvement', 'was successful'];
             let vagueCount = 0;
             vagueIndicators.forEach(phrase => {
                 if (phrases.includes(phrase)) vagueCount++;
@@ -4233,31 +4308,25 @@
                 });
             }
             
-            // Add general objective words (but be more selective)
-            const generalObjective = ['implemented', 'managed X employees', 'led project', 'created solution', 'designed process', 'analyzed data', 'measured results', 'tracked progress', 'documented outcomes'];
-            objectiveCount += words.filter(word => generalObjective.includes(word)).length;
-            
             // Count specific numbers, dates, percentages
             const numberMatches = text.match(/\d+%|\$\d+|\d+\.\d+|\d{1,2}\/\d{1,2}\/\d{2,4}/g);
             if (numberMatches) objectiveCount += numberMatches.length;
             
-            // Penalty for using mostly suggestions without specific details
-            if (hasSuggestions && text.length < 100) {
-                objectiveCount = Math.max(0, objectiveCount - 2);
-            }
+            // Add general objective performance words
+            const generalObjective = ['implemented', 'managed', 'led', 'created', 'designed', 'analyzed', 'measured', 'tracked', 'documented'];
+            objectiveCount += words.filter(word => generalObjective.includes(word)).length;
             
-            // Calculate score more realistically
+            // Calculate score
             const totalWords = subjectiveCount + objectiveCount + vagueCount;
-            if (totalWords === 0) return 45; // Default moderate score for empty content
+            if (totalWords === 0) return 45;
             
             let objectivityScore = Math.round((objectiveCount / totalWords) * 100);
             
-            // Apply penalties for common issues
+            // Apply penalties
             if (subjectiveCount > objectiveCount) objectivityScore = Math.max(20, objectivityScore - 15);
             if (vagueCount > 2) objectivityScore = Math.max(30, objectivityScore - 10);
             if (hasSuggestions && objectiveCount === 0) objectivityScore = Math.max(35, objectivityScore);
             
-            // Cap maximum score to be more realistic
             return Math.min(85, Math.max(20, objectivityScore));
         }
         
