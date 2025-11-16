@@ -4876,8 +4876,6 @@
                             <div class="smart-actions-list">
                                 <div class="smart-action-item" onclick="startSelectedEmployeeEvaluation()">Start Evaluation</div>
                                 <div class="smart-action-item" onclick="downloadSelectedEmployeePDF()">Download PDF</div>
-                                <div class="smart-action-item" onclick="archiveSelectedEmployee()">Archive Employee</div>
-                                <div class="smart-action-item" onclick="deleteSelectedEmployee()">Delete Employee</div>
                             </div>
                         </div>
                         
@@ -4907,7 +4905,6 @@
                                                 title="Download Evaluation PDF" 
                                                 ${emp.evaluationData && Object.keys(emp.evaluationData).length > 0 ? '' : 'disabled'}>📄</button>
                                         <button class="btn btn-restore" onclick="restoreEmployee('${emp.id}', event)" title="Restore to Active Team">Restore</button>
-                                        <button class="btn btn-delete" onclick="deleteEmployee('${emp.id}', event)" title="Delete Permanently">×</button>
                                     </div>
                                 </div>
                             `).join('')}
