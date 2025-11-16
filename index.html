@@ -3537,29 +3537,6 @@
                     <label for="keyPriorities">Feedback:</label>
                     <textarea id="keyPriorities" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('keyPriorities')"></textarea>
                 </div>
-
-                <!-- AI Writing Coach -->
-                <div class="writing-coach" id="coach-keyPriorities" style="display: none;">
-                    <div class="coach-header">
-                        <span style="font-size: 20px;">🤖</span>
-                        <h4>AI Writing Coach</h4>
-                    </div>
-                    <div class="metrics-grid">
-                        <div class="metric" id="objectivity-keyPriorities">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Objectivity</div>
-                        </div>
-                        <div class="metric" id="specificity-keyPriorities">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Specificity</div>
-                        </div>
-                        <div class="metric" id="completeness-keyPriorities">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Completeness</div>
-                        </div>
-                    </div>
-                    <div class="bias-alerts" id="alerts-keyPriorities"></div>
-                </div>
             </div>
 
             <!-- Step 2: Collaboration -->
@@ -3583,29 +3560,6 @@
                 <div class="form-group">
                     <label for="collaboration">Feedback:</label>
                     <textarea id="collaboration" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('collaboration')"></textarea>
-                </div>
-
-                <!-- AI Writing Coach -->
-                <div class="writing-coach" id="coach-collaboration" style="display: none;">
-                    <div class="coach-header">
-                        <span style="font-size: 20px;">🤖</span>
-                        <h4>AI Writing Coach</h4>
-                    </div>
-                    <div class="metrics-grid">
-                        <div class="metric" id="objectivity-collaboration">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Objectivity</div>
-                        </div>
-                        <div class="metric" id="specificity-collaboration">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Specificity</div>
-                        </div>
-                        <div class="metric" id="completeness-collaboration">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Completeness</div>
-                        </div>
-                    </div>
-                    <div class="bias-alerts" id="alerts-collaboration"></div>
                 </div>
             </div>
 
@@ -3631,29 +3585,6 @@
                     <label for="growth">Feedback:</label>
                     <textarea id="growth" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('growth')"></textarea>
                 </div>
-
-                <!-- AI Writing Coach -->
-                <div class="writing-coach" id="coach-growth" style="display: none;">
-                    <div class="coach-header">
-                        <span style="font-size: 20px;">🤖</span>
-                        <h4>AI Writing Coach</h4>
-                    </div>
-                    <div class="metrics-grid">
-                        <div class="metric" id="objectivity-growth">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Objectivity</div>
-                        </div>
-                        <div class="metric" id="specificity-growth">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Specificity</div>
-                        </div>
-                        <div class="metric" id="completeness-growth">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Completeness</div>
-                        </div>
-                    </div>
-                    <div class="bias-alerts" id="alerts-growth"></div>
-                </div>
             </div>
 
             <!-- Step 4: Looking Ahead -->
@@ -3677,29 +3608,6 @@
                 <div class="form-group">
                     <label for="lookingAhead">Feedback:</label>
                     <textarea id="lookingAhead" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('lookingAhead')"></textarea>
-                </div>
-
-                <!-- AI Writing Coach -->
-                <div class="writing-coach" id="coach-lookingAhead" style="display: none;">
-                    <div class="coach-header">
-                        <span style="font-size: 20px;">🤖</span>
-                        <h4>AI Writing Coach</h4>
-                    </div>
-                    <div class="metrics-grid">
-                        <div class="metric" id="objectivity-lookingAhead">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Objectivity</div>
-                        </div>
-                        <div class="metric" id="specificity-lookingAhead">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Specificity</div>
-                        </div>
-                        <div class="metric" id="completeness-lookingAhead">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Completeness</div>
-                        </div>
-                    </div>
-                    <div class="bias-alerts" id="alerts-lookingAhead"></div>
                 </div>
             </div>
 
@@ -4201,11 +4109,20 @@
 
         // Initialize AI Writing Coach for all textareas
         function initializeAIWritingCoach() {
+            console.log('Initializing AI Writing Coach...');
             const textFields = ['keyPriorities', 'collaboration', 'growth', 'lookingAhead'];
             
             textFields.forEach(fieldId => {
                 const textarea = document.getElementById(fieldId);
+                const coach = document.getElementById(`coach-${fieldId}`);
+                
+                console.log(`Checking ${fieldId}: textarea=${!!textarea}, coach=${!!coach}`);
+                
                 if (textarea) {
+                    // Remove existing event listeners to avoid duplicates
+                    textarea.onkeyup = null;
+                    textarea.oninput = null;
+                    
                     // Ensure onkeyup event is attached
                     textarea.onkeyup = function() {
                         analyzeFeedback(fieldId);
@@ -4218,8 +4135,15 @@
                     
                     // Trigger analysis if content already exists
                     if (textarea.value.trim().length > 0) {
-                        analyzeFeedback(fieldId);
+                        console.log(`Triggering analysis for ${fieldId} with existing content`);
+                        setTimeout(() => analyzeFeedback(fieldId), 100);
                     }
+                } else {
+                    console.warn(`Missing textarea: ${fieldId}`);
+                }
+                
+                if (!coach) {
+                    console.warn(`Missing coach container: coach-${fieldId}`);
                 }
             });
         }
@@ -4227,17 +4151,26 @@
         // Bias Detection and AI Writing Coach
         function analyzeFeedback(fieldId) {
             const textarea = document.getElementById(fieldId);
-            if (!textarea) return;
+            if (!textarea) {
+                console.log(`AI Coach: No textarea found for ${fieldId}`);
+                return;
+            }
             
             const text = textarea.value.trim();
             const coach = document.getElementById(`coach-${fieldId}`);
-            if (!coach) return;
+            if (!coach) {
+                console.log(`AI Coach: No coach container found for coach-${fieldId}`);
+                return;
+            }
             
             // Show AI Writing Coach immediately when user starts typing
             if (text.length < 3) {
                 coach.style.display = 'none';
                 return;
             }
+            
+            console.log(`AI Coach: Analyzing ${fieldId} with ${text.length} characters`);
+            coach.style.display = 'block';
             
             coach.style.display = 'block';
             
@@ -5151,8 +5084,10 @@
             // Load existing data if available
             loadEmployeeData(employee);
             
-            // Initialize AI Writing Coach for all textareas
-            initializeAIWritingCoach();
+            // Initialize AI Writing Coach for all textareas (with delay to ensure DOM is ready)
+            setTimeout(() => {
+                initializeAIWritingCoach();
+            }, 200);
             
             // Setup auto-save after employee data is fully loaded
             setTimeout(setupAutoSave, 500);
