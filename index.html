@@ -4199,13 +4199,42 @@
             }, 100);
         }
 
+        // Initialize AI Writing Coach for all textareas
+        function initializeAIWritingCoach() {
+            const textFields = ['keyPriorities', 'collaboration', 'growth', 'lookingAhead'];
+            
+            textFields.forEach(fieldId => {
+                const textarea = document.getElementById(fieldId);
+                if (textarea) {
+                    // Ensure onkeyup event is attached
+                    textarea.onkeyup = function() {
+                        analyzeFeedback(fieldId);
+                    };
+                    
+                    // Also trigger on input for better responsiveness
+                    textarea.oninput = function() {
+                        analyzeFeedback(fieldId);
+                    };
+                    
+                    // Trigger analysis if content already exists
+                    if (textarea.value.trim().length > 0) {
+                        analyzeFeedback(fieldId);
+                    }
+                }
+            });
+        }
+
         // Bias Detection and AI Writing Coach
         function analyzeFeedback(fieldId) {
             const textarea = document.getElementById(fieldId);
+            if (!textarea) return;
+            
             const text = textarea.value.trim();
             const coach = document.getElementById(`coach-${fieldId}`);
+            if (!coach) return;
             
-            if (text.length < 10) {
+            // Show AI Writing Coach immediately when user starts typing
+            if (text.length < 3) {
                 coach.style.display = 'none';
                 return;
             }
@@ -5121,6 +5150,9 @@
             
             // Load existing data if available
             loadEmployeeData(employee);
+            
+            // Initialize AI Writing Coach for all textareas
+            initializeAIWritingCoach();
             
             // Setup auto-save after employee data is fully loaded
             setTimeout(setupAutoSave, 500);
