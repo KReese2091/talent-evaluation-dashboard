@@ -4405,14 +4405,17 @@
                 alerts.push('🎭 <strong>Surface Compliance:</strong> Contains expected keywords but lacks substantive analysis. Provide deeper context and specific reasoning.');
             }
             
-            // Section-specific bias detection with substance analysis
+            // Section-specific bias detection with enhanced objectivity, specificity, and completeness
             if (fieldId === 'keyPriorities') {
                 // Key Priorities focuses on: primary goals + specific results + measurable progress + business impact
-                const hasGoals = text.match(/goals?|priorities|objectives?|targets?/i);
-                const hasResults = text.match(/results?|delivered|achieved|completed|accomplished/i);
-                const hasMetrics = text.match(/\d+%|\$[\d,]+|\d+\.\d+|increased|decreased|improved|reduced|exceeded|delivered/i);
-                const hasBusiness = text.match(/revenue|cost|efficiency|customer|market|business|ROI|impact/i);
+                const hasGoals = text.match(/goals?|priorities|objectives?|targets?|deliverables?|responsibilities/i);
+                const hasResults = text.match(/results?|delivered|achieved|completed|accomplished|outcomes?|finished/i);
+                const hasMetrics = text.match(/\d+%|\$[\d,]+|\d+\.\d+|increased|decreased|improved|reduced|exceeded|delivered|\d+\s*(million|thousand|k\b)|baseline|target|benchmark/i);
+                const hasBusiness = text.match(/revenue|cost|efficiency|customer|market|business|ROI|impact|profit|sales|growth|savings|productivity/i);
+                const hasSpecificity = text.match(/specifically|exactly|precisely|by.*\d+|from.*to|within.*timeframe|Q[1-4]|month|quarter/i);
+                const hasContext = text.match(/because|due to|in order to|to address|resulted from|stemmed from|aimed at/i);
                 
+                // Completeness checks
                 if (!hasGoals) {
                     alerts.push('🎯 <strong>Missing Goals Context:</strong> Question asks for "primary goals" - clearly state what their main priorities/objectives were for the year.');
                 }
@@ -4429,19 +4432,38 @@
                     alerts.push('💼 <strong>Business Impact Missing:</strong> Question asks for "clear impact on business outcomes" - connect results to business value, revenue, efficiency, etc.');
                 }
                 
+                // Objectivity and specificity checks
                 if (hasMetrics && !hasBusiness) {
                     alerts.push('🔗 <strong>Metrics Without Business Connection:</strong> Numbers provided but missing explanation of business impact. How did these results affect the company?');
+                }
+                
+                if (!hasSpecificity && hasResults) {
+                    alerts.push('🎯 <strong>Vague Results:</strong> Results mentioned but lack specificity. Include timelines, exact amounts, or precise outcomes.');
+                }
+                
+                if (!hasContext && hasGoals) {
+                    alerts.push('🔍 <strong>Missing Goal Context:</strong> Goals stated but missing why they were priorities. Explain business rationale or strategic importance.');
+                }
+                
+                // Check for subjective language vs objective facts
+                const subjectiveWords = text.match(/amazing|excellent|outstanding|fantastic|incredible|awesome|great|good|nice/gi);
+                if (subjectiveWords && subjectiveWords.length >= 2) {
+                    alerts.push('⚖️ <strong>Subjective Language:</strong> Replace opinion words with objective facts, data, and measurable outcomes.');
                 }
             }
             
             
             if (fieldId === 'collaboration') {
                 // Collaboration focuses on: specific ways partnered + cross-team delivery + areas for stronger collaboration
-                const hasSpecificWays = text.match(/partnered with|collaborated with|worked with|teamed with/i);
-                const hasResults = text.match(/delivered|results?|outcomes?|achieved|completed/i);
-                const hasGrowth = text.match(/stronger|improve|better|enhance|develop|could|should|opportunity/i);
-                const hasMultipleExamples = (text.match(/\(1\)|first|second|third|one|two|three/gi) || []).length >= 2;
+                const hasSpecificWays = text.match(/partnered with|collaborated with|worked with|teamed with|facilitated|coordinated|led joint/i);
+                const hasResults = text.match(/delivered|results?|outcomes?|achieved|completed|successful|resolved|improved/i);
+                const hasGrowth = text.match(/stronger|improve|better|enhance|develop|could|should|opportunity|challenge|struggle/i);
+                const hasMultipleExamples = (text.match(/\(1\)|first|second|third|one|two|three|\d\)|•|-\s/gi) || []).length >= 2;
+                const hasSpecificTeams = text.match(/marketing|sales|IT|finance|operations|product|engineering|HR|legal|design/i);
+                const hasMethodology = text.match(/meetings|workshops|stakeholder|communication|process|framework|methodology/i);
+                const hasChallenges = text.match(/challenge|difficult|conflict|disagreement|obstacle|barrier|tension|issue/i);
                 
+                // Completeness checks
                 if (!hasSpecificWays) {
                     alerts.push('🤝 <strong>Missing Partnership Details:</strong> Question asks for "specific ways" they partnered - describe concrete collaboration methods and approaches.');
                 }
@@ -4458,60 +4480,74 @@
                     alerts.push('📈 <strong>Missing Growth Areas:</strong> Question asks "where could their partnership and collaboration have been stronger" - identify specific improvement opportunities.');
                 }
                 
-                if (collaborationAnalysis.vagueCommunication) {
-                    alerts.push('💬 <strong>Communication Clichés:</strong> Avoid general statements like "great communicator." Describe specific communication challenges solved or methods used.');
+                // Specificity and objectivity checks
+                if (!hasSpecificTeams && hasSpecificWays) {
+                    alerts.push('🎯 <strong>Vague Team References:</strong> Specify which teams/departments they collaborated with (e.g., Marketing, IT, Sales) rather than generic "cross-functional teams."');
                 }
                 
-                // Check for conflict avoidance in feedback
-                if (!lowerText.includes('challenge') && !lowerText.includes('difficult') && !lowerText.includes('conflict') && sentences.length > 2) {
-                    alerts.push('� <strong>Overly Positive:</strong> No challenges or growth areas mentioned. Real collaboration involves navigating difficulties - consider balanced feedback.');
+                if (!hasMethodology && hasSpecificWays) {
+                    alerts.push('🔧 <strong>Missing Collaboration Methods:</strong> Describe HOW they collaborated (meetings, workshops, shared processes) not just that they did.');
+                }
+                
+                if (!hasChallenges && sentences.length > 2) {
+                    alerts.push('⚖️ <strong>Unrealistically Positive:</strong> Real collaboration involves challenges. Include balanced feedback on obstacles navigated or areas for improvement.');
+                }
+                
+                // Check for vague communication language
+                const vagueComm = text.match(/great communicator|excellent people skills|good with people|strong interpersonal/i);
+                if (vagueComm) {
+                    alerts.push('💬 <strong>Communication Clichés:</strong> Replace vague phrases like "great communicator" with specific examples of communication challenges solved or methods used.');
+                }
+                
+                // Check for attribution accuracy
+                const soloCredit = text.match(/single-handedly|solely|entirely|all by|only person/i);
+                if (soloCredit) {
+                    alerts.push('🤝 <strong>Collaboration vs Solo Credit:</strong> In collaboration section, ensure credit is appropriately shared with team members and partners.');
                 }
             }
             
             if (fieldId === 'growth') {
-                const growthAnalysis = analyzeGrowthSubstance(text, sentences);
+                // Growth & Development focuses on: critical development areas + targeted experiences + growth acceleration (FUTURE-LOOKING)
+                const hasCriticalAreas = text.match(/critical|key|most important|priority|development areas?|growth areas?|skills?|capabilities?/i);
+                const hasTargetedExperiences = text.match(/training|expanded scope|new responsibilities|stretch work|experience|project|assignment|rotation|certification|coaching|mentoring/i);
+                const hasAcceleration = text.match(/accelerate|best.*growth|would.*develop|strengthen|build|enhance|improve/i);
+                const hasMultiplePriorities = (text.match(/\(1\)|first|second|third|one|two|three|\d\)|•/gi) || []).length >= 2;
+                const hasNextYear = text.match(/next year|coming year|future|going forward|development plan/i);
                 
-                if (growthAnalysis.hasGrowthKeywords && !growthAnalysis.hasEvidence) {
-                    alerts.push('📚 <strong>Growth Without Evidence:</strong> Claims development but provides no specific evidence. Include before/after examples or concrete learning outcomes.');
-                }
-                
-                if (growthAnalysis.trainingMentioned && !growthAnalysis.applicationEvidence) {
-                    alerts.push('<strong>Training Without Application:</strong> Lists training but doesn\'t show how learning was applied to work. Connect development activities to job performance.');
-                }
-                
-                if (growthAnalysis.inflatedGrowth) {
-                    alerts.push('<strong>Growth Inflation:</strong> Development claims may be overstated for the time period. Ensure growth described is realistic and observable.');
-                }
-                
-                // Growth focuses on: critical development areas + targeted experiences + growth acceleration
-                const hasDevelopmentAreas = text.match(/development|growth|areas?|skills?|capabilities?/i);
-                const hasTargetedExperiences = text.match(/training|experience|scope|responsibilities|stretch|project/i);
-                const hasAcceleration = text.match(/accelerate|build|strengthen|develop|enhance|improve/i);
-                const hasMultiplePriorities = (text.match(/\(1\)|first|second|third|one|two|three/gi) || []).length >= 2;
-                
-                if (!hasDevelopmentAreas) {
-                    alerts.push('🎯 <strong>Development Areas Not Identified:</strong> Question asks for "most critical development areas" - clearly specify 2-3 key growth priorities.');
+                if (!hasCriticalAreas) {
+                    alerts.push('🎯 <strong>Development Areas Not Identified:</strong> Question asks for "most critical development areas" - identify specific skills, capabilities, or competencies to develop next year.');
                 }
                 
                 if (!hasTargetedExperiences) {
-                    alerts.push('🚀 <strong>Missing Targeted Experiences:</strong> Question requires "targeted experiences" like training, expanded scope, stretch work - specify concrete development opportunities.');
+                    alerts.push('🚀 <strong>Missing Development Experiences:</strong> Question asks for "targeted experiences such as training, expanded scope, new responsibilities, or stretch work" - specify concrete development opportunities.');
                 }
                 
                 if (!hasAcceleration) {
-                    alerts.push('⚡ <strong>Growth Acceleration Missing:</strong> Question asks what would "best accelerate their growth" - explain how suggested experiences will drive development.');
+                    alerts.push('⚡ <strong>Growth Acceleration Missing:</strong> Question asks what would "best accelerate their growth" - explain how the suggested experiences will drive their development forward.');
                 }
                 
                 if (!hasMultiplePriorities) {
-                    alerts.push('📝 <strong>Insufficient Development Areas:</strong> Question asks for "two or three most critical" areas - provide multiple distinct development priorities.');
+                    alerts.push('📝 <strong>Insufficient Development Areas:</strong> Question asks for "two or three most critical" areas - provide multiple distinct development priorities for next year.');
+                }
+                
+                // Check for backward-looking content (should be forward-looking)
+                const hasBackwardLanguage = text.match(/has grown|developed|learned|completed|achieved|demonstrated/i);
+                const hasForwardLanguage = text.match(/should|needs to|recommend|suggest|propose|would benefit|next year|going forward/i);
+                
+                if (hasBackwardLanguage && !hasForwardLanguage) {
+                    alerts.push('🔮 <strong>Past vs Future Focus:</strong> This question is about future development needs. Focus on what they need to develop next year, not past accomplishments.');
                 }
             }
             
             if (fieldId === 'lookingAhead') {
                 // Looking Ahead focuses on: peer differentiation + rating assumptions + measurable progress + support actions
-                const hasDifferentiation = text.match(/differentiat|compar|peers?|others?|stands out|excels/i);
-                const hasAssumptions = text.match(/assumption|based on|influenced by|evidence|reason/i);
-                const hasMeasurable = text.match(/progress|expect|six months?|\d+%|measurable|goal|target/i);
-                const hasSupportActions = text.match(/support|actions?|will|provide|help|facilitate/i);
+                const hasDifferentiation = text.match(/differentiat|compar|peers?|others?|stands out|excels|unique|distinguishes|separates/i);
+                const hasAssumptions = text.match(/assumption|based on|influenced by|evidence|reason|because|due to|given that/i);
+                const hasMeasurable = text.match(/progress|expect|six months?|\d+%|measurable|goal|target|by.*date|within.*timeframe|Q[1-4]/i);
+                const hasSupportActions = text.match(/support|actions?|will|provide|help|facilitate|commit to|plan to|schedule/i);
+                const hasSpecificEvidence = text.match(/demonstrated|shown by|evidenced|proven|track record|performance data|metrics|results/i);
+                const hasConcreteSupport = text.match(/meeting|training|coaching|resources|budget|time|project|assignment|mentoring/i);
+                const hasTimeframes = text.match(/by.*\d+|within.*weeks?|next.*months?|Q[1-4]|timeline|schedule|deadline/i);
                 
                 if (!hasDifferentiation) {
                     alerts.push('🏆 <strong>Missing Peer Comparison:</strong> Question asks "what clearly differentiates this associate" compared to others - provide specific comparative strengths.');
@@ -4532,6 +4568,32 @@
                 if (!hasSupportActions) {
                     alerts.push('🤝 <strong>Support Actions Not Specified:</strong> Question asks for "specific actions you will take to support their development" - detail your commitments as their manager.');
                 }
+                
+                // Enhanced objectivity and specificity checks for Looking Ahead
+                if (!hasSpecificEvidence && hasAssumptions) {
+                    alerts.push('📋 <strong>Vague Assumptions:</strong> Rating assumptions mentioned but lack specific evidence. Cite concrete examples, data, or observable behaviors.');
+                }
+                
+                if (!hasConcreteSupport && hasSupportActions) {
+                    alerts.push('🎯 <strong>Generic Support Actions:</strong> Support mentioned but not specific. Detail exact resources, meetings, training, or opportunities you will provide.');
+                }
+                
+                if (!hasTimeframes && hasMeasurable) {
+                    alerts.push('⏱️ <strong>Missing Timelines:</strong> Measurable progress mentioned but lacks specific timeframes. Include when progress will be measured or achieved.');
+                }
+                
+                // Check for comparison specificity
+                const vagueComparison = text.match(/better than others|above average|top performer|one of the best/i);
+                if (vagueComparison) {
+                    alerts.push('📊 <strong>Vague Peer Comparison:</strong> Replace general comparisons with specific skills, achievements, or behaviors that differentiate this person.');
+                }
+                
+                // Check for action commitment vs suggestion
+                const suggestions = text.match(/could|might|should|may|possibly/i);
+                const commitments = text.match(/will|commit to|plan to|schedule|allocate|provide/i);
+                if (suggestions && !commitments) {
+                    alerts.push('💪 <strong>Weak Commitment Language:</strong> Replace tentative language (could, might) with firm commitments about support actions you will take.');
+                }
             }
             
             // Universal bias checks with advanced pattern analysis
@@ -4548,28 +4610,50 @@
                 alerts.push(`🔍 <strong>Logical Inconsistency:</strong> ${consistencyAnalysis.issue}`);
             }
             
-            // Vague Language Detection
-            const vagueWords = ['good', 'nice', 'fine', 'okay', 'decent', 'alright', 'satisfactory'];
+            // Enhanced Specificity Detection
+            const vagueWords = ['good', 'nice', 'fine', 'okay', 'decent', 'alright', 'satisfactory', 'great', 'awesome', 'excellent'];
             const vagueCount = vagueWords.filter(word => lowerText.includes(word)).length;
             
             if (vagueCount >= 2) {
-                alerts.push('<strong>Vague Language:</strong> Replace general terms with specific behaviors, outcomes, or examples.');
+                alerts.push('🎯 <strong>Vague Language:</strong> Replace general terms with specific behaviors, outcomes, or measurable examples.');
             }
             
-            // Gender/Demographic Bias Detection
-            const biasTerms = ['aggressive', 'bossy', 'emotional', 'nurturing', 'soft-spoken', 'cultural fit', 'natural leader'];
+            // Objectivity: Numbers without Context Detection
+            const numbersWithoutContext = text.match(/\d+%|\$[\d,]+|\d+\.\d+/) && !text.match(/compared to|versus|target|baseline|benchmark|industry average|peer average/i);
+            if (numbersWithoutContext && sentences.length > 1) {
+                alerts.push('📊 <strong>Numbers Need Context:</strong> Metrics provided but missing comparison benchmarks. Include targets, peer averages, or previous performance.');
+            }
+            
+            // Enhanced Gender/Demographic Bias Detection
+            const biasTerms = ['aggressive', 'bossy', 'emotional', 'nurturing', 'soft-spoken', 'cultural fit', 'natural leader', 'assertive', 'abrasive', 'ambitious'];
             const biasFound = biasTerms.some(term => lowerText.includes(term));
             
             if (biasFound) {
-                alerts.push('<strong>Potential Bias:</strong> Review language for unconscious bias. Focus on specific behaviors and measurable outcomes.');
+                alerts.push('⚖️ <strong>Potential Bias Language:</strong> Review for unconscious bias. Focus on specific behaviors and measurable outcomes instead of personality traits.');
             }
             
-            // Recency Bias Detection
-            const recentWords = ['recently', 'last week', 'yesterday', 'just completed', 'latest', 'this month'];
+            // Recency Bias Detection (Enhanced)
+            const recentWords = ['recently', 'last week', 'yesterday', 'just completed', 'latest', 'this month', 'just finished', 'currently'];
             const recentCount = recentWords.filter(word => lowerText.includes(word)).length;
             
             if (recentCount >= 2) {
-                alerts.push('<strong>Recency Bias:</strong> Ensure feedback represents the entire review period, not just recent events.');
+                alerts.push('📅 <strong>Recency Bias:</strong> Ensure feedback represents the entire review period, not just recent events.');
+            }
+            
+            // Attribution Accuracy (Completeness)
+            const soloCredit = text.match(/single-handedly|solely responsible|all by myself|entirely due to me|only person who/i);
+            if (soloCredit) {
+                alerts.push('👥 <strong>Attribution Check:</strong> Verify if accomplishments involved team effort. Ensure appropriate credit sharing.');
+            }
+            
+            // Consistency: Conflicting Ratings
+            const positiveWords = ['exceptional', 'outstanding', 'exceeded', 'excellent', 'superior'];
+            const negativeWords = ['needs improvement', 'below expectations', 'struggled', 'failed', 'inadequate'];
+            const hasPositive = positiveWords.some(word => lowerText.includes(word));
+            const hasNegative = negativeWords.some(word => lowerText.includes(word));
+            
+            if (hasPositive && hasNegative && sentences.length > 2) {
+                alerts.push('🔍 <strong>Rating Consistency:</strong> Contains both highly positive and negative language. Ensure overall rating aligns with detailed feedback.');
             }
             
             return alerts;
@@ -4708,33 +4792,7 @@
             };
         }
         
-        function analyzeGrowthSubstance(text, sentences) {
-            const lowerText = text.toLowerCase();
-            
-            const growthKeywords = ['grew', 'developed', 'learned', 'improved', 'advanced'];
-            const hasGrowthKeywords = growthKeywords.some(word => lowerText.includes(word));
-            
-            // Check for evidence
-            const evidenceWords = ['completed', 'achieved', 'demonstrated', 'applied', 'implemented', 'showed'];
-            const hasEvidence = evidenceWords.some(word => lowerText.includes(word));
-            
-            // Check for training mention vs application
-            const trainingMentioned = lowerText.includes('training') || lowerText.includes('course') || lowerText.includes('certification');
-            const applicationWords = ['used', 'applied', 'implemented', 'practiced', 'utilized'];
-            const applicationEvidence = applicationWords.some(word => lowerText.includes(word));
-            
-            // Check for inflated growth claims
-            const inflationWords = ['completely transformed', 'dramatically improved', 'revolutionary change', 'total makeover'];
-            const inflatedGrowth = inflationWords.some(word => lowerText.includes(word));
-            
-            return {
-                hasGrowthKeywords,
-                hasEvidence,
-                trainingMentioned,
-                applicationEvidence,
-                inflatedGrowth
-            };
-        }
+
         
         function analyzeFutureSubstance(text, sentences) {
             const lowerText = text.toLowerCase();
