@@ -7605,29 +7605,7 @@
                 addSpace(5);
             }
             
-            // Executive Summary (matching slide 6)
-            addText('EXECUTIVE SUMMARY', 12, 'bold');
-            addSpace(3);
-            
-            let execSummary = '';
-            if (hasContent.overallRating) {
-                execSummary += `${employee.name} has demonstrated ${data.overallRating === 'exemplary' ? 'exceptional' : data.overallRating === 'successful' ? 'solid and consistent' : 'developing'} performance during the ${data.reviewPeriod || 'current review period'}. `;
-            } else {
-                execSummary += `${employee.name} performance review is in progress for the ${data.reviewPeriod || 'current review period'}. `;
-            }
-            
-            if (hasContent.keyPriorities) {
-                const prioritiesPreview = data.keyPriorities.substring(0, 150);
-                execSummary += `Their focus on key priorities ${prioritiesPreview.includes('achieved') || prioritiesPreview.includes('delivered') ? 'resulted in successful delivery of assigned objectives' : 'has been documented and assessed'}. `;
-            }
-
-            if (hasContent.resultsImpact) {
-                const hasNumbers = /\d+%|\$[\d,]+|\d+\.\d+/.test(data.resultsImpact);
-                execSummary += `${hasNumbers ? 'Measurable business impact was achieved' : 'Business contributions were documented'} across key performance areas. `;
-            }
-            
-            addText(execSummary, 9, 'normal', [40, 40, 40]);
-            addSpace(8);
+            // Executive summary removed - go straight to detailed sections for cleaner calibration focus
             
             // Detailed sections with exact manager inputs (matching slide 6 structure)
             if (hasContent.keyPriorities) {
@@ -8025,24 +8003,7 @@
                     });
                 }
 
-                // Generate full summary for completed/near-complete evaluations
-                summary += `EXECUTIVE SUMMARY:\n`;
-                if (hasContent.overallRating) {
-                    summary += `${evalData.employeeName || employee.name} has demonstrated ${evalData.overallRating === 'exemplary' ? 'exceptional' : evalData.overallRating === 'successful' ? 'solid and consistent' : 'developing'} performance during the ${evalData.reviewPeriod || 'current review period'}. `;
-                } else {
-                    summary += `${evalData.employeeName || employee.name} performance review is in progress for the ${evalData.reviewPeriod || 'current review period'}. `;
-                }
-                
-                if (hasContent.keyPriorities) {
-                    const prioritiesPreview = evalData.keyPriorities.substring(0, 150);
-                    summary += `Their focus on key priorities ${prioritiesPreview.includes('achieved') || prioritiesPreview.includes('delivered') ? 'resulted in successful delivery of assigned objectives' : 'has been documented and assessed'}. `;
-                }
-
-                if (hasContent.resultsImpact && includeMetrics) {
-                    const hasNumbers = /\d+%|\$[\d,]+|\d+\.\d+/.test(evalData.resultsImpact);
-                    summary += `${hasNumbers ? 'Measurable business impact was achieved' : 'Business contributions were documented'} across key performance areas. `;
-                }
-                summary += `\n\n`;
+                // Remove executive summary - go straight to detailed sections
 
                 // Key Priorities Section - only if content exists
                 if (hasContent.keyPriorities) {
