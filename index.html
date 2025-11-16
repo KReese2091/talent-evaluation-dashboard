@@ -7572,79 +7572,91 @@
                 return y;
             }
             
-            // Enhanced Professional Header with Sam's Club branding
-            // Header gradient background (matching dashboard)
+            // Condensed Professional Header with Sam's Club logo
+            // Compact header background
             pdf.setFillColor(17, 34, 75); // #11224B
-            pdf.rect(0, 0, pageWidth, 45, 'F');
+            pdf.rect(0, 0, pageWidth, 25, 'F');
             
-            // Header gradient overlay
-            pdf.setFillColor(17, 39, 86); // #112756 
-            pdf.rect(0, 35, pageWidth, 10, 'F');
+            // Add Sam's Club logo
+            try {
+                // Load and add the Sam's Club logo
+                const logoImg = new Image();
+                logoImg.onload = function() {
+                    try {
+                        const logoCanvas = document.createElement('canvas');
+                        const logoCtx = logoCanvas.getContext('2d');
+                        logoCanvas.width = 40;
+                        logoCanvas.height = 20;
+                        logoCtx.drawImage(logoImg, 0, 0, 40, 20);
+                        const logoDataUrl = logoCanvas.toDataURL('image/png');
+                        
+                        pdf.addImage(logoDataUrl, 'PNG', margin, 5, 20, 10);
+                    } catch (logoError) {
+                        console.log('Logo embedding failed:', logoError);
+                    }
+                };
+                logoImg.src = 'sams-club-logo.png';
+                
+                // Sam's Club text and title
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('SAM\'S CLUB', margin + 25, 12);
+                
+                // Main title - compact
+                pdf.setFontSize(12);
+                pdf.text('TALENT EVALUATION SUMMARY', margin + 80, 12);
+            } catch (e) {
+                // Fallback if logo loading fails
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('SAM\'S CLUB', margin, 12);
+                pdf.setFontSize(12);
+                pdf.text('TALENT EVALUATION SUMMARY', margin + 60, 12);
+            }
             
-            // Sam's Club branding text (since we can't embed logo in jsPDF easily)
-            pdf.setTextColor(255, 255, 255);
-            pdf.setFontSize(10);
+            // Confidential marking - smaller
+            pdf.setFontSize(8);
             pdf.setFont(undefined, 'normal');
-            pdf.text('SAM\'S CLUB', margin, 15);
+            pdf.text('CONFIDENTIAL', pageWidth - margin, 12, { align: 'right' });
             
-            // Main title
-            pdf.setFontSize(18);
-            pdf.setFont(undefined, 'bold');
-            pdf.text('TALENT EVALUATION', margin, 28);
-            pdf.setFontSize(14);
-            pdf.text('CALIBRATION SUMMARY', margin, 40);
+            // Reset position after compact header
+            y = 35;
             
-            // Confidential marking in header
-            pdf.setFontSize(9);
-            pdf.setFont(undefined, 'italic');
-            pdf.text('CONFIDENTIAL - MANAGER USE ONLY', pageWidth - margin, 15, { align: 'right' });
-            
-            // Reset position after header
-            y = 60;
-            
-            // Employee info section with modern styling
-            pdf.setFillColor(248, 249, 250); // Light background
-            pdf.rect(margin - 2, y - 5, contentWidth + 4, 35, 'F');
-            
-            // Employee name with emphasis
+            // Employee info section - more compact
+            // Employee name only - no position or fiscal year
             pdf.setTextColor(17, 34, 75); // Dashboard dark blue
-            pdf.setFontSize(16);
+            pdf.setFontSize(14);
             pdf.setFont(undefined, 'bold');
-            addText(employee.name, 16, 'bold', [17, 34, 75]);
+            addText(employee.name, 14, 'bold', [17, 34, 75]);
             
-            // Position and period info
-            pdf.setTextColor(102, 102, 102);
-            addText(`${employee.position || 'Associate'} • ${data.reviewPeriod || 'FY26'}`, 10, 'normal', [102, 102, 102]);
-            
-            // Rating with professional styling
+            // Smaller rating badge
             const rating = data.overallRating ? data.overallRating.toUpperCase() : 'PENDING';
-            let ratingColor = [128, 128, 128]; // Default gray
-            let ratingBgColor = [240, 240, 240];
+            let ratingColor = [255, 255, 255];
+            let ratingBgColor = [128, 128, 128]; // Default gray
             
             if (data.overallRating === 'exemplary') {
-                ratingColor = [255, 255, 255];
                 ratingBgColor = [40, 167, 69]; // Success green
             } else if (data.overallRating === 'successful') {
-                ratingColor = [255, 255, 255];
                 ratingBgColor = [0, 115, 206]; // Sam's blue
             } else if (data.overallRating === 'opportunity') {
-                ratingColor = [255, 255, 255];
                 ratingBgColor = [220, 53, 69]; // Warning red
             }
             
-            // Rating badge
-            const ratingText = `PERFORMANCE RATING: ${rating}`;
-            const ratingWidth = pdf.getTextWidth(ratingText) + 8;
+            // Compact rating badge
+            const ratingText = rating;
+            const ratingWidth = pdf.getTextWidth(ratingText) + 6;
             
             pdf.setFillColor(...ratingBgColor);
-            pdf.roundedRect(margin, y - 2, ratingWidth, 12, 2, 2, 'F');
+            pdf.roundedRect(margin, y - 1, ratingWidth, 8, 1, 1, 'F');
             
             pdf.setTextColor(...ratingColor);
-            pdf.setFontSize(9);
+            pdf.setFontSize(7);
             pdf.setFont(undefined, 'bold');
-            pdf.text(ratingText, margin + 4, y + 5);
+            pdf.text(ratingText, margin + 3, y + 3);
             
-            addSpace(20);
+            addSpace(12);
             
             // PDF now matches slide 6 structure exactly
             
@@ -7779,36 +7791,72 @@
             
             addSpace(18);
             
-            // Professional note-taking area
-            pdf.setDrawColor(220, 220, 220);
-            pdf.setLineWidth(0.3);
-            for (let i = 0; i < 6; i++) {
-                pdf.line(margin, y, margin + contentWidth, y);
-                addSpace(8);
+            // Note-taking area with proper spacing for writing
+            pdf.setDrawColor(200, 200, 200);
+            pdf.setLineWidth(0.5);
+            
+            // Create lined note-taking areas
+            for (let i = 0; i < 5; i++) {
+                // Background for better writing experience
+                pdf.setFillColor(252, 252, 252);
+                pdf.rect(margin, y - 2, contentWidth, 7, 'F');
+                
+                // Line for writing
+                pdf.setDrawColor(220, 220, 220);
+                pdf.line(margin + 2, y + 2, margin + contentWidth - 2, y + 2);
+                
+                addSpace(9);
             }
             
-            // Final rating section
-            addSpace(5);
+            // Final rating section with clear checkboxes
+            addSpace(8);
             pdf.setFillColor(245, 247, 250);
-            pdf.rect(margin - 2, y - 3, contentWidth + 4, 20, 'F');
+            pdf.rect(margin - 2, y - 3, contentWidth + 4, 30, 'F');
             
             pdf.setTextColor(17, 34, 75);
             pdf.setFontSize(9);
             pdf.setFont(undefined, 'bold');
             pdf.text('FINAL CALIBRATED RATING:', margin + 2, y + 5);
             
-            // Rating boxes
+            // Clear, printable rating checkboxes
             const ratings = ['EXEMPLARY', 'SUCCESSFUL', 'OPPORTUNITY'];
             ratings.forEach((rating, index) => {
                 const x = margin + 2 + (index * 55);
-                pdf.setDrawColor(150, 150, 150);
-                pdf.setLineWidth(1);
-                pdf.rect(x, y + 8, 8, 8);
                 
-                pdf.setTextColor(102, 102, 102);
+                // Larger, more visible checkbox
+                pdf.setFillColor(255, 255, 255);
+                pdf.rect(x, y + 10, 10, 10, 'FD');
+                
+                pdf.setDrawColor(100, 100, 100);
+                pdf.setLineWidth(1.5);
+                pdf.rect(x, y + 10, 10, 10);
+                
+                pdf.setTextColor(51, 51, 51);
                 pdf.setFontSize(8);
-                pdf.text(rating, x + 12, y + 14);
+                pdf.setFont(undefined, 'normal');
+                pdf.text(rating, x + 15, y + 17);
             });
+            
+            // Comments section with proper writing space
+            addSpace(25);
+            pdf.setTextColor(17, 34, 75);
+            pdf.setFontSize(8);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('CALIBRATION DISCUSSION COMMENTS:', margin + 2, y + 2);
+            
+            addSpace(5);
+            
+            // Multiple lined areas for comments
+            for (let i = 0; i < 4; i++) {
+                pdf.setFillColor(252, 252, 252);
+                pdf.rect(margin, y - 1, contentWidth, 6, 'F');
+                
+                pdf.setDrawColor(220, 220, 220);
+                pdf.setLineWidth(0.5);
+                pdf.line(margin + 2, y + 2, margin + contentWidth - 2, y + 2);
+                
+                addSpace(7);
+            }
             
             addSpace(25);
             
@@ -7833,8 +7881,8 @@
                 pdf.text('SAM\'S CLUB CONFIDENTIAL', pageWidth - margin, pageHeight - 4, { align: 'right' });
             }
             
-            // Save the PDF
-            pdf.save(`${employee.name.replace(/\s+/g, '_')}_Calibration_Summary_${new Date().toISOString().split('T')[0]}.pdf`);
+            // Save the fillable PDF
+            pdf.save(`${employee.name.replace(/\s+/g, '_')}_Calibration_Fillable_${new Date().toISOString().split('T')[0]}.pdf`);
         }
 
         function exportEvaluations() {
