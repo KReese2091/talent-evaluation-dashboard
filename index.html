@@ -4438,49 +4438,55 @@
             
             // Section-specific bias detection with substance analysis
             if (fieldId === 'keyPriorities') {
-                const hasMetrics = text.match(/\d+%|\$\d+|Q[1-4]|FY\d+/);
-                const hasContext = analyzeGoalContext(text, sentences);
+                // Key Priorities focuses on: primary goals + specific results + measurable progress + business impact
+                const hasGoals = text.match(/goals?|priorities|objectives?|targets?/i);
+                const hasResults = text.match(/results?|delivered|achieved|completed|accomplished/i);
+                const hasMetrics = text.match(/\d+%|\$[\d,]+|\d+\.\d+|increased|decreased|improved|reduced|exceeded|delivered/i);
+                const hasBusiness = text.match(/revenue|cost|efficiency|customer|market|business|ROI|impact/i);
                 
-                if (hasMetrics && !hasContext.meaningful) {
-                    alerts.push('<strong>Metric Without Context:</strong> Numbers provided but missing explanation of how goals connect to role expectations or business impact.');
+                if (!hasGoals) {
+                    alerts.push('🎯 <strong>Missing Goals Context:</strong> Question asks for "primary goals" - clearly state what their main priorities/objectives were for the year.');
                 }
                 
-                if (!hasMetrics && !hasContext.qualitative) {
-                    alerts.push('� <strong>Vague Priorities:</strong> Neither quantitative metrics nor qualitative context provided. Include either specific targets or detailed role expectations.');
+                if (!hasResults) {
+                    alerts.push('📈 <strong>Results Not Specified:</strong> Question asks for "specific results delivered" - describe concrete outcomes and accomplishments.');
+                }
+                
+                if (!hasMetrics) {
+                    alerts.push('📊 <strong>No Measurable Progress:</strong> Question requires "measurable progress" - include numbers, percentages, or quantifiable improvements.');
+                }
+                
+                if (!hasBusiness) {
+                    alerts.push('💼 <strong>Business Impact Missing:</strong> Question asks for "clear impact on business outcomes" - connect results to business value, revenue, efficiency, etc.');
+                }
+                
+                if (hasMetrics && !hasBusiness) {
+                    alerts.push('🔗 <strong>Metrics Without Business Connection:</strong> Numbers provided but missing explanation of business impact. How did these results affect the company?');
                 }
             }
             
-            if (fieldId === 'resultsImpact') {
-                const hasMetrics = text.match(/\d+%|\$\d+|\d+\.\d+|increased|decreased|improved/);
-                const impactAnalysis = analyzeImpactSubstance(text, sentences);
-                
-                if (hasMetrics && !impactAnalysis.causalConnection) {
-                    alerts.push('� <strong>Missing Causation:</strong> Metrics provided but no clear connection between employee actions and results. Explain how their work directly contributed to outcomes.');
-                }
-                
-                if (hasMetrics && !impactAnalysis.contextualMeaning) {
-                    alerts.push('<strong>Context Missing:</strong> Numbers lack context. Explain what these results mean compared to targets, previous periods, or industry benchmarks.');
-                }
-                
-                if (!hasMetrics && !impactAnalysis.qualitativeImpact) {
-                    alerts.push('💼 <strong>Unclear Impact:</strong> No quantitative or qualitative evidence of business impact. Provide either metrics or detailed description of value created.');
-                }
-                
-                // Check for attribution inflation
-                if (impactAnalysis.inflatedClaims) {
-                    alerts.push('<strong>Attribution Bias:</strong> Claims may overstate individual contribution to team/company results. Clarify specific individual role vs. team effort.');
-                }
-            }
             
             if (fieldId === 'collaboration') {
-                const collaborationAnalysis = analyzeCollaborationSubstance(text, sentences);
+                // Collaboration focuses on: specific ways partnered + cross-team delivery + areas for stronger collaboration
+                const hasSpecificWays = text.match(/partnered with|collaborated with|worked with|teamed with/i);
+                const hasResults = text.match(/delivered|results?|outcomes?|achieved|completed/i);
+                const hasGrowth = text.match(/stronger|improve|better|enhance|develop|could|should|opportunity/i);
+                const hasMultipleExamples = (text.match(/\(1\)|first|second|third|one|two|three/gi) || []).length >= 2;
                 
-                if (collaborationAnalysis.hasKeywords && !collaborationAnalysis.hasSpecificExamples) {
-                    alerts.push('🤝 <strong>Generic Collaboration:</strong> Uses collaboration terms but lacks specific examples of partnership challenges, methods, or outcomes.');
+                if (!hasSpecificWays) {
+                    alerts.push('🤝 <strong>Missing Partnership Details:</strong> Question asks for "specific ways" they partnered - describe concrete collaboration methods and approaches.');
                 }
                 
-                if (collaborationAnalysis.inflatedTeamwork) {
-                    alerts.push('<strong>Teamwork Inflation:</strong> Claims about collaboration may be overstated. Provide specific examples of how they facilitated, mediated, or contributed to team success.');
+                if (!hasMultipleExamples) {
+                    alerts.push('📝 <strong>Insufficient Examples:</strong> Question asks for "two or three specific ways" - provide multiple distinct collaboration examples.');
+                }
+                
+                if (!hasResults) {
+                    alerts.push('🎯 <strong>No Delivery Outcomes:</strong> Question asks for partnerships "to deliver results" - connect collaboration to specific outcomes achieved.');
+                }
+                
+                if (!hasGrowth) {
+                    alerts.push('📈 <strong>Missing Growth Areas:</strong> Question asks "where could their partnership and collaboration have been stronger" - identify specific improvement opportunities.');
                 }
                 
                 if (collaborationAnalysis.vagueCommunication) {
@@ -4508,30 +4514,50 @@
                     alerts.push('<strong>Growth Inflation:</strong> Development claims may be overstated for the time period. Ensure growth described is realistic and observable.');
                 }
                 
-                // Check for growth plateau indicators
-                if (lowerText.includes('maintains') || lowerText.includes('continues to') || lowerText.includes('still')) {
-                    alerts.push('� <strong>Plateau Language:</strong> Language suggests maintaining status quo rather than growth. Consider what new capabilities were actually developed.');
+                // Growth focuses on: critical development areas + targeted experiences + growth acceleration
+                const hasDevelopmentAreas = text.match(/development|growth|areas?|skills?|capabilities?/i);
+                const hasTargetedExperiences = text.match(/training|experience|scope|responsibilities|stretch|project/i);
+                const hasAcceleration = text.match(/accelerate|build|strengthen|develop|enhance|improve/i);
+                const hasMultiplePriorities = (text.match(/\(1\)|first|second|third|one|two|three/gi) || []).length >= 2;
+                
+                if (!hasDevelopmentAreas) {
+                    alerts.push('🎯 <strong>Development Areas Not Identified:</strong> Question asks for "most critical development areas" - clearly specify 2-3 key growth priorities.');
+                }
+                
+                if (!hasTargetedExperiences) {
+                    alerts.push('🚀 <strong>Missing Targeted Experiences:</strong> Question requires "targeted experiences" like training, expanded scope, stretch work - specify concrete development opportunities.');
+                }
+                
+                if (!hasAcceleration) {
+                    alerts.push('⚡ <strong>Growth Acceleration Missing:</strong> Question asks what would "best accelerate their growth" - explain how suggested experiences will drive development.');
+                }
+                
+                if (!hasMultiplePriorities) {
+                    alerts.push('📝 <strong>Insufficient Development Areas:</strong> Question asks for "two or three most critical" areas - provide multiple distinct development priorities.');
                 }
             }
             
             if (fieldId === 'lookingAhead') {
-                const futureAnalysis = analyzeFutureSubstance(text, sentences);
+                // Looking Ahead focuses on: peer differentiation + rating assumptions + measurable progress + support actions
+                const hasDifferentiation = text.match(/differentiat|compar|peers?|others?|stands out|excels/i);
+                const hasAssumptions = text.match(/assumption|based on|influenced by|evidence|reason/i);
+                const hasMeasurable = text.match(/progress|expect|six months?|\d+%|measurable|goal|target/i);
+                const hasSupportActions = text.match(/support|actions?|will|provide|help|facilitate/i);
                 
-                if (futureAnalysis.hasRecommendations && !futureAnalysis.hasReasoning) {
-                    alerts.push('🤔 <strong>Recommendations Without Reasoning:</strong> Suggests development but doesn\'t explain why these areas were chosen or how they connect to performance gaps.');
+                if (!hasDifferentiation) {
+                    alerts.push('🏆 <strong>Missing Peer Comparison:</strong> Question asks "what clearly differentiates this associate" compared to others - provide specific comparative strengths.');
                 }
                 
-                if (futureAnalysis.genericDevelopment) {
-                    alerts.push('<strong>Generic Development:</strong> Development suggestions are too broad. Connect specific growth areas to role requirements or career progression.');
+                if (!hasAssumptions) {
+                    alerts.push('💭 <strong>Rating Assumptions Missing:</strong> Question asks "what assumptions influenced your rating" - explain the evidence and reasoning behind your evaluation.');
                 }
                 
-                if (futureAnalysis.avoidsDifficultConversation) {
-                    alerts.push('💬 <strong>Avoiding Tough Feedback:</strong> May be avoiding necessary but difficult developmental conversations. Consider what growth truly requires.');
+                if (!hasMeasurable) {
+                    alerts.push('� <strong>No Measurable Progress Expected:</strong> Question asks for "measurable progress...in the next six months" - specify concrete, trackable outcomes.');
                 }
                 
-                // Check for unrealistic expectations
-                if (futureAnalysis.unrealisticTimeline) {
-                    alerts.push('⏰ <strong>Timeline Reality Check:</strong> Development expectations may be unrealistic for timeframe. Ensure suggestions are achievable within next review period.');
+                if (!hasSupportActions) {
+                    alerts.push('🤝 <strong>Support Actions Not Specified:</strong> Question asks for "specific actions you will take to support their development" - detail your commitments as their manager.');
                 }
             }
             
