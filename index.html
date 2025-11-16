@@ -6464,6 +6464,46 @@
             doc.text(`• Not Rated: ${ratingsCount['not-rated']}`, marginX + 10, yPos);
             yPos += 20;
             
+            // Calibration Readiness Analysis
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('CALIBRATION READINESS ANALYSIS', marginX, yPos);
+            yPos += 10;
+            
+            // Calculate readiness metrics
+            const completedEvals = employees.filter(emp => emp.status === 'completed');
+            const detailedEvals = completedEvals.filter(emp => {
+                const data = emp.evaluationData;
+                return data && data.keyPriorities && data.collaboration && 
+                       data.growth && data.lookingAhead &&
+                       data.keyPriorities.trim().length > 50 &&
+                       data.collaboration.trim().length > 50;
+            });
+            
+            const calibrationReady = detailedEvals.length;
+            const needsMoreDetail = completedEvals.length - detailedEvals.length;
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text(`• Ready for Calibration: ${calibrationReady} evaluations`, marginX + 10, yPos);
+            yPos += 7;
+            doc.text(`• Need More Detail: ${needsMoreDetail} evaluations`, marginX + 10, yPos);
+            yPos += 7;
+            
+            // Framework compliance
+            const frameworkCompliance = completedEvals.length > 0 ? 
+                Math.round((detailedEvals.length / completedEvals.length) * 100) : 0;
+            doc.text(`• Framework Compliance: ${frameworkCompliance}%`, marginX + 10, yPos);
+            yPos += 15;
+            
+            // Enhanced evaluation criteria note
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'italic');
+            doc.text('Note: Enhanced evaluation framework includes detailed assessment of Key Priorities,', marginX, yPos);
+            yPos += 5;
+            doc.text('Results & Impact, Collaboration & Influence, Growth & Development, and Looking Ahead.', marginX, yPos);
+            yPos += 15;
+            
             // Team Members Table
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
@@ -6474,12 +6514,13 @@
             doc.setFillColor(240, 240, 240);
             doc.rect(marginX, yPos - 5, contentWidth, 12, 'F');
             
-            doc.setFontSize(10);
+            doc.setFontSize(9);
             doc.setFont(undefined, 'bold');
-            doc.text('Name', marginX + 5, yPos + 3);
-            doc.text('Position', marginX + 60, yPos + 3);
-            doc.text('Status', marginX + 120, yPos + 3);
-            doc.text('Rating', marginX + 155, yPos + 3);
+            doc.text('Name', marginX + 3, yPos + 3);
+            doc.text('Position', marginX + 50, yPos + 3);
+            doc.text('Status', marginX + 100, yPos + 3);
+            doc.text('Rating', marginX + 130, yPos + 3);
+            doc.text('Cal. Ready', marginX + 160, yPos + 3);
             yPos += 12;
             
             // Table rows
@@ -6500,16 +6541,25 @@
                 const rating = emp.evaluationData?.overallRating || 'Not Rated';
                 const status = emp.status.charAt(0).toUpperCase() + emp.status.slice(1).replace('-', ' ');
                 
+                // Check calibration readiness
+                const data = emp.evaluationData;
+                const isCalibrationReady = data && data.keyPriorities && data.collaboration && 
+                                         data.growth && data.lookingAhead &&
+                                         data.keyPriorities.trim().length > 50 &&
+                                         data.collaboration.trim().length > 50 &&
+                                         emp.status === 'completed';
+                
+                doc.setFontSize(8);
                 doc.setTextColor(0, 0, 0);
-                doc.text(emp.name.replace(/[^\x00-\x7F]/g, '').substring(0, 22), marginX + 5, yPos + 3);
-                doc.text(emp.position.replace(/[^\x00-\x7F]/g, '').substring(0, 18), marginX + 60, yPos + 3);
+                doc.text(emp.name.replace(/[^\x00-\x7F]/g, '').substring(0, 20), marginX + 3, yPos + 3);
+                doc.text(emp.position.replace(/[^\x00-\x7F]/g, '').substring(0, 15), marginX + 50, yPos + 3);
                 
                 // Status with color coding
                 if (emp.status === 'completed') doc.setTextColor(40, 167, 69);
                 else if (emp.status === 'in-progress') doc.setTextColor(0, 175, 215);
                 else doc.setTextColor(108, 117, 125);
                 
-                doc.text(status, marginX + 120, yPos + 3);
+                doc.text(status.substring(0, 10), marginX + 100, yPos + 3);
                 
                 // Rating with color coding
                 if (rating === 'exemplary') doc.setTextColor(40, 167, 69);
@@ -6517,7 +6567,13 @@
                 else if (rating === 'opportunity') doc.setTextColor(255, 193, 7);
                 else doc.setTextColor(108, 117, 125);
                 
-                doc.text(rating.charAt(0).toUpperCase() + rating.slice(1), marginX + 155, yPos + 3);
+                doc.text(rating.charAt(0).toUpperCase() + rating.slice(1).substring(0, 8), marginX + 130, yPos + 3);
+                
+                // Calibration readiness
+                if (isCalibrationReady) doc.setTextColor(40, 167, 69);
+                else doc.setTextColor(220, 53, 69);
+                
+                doc.text(isCalibrationReady ? 'Yes' : 'No', marginX + 160, yPos + 3);
                 doc.setTextColor(0, 0, 0);
                 
                 yPos += 10;
@@ -7520,16 +7576,36 @@
             addText(`Current Rating: ${rating}`, 11, 'bold', ratingColor);
             addSpace(8);
             
-            // Performance areas
+            // Performance areas with updated questions
             addText('PERFORMANCE SUMMARY', 12, 'bold');
             addSpace(3);
             
             const areas = [
-                { label: 'Key Priorities', content: data.keyPriorities },
-                { label: 'Results & Impact', content: data.resultsImpact },
-                { label: 'Collaboration', content: data.collaboration },
-                { label: 'Growth & Development', content: data.growth },
-                { label: 'Development Focus', content: data.lookingAhead }
+                { 
+                    label: 'Key Priorities & Results', 
+                    content: data.keyPriorities,
+                    question: 'What were the most significant priorities this associate achieved?'
+                },
+                { 
+                    label: 'Results & Impact', 
+                    content: data.resultsImpact,
+                    question: 'What impact did this associate have on the business and their team?'
+                },
+                { 
+                    label: 'Collaboration & Influence', 
+                    content: data.collaboration,
+                    question: 'How effectively did this associate collaborate and influence outcomes?'
+                },
+                { 
+                    label: 'Growth & Development', 
+                    content: data.growth,
+                    question: 'What development priorities should this associate focus on?'
+                },
+                { 
+                    label: 'Looking Ahead', 
+                    content: data.lookingAhead,
+                    question: 'What are this associate\'s career aspirations and advancement potential?'
+                }
             ];
             
             areas.forEach(area => {
@@ -7539,24 +7615,45 @@
                     
                     // Content - keep it concise for calibration
                     let content = area.content.trim();
-                    if (content.length > 180) {
-                        content = content.substring(0, 180) + '...';
+                    if (content.length > 200) {
+                        content = content.substring(0, 200) + '...';
                     }
                     
                     addText(content, 9, 'normal', [40, 40, 40], 3);
-                    addSpace(3);
+                    addSpace(4);
                 }
             });
             
-            // Calibration section
+            // Enhanced Calibration section with discussion points
             addSpace(5);
-            addText('CALIBRATION DISCUSSION', 12, 'bold');
+            addText('CALIBRATION DISCUSSION POINTS', 12, 'bold');
             addSpace(3);
             
-            // Notes area
-            addText('Discussion Notes:', 10, 'bold');
-            const notesStartY = y;
-            for (let i = 0; i < 5; i++) {
+            // Generate calibration points using the enhanced function
+            const hasContent = {
+                keyPriorities: data.keyPriorities && data.keyPriorities.trim().length > 0,
+                collaboration: data.collaboration && data.collaboration.trim().length > 0,
+                growth: data.growth && data.growth.trim().length > 0,
+                lookingAhead: data.lookingAhead && data.lookingAhead.trim().length > 0
+            };
+            
+            const calibrationPoints = generateSpecificCalibrationPoints(data, hasContent);
+            
+            if (calibrationPoints.length > 0) {
+                calibrationPoints.forEach(point => {
+                    addText(`• ${point}`, 9, 'normal', [20, 20, 20], 3);
+                    addSpace(2);
+                });
+            } else {
+                addText('• Complete evaluation sections to generate specific discussion points', 9, 'italic', [100, 100, 100], 3);
+            }
+            
+            addSpace(8);
+            
+            // Notes area for manager's handwritten notes
+            addText('Additional Discussion Notes:', 10, 'bold');
+            addSpace(2);
+            for (let i = 0; i < 4; i++) {
                 pdf.setDrawColor(200, 200, 200);
                 pdf.line(margin, y, margin + contentWidth, y);
                 addSpace(6);
@@ -8001,123 +8098,127 @@
             }
         }
 
-        // Generate specific, actionable calibration talking points from evaluation content
+        // Generate detailed, specific calibration snapshots from evaluation content
         function generateSpecificCalibrationPoints(evalData, hasContent) {
             const points = [];
             
-            // Extract specific performance highlights with actual details
+            // Performance snapshot with specific achievements and metrics
             if (hasContent.keyPriorities) {
                 const text = evalData.keyPriorities;
-                const metrics = text.match(/(\d+%|\$[\d,]+|\d+\.\d+[%]?)/g);
-                const achievements = [];
+                const snapshot = [];
                 
-                if (text.toLowerCase().includes('exceeded')) {
-                    const exceededMatch = text.match(/exceeded[^.]*\d+[^.]*/i);
-                    if (exceededMatch) achievements.push(exceededMatch[0].trim());
+                // Extract specific achievements with context
+                const achievementPhrases = text.match(/[^.!?]*(?:exceeded|achieved|delivered|completed|generated|increased|improved|saved)[^.!?]*[.!?]/gi);
+                if (achievementPhrases && achievementPhrases.length > 0) {
+                    achievementPhrases.slice(0, 2).forEach(phrase => {
+                        snapshot.push(phrase.trim().replace(/^[^A-Za-z]*/, ''));
+                    });
                 }
                 
+                // Add any specific metrics found
+                const metrics = text.match(/\d+%|\$[\d,]+(?:\.\d+)?[MK]?/g);
                 if (metrics && metrics.length > 0) {
-                    achievements.push(`delivered measurable results: ${metrics.slice(0,2).join(', ')}`);
+                    snapshot.push(`Key metrics: ${metrics.slice(0, 3).join(', ')}`);
                 }
                 
-                if (achievements.length > 0) {
-                    points.push(`Key Performance: ${achievements.join('; ')}`);
+                if (snapshot.length > 0) {
+                    points.push(`Performance Snapshot: ${snapshot.join(' | ')}`);
                 }
             }
             
-            // Collaboration specifics - actual partnerships and challenges
+            // Collaboration snapshot with specific examples and partnerships
             if (hasContent.collaboration) {
-                const collabText = evalData.collaboration.toLowerCase();
-                const insights = [];
+                const text = evalData.collaboration;
+                const snapshot = [];
                 
-                // Extract specific teams/departments mentioned
-                const teamMatches = evalData.collaboration.match(/(IT|Marketing|Sales|Finance|Operations|Customer|Legal|HR|Analytics|Product|Engineering|Design)\s+(team|department|group)/gi);
+                // Extract specific collaboration examples
+                const collaborationExamples = text.match(/[^.!?]*(?:collaborated|partnered|worked|facilitated|coordinated)[^.!?]*[.!?]/gi);
+                if (collaborationExamples && collaborationExamples.length > 0) {
+                    const bestExample = collaborationExamples[0].trim().replace(/^[^A-Za-z]*/, '');
+                    if (bestExample.length < 120) {
+                        snapshot.push(bestExample);
+                    } else {
+                        snapshot.push(bestExample.substring(0, 117) + '...');
+                    }
+                }
+                
+                // Extract teams/departments worked with
+                const teamMatches = text.match(/(IT|Marketing|Sales|Finance|Operations|Customer|Legal|HR|Analytics|Product|Engineering|Design|Executive|Leadership)\s*(?:team|department|group|leadership)?/gi);
                 if (teamMatches && teamMatches.length > 0) {
-                    insights.push(`works effectively with ${teamMatches.slice(0,2).join(' and ')}`);
+                    const uniqueTeams = [...new Set(teamMatches.slice(0, 3))];
+                    snapshot.push(`Teams: ${uniqueTeams.join(', ')}`);
                 }
                 
-                // Look for conflict resolution or challenges
-                if (collabText.includes('conflict') || collabText.includes('challenge') || collabText.includes('difficult')) {
-                    insights.push('navigates collaboration challenges well');
-                }
-                
-                // Look for leadership in collaboration
-                if (collabText.includes('led') || collabText.includes('facilitated') || collabText.includes('coordinated')) {
-                    insights.push('takes leadership role in cross-functional initiatives');
-                }
-                
-                if (insights.length > 0) {
-                    points.push(`Collaboration Strength: ${insights.join('; ')}`);
+                if (snapshot.length > 0) {
+                    points.push(`Collaboration Snapshot: ${snapshot.join(' | ')}`);
                 }
             }
             
-            // Development needs - specific and actionable
+            // Development snapshot with specific growth areas and actions
             if (hasContent.growth) {
-                const growthText = evalData.growth;
-                const devNeeds = [];
+                const text = evalData.growth;
+                const snapshot = [];
                 
-                if (growthText.toLowerCase().includes('leadership')) {
-                    devNeeds.push('leadership development identified as priority');
-                }
-                if (growthText.toLowerCase().includes('strategic')) {
-                    devNeeds.push('strategic thinking enhancement needed');
-                }
-                if (growthText.toLowerCase().includes('communication')) {
-                    devNeeds.push('executive communication skills development');
-                }
-                
-                // Look for specific programs or experiences mentioned
-                const programMatches = growthText.match(/(training|program|certification|rotation|assignment|coaching)/gi);
-                if (programMatches) {
-                    devNeeds.push(`targeted development through ${programMatches[0].toLowerCase()} recommended`);
+                // Extract specific development priorities
+                const priorities = [];
+                if (text.includes('(1)')) {
+                    const priority1 = text.match(/\(1\)[^(2)]*/);
+                    if (priority1) {
+                        priorities.push(priority1[0].replace('(1)', '').trim().split('.')[0]);
+                    }
                 }
                 
-                if (devNeeds.length > 0) {
-                    points.push(`Development Focus: ${devNeeds.join('; ')}`);
+                if (priorities.length === 0) {
+                    // Look for key development themes
+                    const developmentMatches = text.match(/(?:develop|enhance|build|strengthen|improve)[^.!?]*[.!?]/gi);
+                    if (developmentMatches && developmentMatches.length > 0) {
+                        priorities.push(developmentMatches[0].trim());
+                    }
+                }
+                
+                if (priorities.length > 0) {
+                    snapshot.push(`Priority: ${priorities[0]}`);
+                }
+                
+                // Extract recommended actions/programs
+                const actionMatches = text.match(/(?:recommend|suggest|propose)[^.!?]*[.!?]/gi);
+                if (actionMatches && actionMatches.length > 0) {
+                    const action = actionMatches[0].trim().replace(/^[^A-Za-z]*/, '');
+                    snapshot.push(`Action: ${action}`);
+                }
+                
+                if (snapshot.length > 0) {
+                    points.push(`Development Snapshot: ${snapshot.join(' | ')}`);
                 }
             }
             
-            // Future trajectory - promotion readiness and timeline
+            // Career trajectory snapshot with specific advancement details
             if (hasContent.lookingAhead) {
-                const futureText = evalData.lookingAhead.toLowerCase();
-                const trajectory = [];
+                const text = evalData.lookingAhead;
+                const snapshot = [];
                 
-                if (futureText.includes('director') || futureText.includes('senior') || futureText.includes('vp')) {
-                    trajectory.push('positioned for senior leadership advancement');
+                // Extract advancement potential
+                const advancementMatches = text.match(/(?:positioned|ready|prepared)[^.!?]*(?:advancement|promotion|director|senior|VP|CMO)[^.!?]*[.!?]/gi);
+                if (advancementMatches && advancementMatches.length > 0) {
+                    snapshot.push(advancementMatches[0].trim());
                 }
                 
-                // Look for timeframes
-                const timeMatches = evalData.lookingAhead.match(/(\d+-\d+\s*months?|\d+\s*years?|next\s+year|within\s+\d+)/i);
-                if (timeMatches) {
-                    trajectory.push(`advancement timeline: ${timeMatches[0]}`);
+                // Extract timeline information
+                const timeMatches = text.match(/(?:\d+-\d+\s*months?|\d+\s*years?|next\s+year|within\s+\d+[^.!?]*)/gi);
+                if (timeMatches && timeMatches.length > 0) {
+                    snapshot.push(`Timeline: ${timeMatches[0].trim()}`);
                 }
                 
-                if (futureText.includes('ready') || futureText.includes('prepared')) {
-                    trajectory.push('demonstrates readiness for expanded scope');
-                } else if (futureText.includes('development') || futureText.includes('growth')) {
-                    trajectory.push('requires continued development before advancement');
+                // Extract readiness indicators
+                if (text.toLowerCase().includes('ready') || text.toLowerCase().includes('prepared')) {
+                    snapshot.push('Promotion ready');
+                } else if (text.toLowerCase().includes('development') || text.toLowerCase().includes('support')) {
+                    snapshot.push('Requires development support');
                 }
                 
-                if (trajectory.length > 0) {
-                    points.push(`Career Trajectory: ${trajectory.join('; ')}`);
+                if (snapshot.length > 0) {
+                    points.push(`Career Trajectory: ${snapshot.join(' | ')}`);
                 }
-            }
-            
-            // Rating justification with specific evidence
-            if (hasContent.overallRating) {
-                const rating = evalData.overallRating;
-                const hasMetrics = /(\d+%|\$[\d,]+)/.test(evalData.keyPriorities || '');
-                
-                let justification = '';
-                if (rating === 'exemplary') {
-                    justification = hasMetrics ? 'exceptional rating supported by quantifiable business impact' : 'exceptional rating based on strategic contributions and leadership excellence';
-                } else if (rating === 'successful') {
-                    justification = hasMetrics ? 'successful rating with documented measurable contributions' : 'successful rating reflecting consistent performance and reliability';
-                } else {
-                    justification = 'developing rating with targeted improvement areas identified';
-                }
-                
-                points.push(`Rating Rationale: ${justification}`);
             }
             
             return points;
