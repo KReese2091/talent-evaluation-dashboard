@@ -3976,6 +3976,12 @@
             // Update current step
             currentStep = step;
 
+            // Auto-generate summary when navigating to slide 6 (step 5)
+            if (step === 5) {
+                console.log('Navigating to summary slide - generating comprehensive summary');
+                generateComprehensiveSummary();
+            }
+
             // Update navigation
             updateNavigation();
             
@@ -5286,8 +5292,9 @@
             // Update current step
             currentStep = step;
 
-            // Auto-generate comprehensive summary when navigating to Step 7 (index 6)
-            if (step === 6) {
+            // Auto-generate comprehensive summary when navigating to Step 6 (slide-5, index 5)
+            if (step === 5) {
+                console.log('Navigating to summary slide - generating comprehensive summary');
                 setTimeout(() => {
                     generateComprehensiveSummary();
                 }, 200);
@@ -5428,8 +5435,9 @@
             // Update status display in the evaluation form header
             updateStatusDisplay();
             
-            // Auto-regenerate comprehensive summary if on that step
-            if (currentStep === 6) {
+            // Auto-regenerate comprehensive summary if on that step (step 5 = slide-5 = 6th slide)
+            if (currentStep === 5) {
+                console.log('Data changed while on summary slide - regenerating summary');
                 setTimeout(() => {
                     generateComprehensiveSummary();
                 }, 200);
