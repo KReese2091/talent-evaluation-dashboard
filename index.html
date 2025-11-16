@@ -6390,28 +6390,48 @@
             const marginX = 20;
             const contentWidth = pageWidth - (marginX * 2);
             
-            // Header with logo space
-            doc.setFillColor(0, 67, 160);
-            doc.rect(0, 0, pageWidth, 35, 'F');
+            // Enhanced professional header
+            doc.setFillColor(17, 34, 75); // #11224B
+            doc.rect(0, 0, pageWidth, 45, 'F');
             
-            // Title
+            // Header gradient overlay
+            doc.setFillColor(17, 39, 86); // #112756 
+            doc.rect(0, 35, pageWidth, 10, 'F');
+            
+            // Sam's Club branding
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(20);
-            doc.setFont(undefined, 'bold');
-            doc.text('TEAM PERFORMANCE REPORT', marginX, 25);
-            
-            // Report info
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(12);
+            doc.setFontSize(10);
             doc.setFont(undefined, 'normal');
-            yPos = 50;
+            doc.text('SAM\'S CLUB', marginX, 15);
             
-            doc.text(`Reviewer: ${reviewer.name.replace(/[^\x00-\x7F]/g, '')}`, marginX, yPos);
-            yPos += 8;
-            doc.text(`Generated: ${new Date().toLocaleDateString()}`, marginX, yPos);
-            yPos += 8;
-            doc.text(`Total Team Members: ${employees.length}`, marginX, yPos);
-            yPos += 15;
+            // Main title
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('TEAM PERFORMANCE REPORT', marginX, 28);
+            
+            // Confidential marking
+            doc.setFontSize(9);
+            doc.setFont(undefined, 'italic');
+            doc.text('CONFIDENTIAL - MANAGER USE ONLY', pageWidth - marginX, 15, { align: 'right' });
+            
+            // Report info section with professional styling
+            yPos = 60;
+            
+            // Info background
+            doc.setFillColor(248, 249, 250);
+            doc.rect(marginX - 2, yPos - 5, contentWidth + 4, 25, 'F');
+            
+            doc.setTextColor(17, 34, 75); // Dashboard dark blue
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Reviewer: ${reviewer.name.replace(/[^\x00-\x7F]/g, '')}`, marginX + 2, yPos + 5);
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(102, 102, 102);
+            doc.text(`Generated: ${new Date().toLocaleDateString()}`, marginX + 2, yPos + 15);
+            doc.text(`Total Team Members: ${employees.length}`, marginX + 120, yPos + 15);
+            yPos += 35;
             
             // Evaluation Status Section
             doc.setFontSize(14);
@@ -7552,29 +7572,79 @@
                 return y;
             }
             
-            // Header
-            addText('PERFORMANCE SUMMARY FOR CALIBRATION', 16, 'bold');
-            addText('Confidential - Manager Use Only', 10, 'normal', [100, 100, 100]);
-            addSpace(8);
+            // Enhanced Professional Header with Sam's Club branding
+            // Header gradient background (matching dashboard)
+            pdf.setFillColor(17, 34, 75); // #11224B
+            pdf.rect(0, 0, pageWidth, 45, 'F');
             
-            // Employee info - clean without box
-            addText(employee.name, 14, 'bold');
-            addText(`${data.reviewPeriod || 'FY26'}`, 9, 'normal', [80, 80, 80]);
+            // Header gradient overlay
+            pdf.setFillColor(17, 39, 86); // #112756 
+            pdf.rect(0, 35, pageWidth, 10, 'F');
             
-            // Rating - clean display
+            // Sam's Club branding text (since we can't embed logo in jsPDF easily)
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'normal');
+            pdf.text('SAM\'S CLUB', margin, 15);
+            
+            // Main title
+            pdf.setFontSize(18);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('TALENT EVALUATION', margin, 28);
+            pdf.setFontSize(14);
+            pdf.text('CALIBRATION SUMMARY', margin, 40);
+            
+            // Confidential marking in header
+            pdf.setFontSize(9);
+            pdf.setFont(undefined, 'italic');
+            pdf.text('CONFIDENTIAL - MANAGER USE ONLY', pageWidth - margin, 15, { align: 'right' });
+            
+            // Reset position after header
+            y = 60;
+            
+            // Employee info section with modern styling
+            pdf.setFillColor(248, 249, 250); // Light background
+            pdf.rect(margin - 2, y - 5, contentWidth + 4, 35, 'F');
+            
+            // Employee name with emphasis
+            pdf.setTextColor(17, 34, 75); // Dashboard dark blue
+            pdf.setFontSize(16);
+            pdf.setFont(undefined, 'bold');
+            addText(employee.name, 16, 'bold', [17, 34, 75]);
+            
+            // Position and period info
+            pdf.setTextColor(102, 102, 102);
+            addText(`${employee.position || 'Associate'} • ${data.reviewPeriod || 'FY26'}`, 10, 'normal', [102, 102, 102]);
+            
+            // Rating with professional styling
             const rating = data.overallRating ? data.overallRating.toUpperCase() : 'PENDING';
             let ratingColor = [128, 128, 128]; // Default gray
+            let ratingBgColor = [240, 240, 240];
             
             if (data.overallRating === 'exemplary') {
-                ratingColor = [0, 120, 0];
+                ratingColor = [255, 255, 255];
+                ratingBgColor = [40, 167, 69]; // Success green
             } else if (data.overallRating === 'successful') {
-                ratingColor = [0, 80, 160];
+                ratingColor = [255, 255, 255];
+                ratingBgColor = [0, 115, 206]; // Sam's blue
             } else if (data.overallRating === 'opportunity') {
-                ratingColor = [180, 0, 0];
+                ratingColor = [255, 255, 255];
+                ratingBgColor = [220, 53, 69]; // Warning red
             }
             
-            addText(`Current Rating: ${rating}`, 11, 'bold', ratingColor);
-            addSpace(8);
+            // Rating badge
+            const ratingText = `PERFORMANCE RATING: ${rating}`;
+            const ratingWidth = pdf.getTextWidth(ratingText) + 8;
+            
+            pdf.setFillColor(...ratingBgColor);
+            pdf.roundedRect(margin, y - 2, ratingWidth, 12, 2, 2, 'F');
+            
+            pdf.setTextColor(...ratingColor);
+            pdf.setFontSize(9);
+            pdf.setFont(undefined, 'bold');
+            pdf.text(ratingText, margin + 4, y + 5);
+            
+            addSpace(20);
             
             // PDF now matches slide 6 structure exactly
             
@@ -7592,85 +7662,176 @@
             
             // Only show calibration points if we have sufficient content (matching slide 6 logic)
             if (contentCount >= 4) {
-                addText('CALIBRATION DISCUSSION POINTS', 12, 'bold');
-                addSpace(3);
+                // Section header with professional styling
+                pdf.setFillColor(17, 34, 75); // Dashboard dark blue
+                pdf.rect(margin - 2, y - 5, contentWidth + 4, 15, 'F');
+                
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(12);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('CALIBRATION DISCUSSION POINTS', margin + 2, y + 5);
+                
+                addSpace(18);
                 
                 const calibrationPoints = generateSpecificCalibrationPoints(data, hasContent);
                 
                 calibrationPoints.forEach((point, index) => {
-                    addText(`${index + 1}. ${point}`, 9, 'normal', [20, 20, 20]);
-                    addSpace(3);
+                    // Number badge
+                    pdf.setFillColor(0, 115, 206); // Sam's blue
+                    pdf.circle(margin + 4, y + 2, 3, 'F');
+                    pdf.setTextColor(255, 255, 255);
+                    pdf.setFontSize(8);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text(`${index + 1}`, margin + 4, y + 3, { align: 'center' });
+                    
+                    // Point text with proper spacing
+                    pdf.setTextColor(51, 51, 51);
+                    pdf.setFontSize(9);
+                    pdf.setFont(undefined, 'normal');
+                    const lines = pdf.splitTextToSize(point, contentWidth - 15);
+                    pdf.text(lines, margin + 12, y + 1);
+                    
+                    const textHeight = lines.length * 3.5;
+                    y += textHeight + 8;
+                    
+                    if (y > pageHeight - 30) {
+                        pdf.addPage();
+                        y = margin;
+                    }
                 });
                 
-                addSpace(5);
+                addSpace(8);
             }
             
             // Executive summary removed - go straight to detailed sections for cleaner calibration focus
             
-            // Detailed sections with exact manager inputs (matching slide 6 structure)
-            if (hasContent.keyPriorities) {
-                addText('KEY PRIORITIES & OBJECTIVES:', 11, 'bold', [0, 80, 160]);
-                addSpace(2);
-                addText(data.keyPriorities.trim(), 9, 'normal', [40, 40, 40]);
-                addSpace(6);
-            }
+            // Enhanced detailed sections with professional styling
+            const sections = [
+                { key: 'keyPriorities', title: 'KEY PRIORITIES & OBJECTIVES', content: data.keyPriorities },
+                { key: 'resultsImpact', title: 'RESULTS & BUSINESS IMPACT', content: data.resultsImpact },
+                { key: 'collaboration', title: 'COLLABORATION & INFLUENCE', content: data.collaboration },
+                { key: 'growth', title: 'GROWTH & DEVELOPMENT', content: data.growth },
+                { key: 'lookingAhead', title: 'LOOKING AHEAD', content: data.lookingAhead }
+            ];
 
-            if (hasContent.resultsImpact) {
-                addText('RESULTS & BUSINESS IMPACT:', 11, 'bold', [0, 80, 160]);
-                addSpace(2);
-                addText(data.resultsImpact.trim(), 9, 'normal', [40, 40, 40]);
-                addSpace(6);
-            }
-
-            if (hasContent.collaboration) {
-                addText('COLLABORATION & INFLUENCE:', 11, 'bold', [0, 80, 160]);
-                addSpace(2);
-                addText(data.collaboration.trim(), 9, 'normal', [40, 40, 40]);
-                addSpace(6);
-            }
-
-            if (hasContent.growth) {
-                addText('GROWTH & DEVELOPMENT:', 11, 'bold', [0, 80, 160]);
-                addSpace(2);
-                addText(data.growth.trim(), 9, 'normal', [40, 40, 40]);
-                addSpace(6);
-            }
-
-            if (hasContent.lookingAhead) {
-                addText('LOOKING AHEAD:', 11, 'bold', [0, 80, 160]);
-                addSpace(2);
-                addText(data.lookingAhead.trim(), 9, 'normal', [40, 40, 40]);
-                addSpace(6);
-            }
+            sections.forEach((section, index) => {
+                if (hasContent[section.key]) {
+                    // Check for new page
+                    if (y > pageHeight - 40) {
+                        pdf.addPage();
+                        y = margin;
+                    }
+                    
+                    // Section header with subtle background
+                    pdf.setFillColor(245, 247, 250); // Very light blue-gray
+                    pdf.rect(margin - 2, y - 3, contentWidth + 4, 12, 'F');
+                    
+                    // Left border accent
+                    pdf.setFillColor(0, 115, 206); // Sam's blue
+                    pdf.rect(margin - 2, y - 3, 3, 12, 'F');
+                    
+                    pdf.setTextColor(17, 34, 75); // Dashboard dark blue
+                    pdf.setFontSize(10);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text(section.title, margin + 8, y + 4);
+                    
+                    addSpace(15);
+                    
+                    // Content with enhanced readability
+                    pdf.setTextColor(51, 51, 51);
+                    pdf.setFontSize(9);
+                    pdf.setFont(undefined, 'normal');
+                    
+                    const content = section.content.trim();
+                    const lines = pdf.splitTextToSize(content, contentWidth - 8);
+                    
+                    // Content background
+                    const contentHeight = lines.length * 3.5 + 8;
+                    pdf.setFillColor(255, 255, 255);
+                    pdf.rect(margin + 2, y - 3, contentWidth - 4, contentHeight, 'F');
+                    
+                    // Subtle border
+                    pdf.setDrawColor(230, 230, 230);
+                    pdf.setLineWidth(0.5);
+                    pdf.rect(margin + 2, y - 3, contentWidth - 4, contentHeight);
+                    
+                    pdf.text(lines, margin + 6, y + 1);
+                    y += contentHeight + 8;
+                }
+            });
             
             addSpace(8);
             
-            // Notes area for additional calibration discussion
-            addText('CALIBRATION NOTES:', 10, 'bold');
-            addSpace(2);
-            for (let i = 0; i < 4; i++) {
-                pdf.setDrawColor(200, 200, 200);
-                pdf.line(margin, y, margin + contentWidth, y);
-                addSpace(6);
+            // Professional notes section
+            if (y > pageHeight - 60) {
+                pdf.addPage();
+                y = margin;
             }
             
-            // Final Rating Calibration
-            addSpace(3);
-            addText('Final Rating Calibration:', 10, 'bold');
-            addSpace(2);
+            // Notes header with styling
+            pdf.setFillColor(17, 34, 75); // Dashboard dark blue
+            pdf.rect(margin - 2, y - 5, contentWidth + 4, 15, 'F');
             
-            // Create lines for writing the final rating
-            pdf.setDrawColor(150, 150, 150);
-            pdf.line(margin, y, margin + 80, y);
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('CALIBRATION DISCUSSION NOTES', margin + 2, y + 5);
             
-            addSpace(12);
+            addSpace(18);
             
-            // Footer
-            y = pageHeight - 8;
-            pdf.setFontSize(7);
-            pdf.setTextColor(120, 120, 120);
-            pdf.text(`Generated: ${currentDate}`, margin, y);
-            pdf.text('Sam\'s Club - CONFIDENTIAL', pageWidth - margin, y, { align: 'right' });
+            // Professional note-taking area
+            pdf.setDrawColor(220, 220, 220);
+            pdf.setLineWidth(0.3);
+            for (let i = 0; i < 6; i++) {
+                pdf.line(margin, y, margin + contentWidth, y);
+                addSpace(8);
+            }
+            
+            // Final rating section
+            addSpace(5);
+            pdf.setFillColor(245, 247, 250);
+            pdf.rect(margin - 2, y - 3, contentWidth + 4, 20, 'F');
+            
+            pdf.setTextColor(17, 34, 75);
+            pdf.setFontSize(9);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('FINAL CALIBRATED RATING:', margin + 2, y + 5);
+            
+            // Rating boxes
+            const ratings = ['EXEMPLARY', 'SUCCESSFUL', 'OPPORTUNITY'];
+            ratings.forEach((rating, index) => {
+                const x = margin + 2 + (index * 55);
+                pdf.setDrawColor(150, 150, 150);
+                pdf.setLineWidth(1);
+                pdf.rect(x, y + 8, 8, 8);
+                
+                pdf.setTextColor(102, 102, 102);
+                pdf.setFontSize(8);
+                pdf.text(rating, x + 12, y + 14);
+            });
+            
+            addSpace(25);
+            
+            // Enhanced footer with professional styling
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                
+                // Footer background
+                pdf.setFillColor(248, 249, 250);
+                pdf.rect(0, pageHeight - 12, pageWidth, 12, 'F');
+                
+                // Footer line
+                pdf.setDrawColor(0, 115, 206);
+                pdf.setLineWidth(1);
+                pdf.line(0, pageHeight - 12, pageWidth, pageHeight - 12);
+                
+                pdf.setFontSize(7);
+                pdf.setTextColor(102, 102, 102);
+                pdf.text(`Generated: ${currentDate}`, margin, pageHeight - 4);
+                pdf.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 4, { align: 'center' });
+                pdf.text('SAM\'S CLUB CONFIDENTIAL', pageWidth - margin, pageHeight - 4, { align: 'right' });
+            }
             
             // Save the PDF
             pdf.save(`${employee.name.replace(/\s+/g, '_')}_Calibration_Summary_${new Date().toISOString().split('T')[0]}.pdf`);
