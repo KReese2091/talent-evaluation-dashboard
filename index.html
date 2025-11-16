@@ -4537,6 +4537,18 @@
                 if (hasBackwardLanguage && !hasForwardLanguage) {
                     alerts.push('🔮 <strong>Past vs Future Focus:</strong> This question is about future development needs. Focus on what they need to develop next year, not past accomplishments.');
                 }
+                
+                // Objectivity for development recommendations (reasoned professional judgment)
+                const unreasonedDevelopment = !text.match(/because|to|in order to|would help|will build|strengthens?|addresses?|supports?/i) && text.length > 50;
+                if (unreasonedDevelopment) {
+                    alerts.push('🎯 <strong>Unsupported Recommendations:</strong> Explain WHY these development areas are priorities and HOW the suggested experiences will address them.');
+                }
+                
+                // Check for development rationale specificity
+                const vagueRationale = text.match(/needs to grow|could be better|should improve|general development/i);
+                if (vagueRationale) {
+                    alerts.push('📋 <strong>Vague Development Rationale:</strong> Replace general improvement language with specific capabilities, competencies, or skills that need development.');
+                }
             }
             
             if (fieldId === 'lookingAhead') {
@@ -4571,7 +4583,7 @@
                 
                 // Enhanced objectivity and specificity checks for Looking Ahead
                 if (!hasSpecificEvidence && hasAssumptions) {
-                    alerts.push('📋 <strong>Vague Assumptions:</strong> Rating assumptions mentioned but lack specific evidence. Cite concrete examples, data, or observable behaviors.');
+                    alerts.push('📋 <strong>Vague Assumptions:</strong> Rating assumptions mentioned but lack clear reasoning. Explain what specific observations, patterns, or capabilities influenced your evaluation.');
                 }
                 
                 if (!hasConcreteSupport && hasSupportActions) {
@@ -4582,10 +4594,10 @@
                     alerts.push('⏱️ <strong>Missing Timelines:</strong> Measurable progress mentioned but lacks specific timeframes. Include when progress will be measured or achieved.');
                 }
                 
-                // Check for comparison specificity
+                // Check for comparison specificity (different standard - qualitative assessment vs quantitative data)
                 const vagueComparison = text.match(/better than others|above average|top performer|one of the best/i);
                 if (vagueComparison) {
-                    alerts.push('📊 <strong>Vague Peer Comparison:</strong> Replace general comparisons with specific skills, achievements, or behaviors that differentiate this person.');
+                    alerts.push('📊 <strong>Vague Peer Comparison:</strong> Replace general comparisons with specific capabilities, working style, or unique strengths that distinguish this person from peers.');
                 }
                 
                 // Check for action commitment vs suggestion
@@ -4593,6 +4605,18 @@
                 const commitments = text.match(/will|commit to|plan to|schedule|allocate|provide/i);
                 if (suggestions && !commitments) {
                     alerts.push('💪 <strong>Weak Commitment Language:</strong> Replace tentative language (could, might) with firm commitments about support actions you will take.');
+                }
+                
+                // Objectivity for evaluative questions (different from data-driven objectivity)
+                const subjectiveEvaluative = text.match(/amazing|incredible|fantastic|perfect|flawless/gi);
+                if (subjectiveEvaluative && subjectiveEvaluative.length >= 2) {
+                    alerts.push('⚖️ <strong>Overly Subjective Evaluation:</strong> Use professional assessment language. Focus on specific capabilities and reasoned judgments rather than emotional descriptors.');
+                }
+                
+                // Check for balanced assessment (critical for fair evaluation)
+                const onlyPositive = !text.match(/improve|develop|challenge|opportunity|growth|next level|strengthen/i) && text.length > 100;
+                if (onlyPositive) {
+                    alerts.push('⚖️ <strong>One-Sided Assessment:</strong> Include development opportunities or areas for continued growth to provide balanced evaluation.');
                 }
             }
             
