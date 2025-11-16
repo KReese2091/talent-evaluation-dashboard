@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talent Evaluation Dashboard - Working Version</title>
+    <title>Calibration Discussion Prep Tool - Working Version</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
@@ -545,13 +545,13 @@
         }
 
         .btn-primary {
-            background: #0067A0;
+            background: #00AFD7;
             color: white;
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
-            background: #00358E;
+            background: #0096b8;
         }
 
         .btn-primary.step-ready {
@@ -839,10 +839,11 @@
         }
 
         .reviewer-option {
-            padding: 12px 16px;
+            padding: 10px 12px;
             cursor: pointer;
             border-bottom: 1px solid #f0f3f6;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
         .reviewer-option:last-child {
@@ -851,6 +852,8 @@
 
         .reviewer-option:hover, .reviewer-option.highlighted {
             background-color: #f0f8ff;
+            transform: translateX(2px);
+            box-shadow: 0 2px 4px rgba(0, 115, 206, 0.1);
         }
 
         .reviewer-option.selected {
@@ -860,13 +863,10 @@
 
         .reviewer-name {
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .reviewer-info {
-            font-size: 13px;
-            color: #666;
+            color: #11224B;
+            margin-bottom: 0;
+            font-size: 15px;
+            line-height: 1.3;
         }
 
         .team-size {
@@ -952,10 +952,11 @@
         }
 
         .employee-name {
-            font-weight: normal;
-            color: #555;
+            font-weight: 600;
+            color: #11224B;
             margin-bottom: 4px;
-            font-size: 14px;
+            font-size: 15px;
+            line-height: 1.3;
         }
 
         .employee-status-info {
@@ -1000,7 +1001,8 @@
         .reviewer-info h3 {
             margin: 0;
             color: white;
-            font-size: 18px;
+            font-size: 17px;
+            font-weight: 600;
         }
 
         .reviewer-info p {
@@ -1150,13 +1152,13 @@
         }
 
         .action-buttons .btn-primary {
-            background: #007bff;
+            background: #00AFD7;
             color: white;
             grid-column: 1 / -1; /* Span full width */
         }
 
         .action-buttons .btn-primary:hover {
-            background: #0056b3;
+            background: #0096b8;
         }
 
         .action-buttons .btn-download {
@@ -1366,10 +1368,10 @@
         }
 
         .employee-name {
-            color: #ffffff !important;
-            font-weight: 700 !important;
-            font-size: 14px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1971,11 +1973,13 @@
             display: inline-block;
             background: #00AFD7;
             color: white;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 6px;
-            margin: 4px 8px 4px 0;
+            margin: 0;
             font-weight: 600;
             font-size: 14px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .insight-metric.secondary {
@@ -1983,31 +1987,31 @@
             color: #212529;
         }
 
-        /* Standardized Performance Snapshot */
+        /* Compact Performance Snapshot */
         .performance-snapshot {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin: 20px 0;
+            gap: 8px;
+            margin: 8px 0;
         }
 
         .snapshot-item {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
             text-align: center;
             border: 1px solid #e9ecef;
         }
 
         .snapshot-number {
             display: block;
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .snapshot-label {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             color: #495057;
         }
@@ -2278,35 +2282,19 @@
             box-shadow: 0 4px 12px rgba(0, 115, 206, 0.3);
         }
 
-        /* Tooltip backdrop overlay */
+        /* No backdrop needed - clean tooltip system */
         .tooltip-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.1);
-            z-index: 999999998;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .tooltip-backdrop.show {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+            display: none !important;
         }
 
         .help-tooltip {
             position: fixed;
             background: white;
-            border: 2px solid #0073CE;
+            border: 2px solid #00AFD7;
             border-radius: 12px;
-            padding: 16px;
+            padding: 20px;
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-            width: 320px;
+            width: 380px;
             max-width: 90vw;
             max-height: 400px;
             overflow-y: auto;
@@ -2315,6 +2303,9 @@
             visibility: hidden;
             transform: translateY(-10px);
             transition: all 0.3s ease;
+            /* Position in upper right corner for consistent visibility */
+            top: 20px;
+            right: 20px;
         }
 
         .help-tooltip.show {
@@ -2324,60 +2315,66 @@
             z-index: 999999999 !important;
         }
 
+        /* Bold Evaluation Questions */
+        .slide .description {
+            font-weight: 700 !important;
+            color: #2c3e50 !important;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        /* Remove arrow pointer since tooltip is now centered */
         .help-tooltip::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            right: 20px;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 8px solid #0073CE;
+            display: none;
         }
         
         .help-tooltip.positioned-above::before {
-            top: auto;
-            bottom: -8px;
-            border-bottom: none;
-            border-top: 8px solid #0073CE;
+            display: none;
         }
 
         .help-tooltip h4 {
-            color: #0073CE;
-            margin: 0 0 12px 0;
-            font-size: 18px;
+            color: #00AFD7;
+            margin: 0 0 16px 0;
+            font-size: 20px;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #00AFD7;
         }
 
         .help-tooltip h4::before {
             content: '';
             width: 4px;
-            height: 18px;
-            background: linear-gradient(135deg, #0073CE, #FFC220);
+            height: 20px;
+            background: linear-gradient(135deg, #00AFD7, #FFC220);
             border-radius: 2px;
         }
 
         .help-tooltip p {
             color: #495057;
-            margin: 0 0 12px 0;
-            font-size: 14px;
+            margin: 0 0 16px 0;
+            font-size: 15px;
             line-height: 1.6;
         }
 
         .help-tooltip ul {
-            margin: 0;
+            margin: 0 0 8px 0;
             padding-left: 20px;
             color: #495057;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .help-tooltip li {
-            margin-bottom: 8px;
-            line-height: 1.5;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .help-tooltip li strong {
+            color: #212529;
+            font-weight: 600;
         }
 
         .help-close {
@@ -2611,18 +2608,19 @@
 
         .employee-name {
             font-weight: 600;
-            color: #333333 !important;
-            font-size: 16px;
+            color: #11224B;
+            font-size: 15px;
+            line-height: 1.3;
             margin-bottom: 4px;
         }
 
         .team-report-modal .employee-name {
-            color: #333333 !important;
+            color: #11224B;
             font-weight: 600;
         }
 
         .employee-status-list .employee-name {
-            color: #333333 !important;
+            color: #11224B;
             font-weight: 600;
         }
 
@@ -2766,11 +2764,11 @@
             display: block !important;
         }
 
-        /* Professional Executive Summary */
+        /* Compact Executive Summary */
         .executive-summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
             padding: 0;
             margin: 0;
             background: transparent;
@@ -2778,28 +2776,28 @@
 
         .exec-overview, .exec-insights, .exec-recommendations, .exec-actions {
             background: white;
-            padding: 24px;
+            padding: 16px;
             border-radius: 8px;
             border: 1px solid #e9ecef;
-            height: 280px;
+            height: 180px;
             display: flex;
             flex-direction: column;
         }
 
         .exec-overview h4, .exec-insights h4, .exec-recommendations h4, .exec-actions h4 {
             color: #212529;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin: 0 0 16px 0;
-            padding-bottom: 8px;
+            margin: 0 0 12px 0;
+            padding-bottom: 6px;
             border-bottom: 2px solid #00AFD7;
         }
 
         .exec-overview p, .exec-insights p {
             color: #495057;
-            font-size: 14px;
-            line-height: 1.5;
-            margin: 0 0 16px 0;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0 0 12px 0;
         }
 
         /* Ultra-Compact Executive Summary */
@@ -2916,48 +2914,48 @@
         }
 
         .rec-item {
-            padding: 16px;
+            padding: 10px;
             background: #f8f9fa;
-            border-radius: 6px;
-            border-left: 4px solid #00AFD7;
+            border-radius: 4px;
+            border-left: 3px solid #00AFD7;
             flex: 1;
         }
 
         .rec-priority {
-            font-size: 12px;
+            font-size: 10px;
             color: #00AFD7;
             font-weight: 600;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .rec-title {
             font-weight: 600;
             color: #212529;
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 12px;
+            margin-bottom: 4px;
         }
 
         .rec-desc {
-            font-size: 13px;
+            font-size: 11px;
             color: #495057;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         .action-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 4px;
             flex-grow: 1;
         }
 
         .action-item {
-            padding: 12px;
+            padding: 8px;
             background: #f8f9fa;
-            border-left: 4px solid #FFC220;
-            border-radius: 6px;
-            font-size: 13px;
-            line-height: 1.4;
+            border-left: 3px solid #FFC220;
+            border-radius: 4px;
+            font-size: 11px;
+            line-height: 1.3;
             color: #495057;
         }
 
@@ -2998,8 +2996,9 @@
 
         .roster-grid .employee-name {
             font-weight: 600;
-            color: #2c3e50;
-            font-size: 16px;
+            color: #11224B;
+            font-size: 15px;
+            line-height: 1.3;
         }
 
         .roster-grid .employee-status {
@@ -3183,6 +3182,10 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             border: 1px solid #e0e6ed;
             transition: all 0.2s ease;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .pattern-card:hover {
@@ -3236,6 +3239,11 @@
             color: #6c757d;
             font-size: 13px;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: auto;
         }
 
         /* Mini Chart Styles */
@@ -3371,8 +3379,7 @@
             <img src="sams-club-logo.png" alt="Sam's Club" class="logo">
             
             <div class="header-text">
-                <h1>Talent Evaluation Dashboard</h1>
-                <p>Step-by-step performance evaluation process</p>
+                <h1>Calibration Discussion Prep Tool</h1>
             </div>
         </div>
     </div>
@@ -3419,8 +3426,8 @@
                         <input type="text" id="employeeName" placeholder="Enter employee name">
                     </div>
                     <div class="form-group">
-                        <label for="reviewerName">Reviewer Name:</label>
-                        <input type="text" id="reviewerName" placeholder="Enter reviewer name">
+                        <label for="reviewerName">Manager Name:</label>
+                        <input type="text" id="reviewerName" placeholder="Enter manager name">
                     </div>
                 </div>
 
@@ -3619,11 +3626,7 @@
             document.querySelector('.container').innerHTML = `
                 <div class="login-container">
                     <div class="login-card">
-                        <h2>Reviewer Access</h2>
-                        <p>Search or select your name from the organization directory</p>
-                        
                         <div class="form-group">
-                            <label for="reviewerSearch">Manager/Reviewer Name:</label>
                             <div class="reviewer-search-container">
                                 <input type="text" id="reviewerSearch" placeholder="Type to search managers..." 
                                        oninput="searchReviewers()" onfocus="showReviewerDropdown()" 
@@ -3638,7 +3641,7 @@
                         <button class="btn btn-primary" id="accessBtn" onclick="loginSelectedReviewer()" disabled>Access Dashboard</button>
                         
                         <div class="demo-reviewers">
-                            <h4>Demo Reviewer Accounts:</h4>
+                            <h4>Demos:</h4>
                             <button class="btn btn-outline" onclick="loginAsDemo('sarah.johnson', 'Sarah Johnson')">Sarah Johnson (Manager)</button>
                             <button class="btn btn-outline" onclick="loginAsDemo('mike.chen', 'Mike Chen')">Mike Chen (Director)</button>
                             <button class="btn btn-outline" onclick="loginAsDemo('lisa.williams', 'Lisa Williams')">Lisa Williams (VP)</button>
@@ -4404,7 +4407,7 @@
             
             // Check for surface-level compliance vs. substantive content
             if (substantiveAnalysis.hasKeywords && !substantiveAnalysis.hasSubstance) {
-                alerts.push('🎭 <strong>Surface Compliance:</strong> Contains expected keywords but lacks substantive analysis. Provide deeper context and specific reasoning.');
+                alerts.push('<strong>Surface Compliance:</strong> Contains expected keywords but lacks substantive analysis. Provide deeper context and specific reasoning.');
             }
             
             // Section-specific bias detection with enhanced objectivity, specificity, and completeness
@@ -4419,38 +4422,38 @@
                 
                 // Completeness checks
                 if (!hasGoals) {
-                    alerts.push('🎯 <strong>Missing Goals Context:</strong> Question asks for "primary goals" - clearly state what their main priorities/objectives were for the year.');
+                    alerts.push('<strong>Missing Goals Context:</strong> Question asks for "primary goals" - clearly state what their main priorities/objectives were for the year.');
                 }
                 
                 if (!hasResults) {
-                    alerts.push('📈 <strong>Results Not Specified:</strong> Question asks for "specific results delivered" - describe concrete outcomes and accomplishments.');
+                    alerts.push('<strong>Results Not Specified:</strong> Question asks for "specific results delivered" - describe concrete outcomes and accomplishments.');
                 }
                 
                 if (!hasMetrics) {
-                    alerts.push('📊 <strong>No Measurable Progress:</strong> Question requires "measurable progress" - include numbers, percentages, or quantifiable improvements.');
+                    alerts.push('<strong>No Measurable Progress:</strong> Question requires "measurable progress" - include numbers, percentages, or quantifiable improvements.');
                 }
                 
                 if (!hasBusiness) {
-                    alerts.push('💼 <strong>Business Impact Missing:</strong> Question asks for "clear impact on business outcomes" - connect results to business value, revenue, efficiency, etc.');
+                    alerts.push('<strong>Business Impact Missing:</strong> Question asks for "clear impact on business outcomes" - connect results to business value, revenue, efficiency, etc.');
                 }
                 
                 // Objectivity and specificity checks
                 if (hasMetrics && !hasBusiness) {
-                    alerts.push('🔗 <strong>Metrics Without Business Connection:</strong> Numbers provided but missing explanation of business impact. How did these results affect the company?');
+                    alerts.push('<strong>Metrics Without Business Connection:</strong> Numbers provided but missing explanation of business impact. How did these results affect the company?');
                 }
                 
                 if (!hasSpecificity && hasResults) {
-                    alerts.push('🎯 <strong>Vague Results:</strong> Results mentioned but lack specificity. Include timelines, exact amounts, or precise outcomes.');
+                    alerts.push('<strong>Vague Results:</strong> Results mentioned but lack specificity. Include timelines, exact amounts, or precise outcomes.');
                 }
                 
                 if (!hasContext && hasGoals) {
-                    alerts.push('🔍 <strong>Missing Goal Context:</strong> Goals stated but missing why they were priorities. Explain business rationale or strategic importance.');
+                    alerts.push('<strong>Missing Goal Context:</strong> Goals stated but missing why they were priorities. Explain business rationale or strategic importance.');
                 }
                 
                 // Check for subjective language vs objective facts
                 const subjectiveWords = text.match(/amazing|excellent|outstanding|fantastic|incredible|awesome|great|good|nice/gi);
                 if (subjectiveWords && subjectiveWords.length >= 2) {
-                    alerts.push('⚖️ <strong>Subjective Language:</strong> Replace opinion words with objective facts, data, and measurable outcomes.');
+                    alerts.push('<strong>Subjective Language:</strong> Replace opinion words with objective facts, data, and measurable outcomes.');
                 }
             }
             
@@ -4467,24 +4470,24 @@
                 
                 // Completeness checks
                 if (!hasSpecificWays) {
-                    alerts.push('🤝 <strong>Missing Partnership Details:</strong> Question asks for "specific ways" they partnered - describe concrete collaboration methods and approaches.');
+                    alerts.push('<strong>Missing Partnership Details:</strong> Question asks for "specific ways" they partnered - describe concrete collaboration methods and approaches.');
                 }
                 
                 if (!hasMultipleExamples) {
-                    alerts.push('📝 <strong>Insufficient Examples:</strong> Question asks for "two or three specific ways" - provide multiple distinct collaboration examples.');
+                    alerts.push('<strong>Insufficient Examples:</strong> Question asks for "two or three specific ways" - provide multiple distinct collaboration examples.');
                 }
                 
                 if (!hasResults) {
-                    alerts.push('🎯 <strong>No Delivery Outcomes:</strong> Question asks for partnerships "to deliver results" - connect collaboration to specific outcomes achieved.');
+                    alerts.push('<strong>No Delivery Outcomes:</strong> Question asks for partnerships "to deliver results" - connect collaboration to specific outcomes achieved.');
                 }
                 
                 if (!hasGrowth) {
-                    alerts.push('📈 <strong>Missing Growth Areas:</strong> Question asks "where could their partnership and collaboration have been stronger" - identify specific improvement opportunities.');
+                    alerts.push('<strong>Missing Growth Areas:</strong> Question asks "where could their partnership and collaboration have been stronger" - identify specific improvement opportunities.');
                 }
                 
                 // Specificity and objectivity checks
                 if (!hasSpecificTeams && hasSpecificWays) {
-                    alerts.push('🎯 <strong>Vague Team References:</strong> Specify which teams/departments they collaborated with (e.g., Marketing, IT, Sales) rather than generic "cross-functional teams."');
+                    alerts.push('<strong>Vague Team References:</strong> Specify which teams/departments they collaborated with (e.g., Marketing, IT, Sales) rather than generic "cross-functional teams."');
                 }
                 
                 if (!hasMethodology && hasSpecificWays) {
@@ -4492,7 +4495,7 @@
                 }
                 
                 if (!hasChallenges && sentences.length > 2) {
-                    alerts.push('⚖️ <strong>Unrealistically Positive:</strong> Real collaboration involves challenges. Include balanced feedback on obstacles navigated or areas for improvement.');
+                    alerts.push('<strong>Unrealistically Positive:</strong> Real collaboration involves challenges. Include balanced feedback on obstacles navigated or areas for improvement.');
                 }
                 
                 // Check for vague communication language
@@ -4504,7 +4507,7 @@
                 // Check for attribution accuracy
                 const soloCredit = text.match(/single-handedly|solely|entirely|all by|only person/i);
                 if (soloCredit) {
-                    alerts.push('🤝 <strong>Collaboration vs Solo Credit:</strong> In collaboration section, ensure credit is appropriately shared with team members and partners.');
+                    alerts.push('<strong>Collaboration vs Solo Credit:</strong> In collaboration section, ensure credit is appropriately shared with team members and partners.');
                 }
             }
             
@@ -4517,19 +4520,19 @@
                 const hasNextYear = text.match(/next year|coming year|future|going forward|development plan/i);
                 
                 if (!hasCriticalAreas) {
-                    alerts.push('🎯 <strong>Development Areas Not Identified:</strong> Question asks for "most critical development areas" - identify specific skills, capabilities, or competencies to develop next year.');
+                    alerts.push('<strong>Development Areas Not Identified:</strong> Question asks for "most critical development areas" - identify specific skills, capabilities, or competencies to develop next year.');
                 }
                 
                 if (!hasTargetedExperiences) {
-                    alerts.push('🚀 <strong>Missing Development Experiences:</strong> Question asks for "targeted experiences such as training, expanded scope, new responsibilities, or stretch work" - specify concrete development opportunities.');
+                    alerts.push('<strong>Missing Development Experiences:</strong> Question asks for "targeted experiences such as training, expanded scope, new responsibilities, or stretch work" - specify concrete development opportunities.');
                 }
                 
                 if (!hasAcceleration) {
-                    alerts.push('⚡ <strong>Growth Acceleration Missing:</strong> Question asks what would "best accelerate their growth" - explain how the suggested experiences will drive their development forward.');
+                    alerts.push('<strong>Growth Acceleration Missing:</strong> Question asks what would "best accelerate their growth" - explain how the suggested experiences will drive their development forward.');
                 }
                 
                 if (!hasMultiplePriorities) {
-                    alerts.push('📝 <strong>Insufficient Development Areas:</strong> Question asks for "two or three most critical" areas - provide multiple distinct development priorities for next year.');
+                    alerts.push('<strong>Insufficient Development Areas:</strong> Question asks for "two or three most critical" areas - provide multiple distinct development priorities for next year.');
                 }
                 
                 // Check for backward-looking content (should be forward-looking)
@@ -4543,13 +4546,13 @@
                 // Objectivity for development recommendations (reasoned professional judgment)
                 const unreasonedDevelopment = !text.match(/because|to|in order to|would help|will build|strengthens?|addresses?|supports?/i) && text.length > 50;
                 if (unreasonedDevelopment) {
-                    alerts.push('🎯 <strong>Unsupported Recommendations:</strong> Explain WHY these development areas are priorities and HOW the suggested experiences will address them.');
+                    alerts.push('<strong>Unsupported Recommendations:</strong> Explain WHY these development areas are priorities and HOW the suggested experiences will address them.');
                 }
                 
                 // Check for development rationale specificity
                 const vagueRationale = text.match(/needs to grow|could be better|should improve|general development/i);
                 if (vagueRationale) {
-                    alerts.push('📋 <strong>Vague Development Rationale:</strong> Replace general improvement language with specific capabilities, competencies, or skills that need development.');
+                    alerts.push('<strong>Vague Development Rationale:</strong> Replace general improvement language with specific capabilities, competencies, or skills that need development.');
                 }
             }
             
@@ -4564,11 +4567,11 @@
                 const hasTimeframes = text.match(/by.*\d+|within.*weeks?|next.*months?|Q[1-4]|timeline|schedule|deadline/i);
                 
                 if (!hasDifferentiation) {
-                    alerts.push('🏆 <strong>Missing Peer Comparison:</strong> Question asks "what clearly differentiates this associate" compared to others - provide specific comparative strengths.');
+                    alerts.push('<strong>Missing Peer Comparison:</strong> Question asks "what clearly differentiates this associate" compared to others - provide specific comparative strengths.');
                 }
                 
                 if (!hasAssumptions) {
-                    alerts.push('💭 <strong>Rating Assumptions Missing:</strong> Question asks "what assumptions influenced your rating" - explain the evidence and reasoning behind your evaluation.');
+                    alerts.push('<strong>Rating Assumptions Missing:</strong> Question asks "what assumptions influenced your rating" - explain the evidence and reasoning behind your evaluation.');
                 }
                 
                 if (!hasMeasurable) {
@@ -4576,49 +4579,49 @@
                 }
                 
                 if (!hasMeasurable) {
-                    alerts.push('📊 <strong>No Measurable Progress Expected:</strong> Question asks for "measurable progress...in the next six months" - specify concrete, trackable outcomes.');
+                    alerts.push('<strong>No Measurable Progress Expected:</strong> Question asks for "measurable progress...in the next six months" - specify concrete, trackable outcomes.');
                 }
                 
                 if (!hasSupportActions) {
-                    alerts.push('🤝 <strong>Support Actions Not Specified:</strong> Question asks for "specific actions you will take to support their development" - detail your commitments as their manager.');
+                    alerts.push('<strong>Support Actions Not Specified:</strong> Question asks for "specific actions you will take to support their development" - detail your commitments as their manager.');
                 }
                 
                 // Enhanced objectivity and specificity checks for Looking Ahead
                 if (!hasSpecificEvidence && hasAssumptions) {
-                    alerts.push('📋 <strong>Vague Assumptions:</strong> Rating assumptions mentioned but lack clear reasoning. Explain what specific observations, patterns, or capabilities influenced your evaluation.');
+                    alerts.push('<strong>Vague Assumptions:</strong> Rating assumptions mentioned but lack clear reasoning. Explain what specific observations, patterns, or capabilities influenced your evaluation.');
                 }
                 
                 if (!hasConcreteSupport && hasSupportActions) {
-                    alerts.push('🎯 <strong>Generic Support Actions:</strong> Support mentioned but not specific. Detail exact resources, meetings, training, or opportunities you will provide.');
+                    alerts.push('<strong>Generic Support Actions:</strong> Support mentioned but not specific. Detail exact resources, meetings, training, or opportunities you will provide.');
                 }
                 
                 if (!hasTimeframes && hasMeasurable) {
-                    alerts.push('⏱️ <strong>Missing Timelines:</strong> Measurable progress mentioned but lacks specific timeframes. Include when progress will be measured or achieved.');
+                    alerts.push('<strong>Missing Timelines:</strong> Measurable progress mentioned but lacks specific timeframes. Include when progress will be measured or achieved.');
                 }
                 
                 // Check for comparison specificity (different standard - qualitative assessment vs quantitative data)
                 const vagueComparison = text.match(/better than others|above average|top performer|one of the best/i);
                 if (vagueComparison) {
-                    alerts.push('📊 <strong>Vague Peer Comparison:</strong> Replace general comparisons with specific capabilities, working style, or unique strengths that distinguish this person from peers.');
+                    alerts.push('<strong>Vague Peer Comparison:</strong> Replace general comparisons with specific capabilities, working style, or unique strengths that distinguish this person from peers.');
                 }
                 
                 // Check for action commitment vs suggestion
                 const suggestions = text.match(/could|might|should|may|possibly/i);
                 const commitments = text.match(/will|commit to|plan to|schedule|allocate|provide/i);
                 if (suggestions && !commitments) {
-                    alerts.push('💪 <strong>Weak Commitment Language:</strong> Replace tentative language (could, might) with firm commitments about support actions you will take.');
+                    alerts.push('<strong>Weak Commitment Language:</strong> Replace tentative language (could, might) with firm commitments about support actions you will take.');
                 }
                 
                 // Objectivity for evaluative questions (different from data-driven objectivity)
                 const subjectiveEvaluative = text.match(/amazing|incredible|fantastic|perfect|flawless/gi);
                 if (subjectiveEvaluative && subjectiveEvaluative.length >= 2) {
-                    alerts.push('⚖️ <strong>Overly Subjective Evaluation:</strong> Use professional assessment language. Focus on specific capabilities and reasoned judgments rather than emotional descriptors.');
+                    alerts.push('<strong>Overly Subjective Evaluation:</strong> Use professional assessment language. Focus on specific capabilities and reasoned judgments rather than emotional descriptors.');
                 }
                 
                 // Check for balanced assessment (critical for fair evaluation)
                 const onlyPositive = !text.match(/improve|develop|challenge|opportunity|growth|next level|strengthen/i) && text.length > 100;
                 if (onlyPositive) {
-                    alerts.push('⚖️ <strong>One-Sided Assessment:</strong> Include development opportunities or areas for continued growth to provide balanced evaluation.');
+                    alerts.push('<strong>One-Sided Assessment:</strong> Include development opportunities or areas for continued growth to provide balanced evaluation.');
                 }
             }
             
@@ -4633,7 +4636,7 @@
             // Logical consistency check
             const consistencyAnalysis = analyzeLogicalConsistency(text, sentences, fieldId);
             if (consistencyAnalysis.hasInconsistency) {
-                alerts.push(`🔍 <strong>Logical Inconsistency:</strong> ${consistencyAnalysis.issue}`);
+                alerts.push(`<strong>Logical Inconsistency:</strong> ${consistencyAnalysis.issue}`);
             }
             
             // Enhanced Specificity Detection
@@ -4641,13 +4644,13 @@
             const vagueCount = vagueWords.filter(word => lowerText.includes(word)).length;
             
             if (vagueCount >= 2) {
-                alerts.push('🎯 <strong>Vague Language:</strong> Replace general terms with specific behaviors, outcomes, or measurable examples.');
+                alerts.push('<strong>Vague Language:</strong> Replace general terms with specific behaviors, outcomes, or measurable examples.');
             }
             
             // Objectivity: Numbers without Context Detection
             const numbersWithoutContext = text.match(/\d+%|\$[\d,]+|\d+\.\d+/) && !text.match(/compared to|versus|target|baseline|benchmark|industry average|peer average/i);
             if (numbersWithoutContext && sentences.length > 1) {
-                alerts.push('📊 <strong>Numbers Need Context:</strong> Metrics provided but missing comparison benchmarks. Include targets, peer averages, or previous performance.');
+                alerts.push('<strong>Numbers Need Context:</strong> Metrics provided but missing comparison benchmarks. Include targets, peer averages, or previous performance.');
             }
             
             // Enhanced Gender/Demographic Bias Detection
@@ -4655,7 +4658,7 @@
             const biasFound = biasTerms.some(term => lowerText.includes(term));
             
             if (biasFound) {
-                alerts.push('⚖️ <strong>Potential Bias Language:</strong> Review for unconscious bias. Focus on specific behaviors and measurable outcomes instead of personality traits.');
+                alerts.push('<strong>Potential Bias Language:</strong> Review for unconscious bias. Focus on specific behaviors and measurable outcomes instead of personality traits.');
             }
             
             // Recency Bias Detection (Enhanced)
@@ -4669,7 +4672,7 @@
             // Attribution Accuracy (Completeness)
             const soloCredit = text.match(/single-handedly|solely responsible|all by myself|entirely due to me|only person who/i);
             if (soloCredit) {
-                alerts.push('👥 <strong>Attribution Check:</strong> Verify if accomplishments involved team effort. Ensure appropriate credit sharing.');
+                alerts.push('<strong>Attribution Check:</strong> Verify if accomplishments involved team effort. Ensure appropriate credit sharing.');
             }
             
             // Consistency: Conflicting Ratings
@@ -4679,7 +4682,7 @@
             const hasNegative = negativeWords.some(word => lowerText.includes(word));
             
             if (hasPositive && hasNegative && sentences.length > 2) {
-                alerts.push('🔍 <strong>Rating Consistency:</strong> Contains both highly positive and negative language. Ensure overall rating aligns with detailed feedback.');
+                alerts.push('<strong>Rating Consistency:</strong> Contains both highly positive and negative language. Ensure overall rating aligns with detailed feedback.');
             }
             
             return alerts;
@@ -4706,7 +4709,7 @@
             const alertsContainer = document.getElementById(alertsId);
             
             if (alerts.length === 0) {
-                alertsContainer.innerHTML = '<div class="bias-alert" style="color: #28a745;">✅ No bias patterns detected. Great objective feedback!</div>';
+                alertsContainer.innerHTML = '<div class="bias-alert" style="color: #28a745;"><strong>No bias patterns detected. Great objective feedback!</strong></div>';
             } else {
                 alertsContainer.innerHTML = alerts.map(alert => `<div class="bias-alert">${alert}</div>`).join('');
             }
@@ -4934,12 +4937,10 @@
                     </div>
                     
                     <div class="employee-list">
-                        <h4>Direct Reports (${employees.length})</h4>
-                        
                         <!-- Unified Employee Search/Select -->
                         <div class="search-section">
                             <div class="employee-search-container">
-                                <input type="text" id="employeeSearch" placeholder="Type to search team members..." 
+                                <input type="text" id="employeeSearch" placeholder="Search Associate Name..." 
                                        oninput="searchEmployees()" onfocus="showEmployeeDropdown()" 
                                        onkeypress="if(event.key==='Enter') selectFirstEmployee()"
                                        autocomplete="off" class="employee-search-input">
@@ -5011,8 +5012,6 @@
                 <div class="main-content">
                     <div class="content-card">
                         <div class="dashboard-welcome">
-                            <p>Select a team member from the sidebar to begin or continue their performance evaluation.</p>
-                            
                             <div class="quick-actions">
                                 <h3>Quick Actions</h3>
                                 <div class="action-buttons">
@@ -5090,6 +5089,11 @@
                                 <span class="btn-text">Redo</span>
                             </button>
                         </div>
+                        <button class="btn btn-primary" id="completeEvalBtn" onclick="completeEvaluationFromSidebar()" 
+                                style="width: 100%; margin-top: 15px;" 
+                                title="Complete and submit this evaluation">
+                            Complete Evaluation
+                        </button>
                         <div class="undo-redo-note">
                             Undo/redo text changes, ratings, and navigation
                         </div>
@@ -5254,7 +5258,7 @@
                     saveReviewerData();
                     updateStatusDisplay();
                 }
-                alert('Evaluation completed! Returning to dashboard.');
+                console.log('Evaluation completed! Returning to dashboard.');
                 // Small delay to ensure status display updates before returning to dashboard
                 setTimeout(() => {
                     loadReviewerDashboard();
@@ -5270,6 +5274,55 @@
             if (prevBtn) prevBtn.disabled = (currentStep === 0);
             if (nextBtn) nextBtn.textContent = (currentStep === totalSteps - 1) ? 'Complete Evaluation' : 'Next';
             if (stepInfo) stepInfo.textContent = `Step ${currentStep + 1} of ${totalSteps}`;
+        }
+
+        function completeEvaluationFromSidebar() {
+            // Validate that evaluation can be completed
+            if (!currentEmployee || !reviewerData[currentReviewer]?.employees[currentEmployee]) {
+                alert('No employee evaluation is currently loaded.');
+                return;
+            }
+
+            const employee = reviewerData[currentReviewer].employees[currentEmployee];
+            
+            // Check if already completed
+            if (employee.status === 'completed') {
+                if (confirm('This evaluation is already completed. Do you want to return to the dashboard?')) {
+                    loadReviewerDashboard();
+                }
+                return;
+            }
+            
+            // Check if evaluation has required data (at minimum a rating should be selected)
+            const evaluationData = employee.evaluationData || {};
+            if (!evaluationData.overallRating) {
+                const confirmMessage = `No overall rating has been selected for ${employee.name}.\n\nAre you sure you want to complete this evaluation without a rating?`;
+                if (!confirm(confirmMessage)) {
+                    return;
+                }
+            }
+
+            // Confirm completion
+            const stepText = currentStep < totalSteps - 1 ? ` (currently on step ${currentStep + 1} of ${totalSteps})` : '';
+            const confirmCompleteMessage = `Complete evaluation for ${employee.name}${stepText}?\n\nThis will mark the evaluation as finished and return you to the dashboard.`;
+            
+            if (!confirm(confirmCompleteMessage)) {
+                return;
+            }
+
+            // Complete the evaluation - same logic as nextStep() when on final step
+            saveEmployeeEvaluation();
+            employee.status = 'completed';
+            employee.statusChangeReason = 'Evaluation completed by reviewer via sidebar';
+            employee.completedDate = new Date().toISOString();
+            saveReviewerData();
+            updateStatusDisplay();
+
+            console.log('Evaluation completed via sidebar! Returning to dashboard.');
+            // Small delay to ensure status display updates before returning to dashboard
+            setTimeout(() => {
+                loadReviewerDashboard();
+            }, 100);
         }
 
         function selectRating(element, rating) {
@@ -5317,10 +5370,10 @@
             const previousStatus = employee.status;
             const previousData = employee.evaluationData || {};
             
-            // Save current form data - reviewer name is always from logged-in user
+            // Save current form data - manager name is always from logged-in user
             const evaluationData = {
                 employeeName: document.getElementById('employeeName')?.value || employee.name,
-                reviewerName: reviewerData[currentReviewer].name, // Always use logged-in reviewer name
+                reviewerName: reviewerData[currentReviewer].name, // Always use logged-in manager name
                 reviewPeriod: document.getElementById('reviewPeriod')?.value || 'FY26',
                 overallRating: document.querySelector('.rating-btn.selected')?.getAttribute('data-rating') || 'successful',
                 keyPriorities: document.getElementById('keyPriorities')?.value || '',
@@ -5438,8 +5491,8 @@
                             <input type="text" id="employeeName" placeholder="Enter employee name" value="${evalData.employeeName || employee.name}">
                         </div>
                         <div class="form-group">
-                            <label for="reviewerName">Reviewer Name: <small style="color: #28a745; font-weight: normal;">(Auto-populated)</small></label>
-                            <input type="text" id="reviewerName" placeholder="Enter reviewer name" value="${reviewerData[currentReviewer].name}" readonly>
+                            <label for="reviewerName">Manager Name: <small style="color: #28a745; font-weight: normal;">(Auto-populated)</small></label>
+                            <input type="text" id="reviewerName" placeholder="Enter manager name" value="${reviewerData[currentReviewer].name}" readonly>
                         </div>
                     </div>
 
@@ -6532,7 +6585,7 @@
                 doc.setPage(i);
                 doc.setFontSize(8);
                 doc.setTextColor(128, 128, 128);
-                doc.text(`Sam's Club Talent Evaluation Dashboard - Page ${i} of ${pageCount}`, marginX, doc.internal.pageSize.height - 10);
+                doc.text(`Sam's Club Calibration Discussion Prep Tool - Page ${i} of ${pageCount}`, marginX, doc.internal.pageSize.height - 10);
                 doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - 80, doc.internal.pageSize.height - 10);
             }
             
@@ -6545,7 +6598,16 @@
 
 
         // Help Button Functions
-        function toggleHelp(helpId) {
+        function toggleHelp(helpId, event) {
+            console.log('toggleHelp called for:', helpId);
+            
+            // Prevent the click event from bubbling up
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+                console.log('Event stopped for:', helpId);
+            }
+            
             // Close all other tooltips first
             document.querySelectorAll('.help-tooltip.show').forEach(tooltip => {
                 if (tooltip.id !== helpId) {
@@ -6553,56 +6615,22 @@
                 }
             });
             
-            // Hide backdrop if no tooltips are showing
-            hideTooltipBackdrop();
-            
             // Toggle the requested tooltip
             const tooltip = document.getElementById(helpId);
             if (tooltip) {
                 const isShowing = tooltip.classList.contains('show');
+                console.log('Tooltip', helpId, 'is currently showing:', isShowing);
                 
                 if (!isShowing) {
-                    // Show backdrop
-                    showTooltipBackdrop();
-                    
-                    // Position the tooltip relative to its help button
-                    const helpButton = tooltip.parentElement.querySelector('.help-button');
-                    if (helpButton) {
-                        const buttonRect = helpButton.getBoundingClientRect();
-                        const tooltipWidth = 320;
-                        const viewportWidth = window.innerWidth;
-                        const viewportHeight = window.innerHeight;
-                        
-                        // Calculate position
-                        let left = buttonRect.right - tooltipWidth;
-                        let top = buttonRect.bottom + 8;
-                        
-                        // Adjust if tooltip would go off the right edge
-                        if (left < 20) {
-                            left = 20;
-                        }
-                        
-                        // Adjust if tooltip would go off the bottom
-                        if (top + 400 > viewportHeight - 20) {
-                            top = buttonRect.top - 400 - 8; // Position above
-                            tooltip.classList.add('positioned-above');
-                        } else {
-                            tooltip.classList.remove('positioned-above');
-                        }
-                        
-                        // Apply positioning with maximum z-index
-                        tooltip.style.position = 'fixed';
-                        tooltip.style.left = left + 'px';
-                        tooltip.style.top = top + 'px';
-                        tooltip.style.zIndex = '999999999';
-                        tooltip.style.display = 'block';
-                    }
-                    
+                    // Simple show - tooltip uses fixed CSS positioning
                     tooltip.classList.add('show');
+                    console.log('Showing tooltip:', helpId);
                 } else {
                     tooltip.classList.remove('show');
-                    hideTooltipBackdrop();
+                    console.log('Hiding tooltip:', helpId);
                 }
+            } else {
+                console.log('Tooltip not found:', helpId);
             }
         }
 
@@ -6629,7 +6657,6 @@
             document.querySelectorAll('.help-tooltip.show').forEach(tooltip => {
                 tooltip.classList.remove('show');
             });
-            hideTooltipBackdrop();
         }
 
         function closeHelp(helpId) {
@@ -6637,15 +6664,32 @@
             if (tooltip) {
                 tooltip.classList.remove('show');
             }
-            hideTooltipBackdrop();
         }
 
-        // Close tooltips when clicking outside
+        // Close tooltips when clicking anywhere (with debugging)
         document.addEventListener('click', function(event) {
+            // Check if any tooltips are currently open
+            const openTooltips = document.querySelectorAll('.help-tooltip.show');
+            if (openTooltips.length === 0) return; // No tooltips open, nothing to do
+            
+            // Don't handle clicks inside the Analytics modal - let the Analytics modal handle them
+            if (event.target.closest('.team-report-modal')) {
+                console.log('Click inside Analytics modal - letting modal handle it');
+                return;
+            }
+            
+            console.log('Global click detected, tooltips open:', openTooltips.length);
+            console.log('Clicked element:', event.target);
+            console.log('Closest help-button:', event.target.closest('.help-button'));
+            console.log('Closest help-close:', event.target.closest('.help-close'));
+            
+            // Close all tooltips unless clicking help or close buttons (those handle their own logic)
             if (!event.target.closest('.help-button') && 
-                !event.target.closest('.help-tooltip') &&
-                !event.target.classList.contains('tooltip-backdrop')) {
+                !event.target.closest('.help-close')) {
+                console.log('Closing all tooltips');
                 closeAllTooltips();
+            } else {
+                console.log('Not closing tooltips - clicked on help/close button');
             }
         });
 
@@ -6664,7 +6708,7 @@
             
             const analyticsHTML = `
                 <div class="team-report-overlay" onclick="closeAnalytics(event)">
-                    <div class="team-report-modal" onclick="event.stopPropagation()" style="max-width: 1200px;">
+                    <div class="team-report-modal" onclick="handleAnalyticsModalClick(event)" style="max-width: 1200px;">
                         <div class="report-header">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <button class="btn btn-outline" onclick="closeAnalytics()" style="margin-right: 15px;">← Back to Dashboard</button>
@@ -6687,16 +6731,16 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Executive Summary</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-executive')" title="Learn more">?</button>
+                                    <button class="help-button" onclick="toggleHelp('help-executive', event)" title="Learn more">?</button>
                                     <div class="help-tooltip" id="help-executive">
                                         <button class="help-close" onclick="closeHelp('help-executive')">&times;</button>
                                         <h4>Executive Summary</h4>
-                                        <p>High-level overview of your team's performance and key insights for executive decision-making.</p>
+                                        <p>Comprehensive overview providing essential information for calibration discussions and team performance assessment.</p>
                                         <ul>
-                                            <li><strong>Performance Snapshot:</strong> Visual breakdown of ratings across your team</li>
-                                            <li><strong>Key Findings:</strong> AI-generated insights about performance patterns</li>
-                                            <li><strong>Strategic Recommendations:</strong> Priority actions for team improvement</li>
-                                            <li><strong>Immediate Actions:</strong> Critical items requiring immediate attention</li>
+                                            <li><strong>Team Overview:</strong> Team size, completion rates, and rating distribution (Exemplary/Successful/Opportunity)</li>
+                                            <li><strong>Key Insights:</strong> AI-generated analysis of overall team performance patterns and trends</li>
+                                            <li><strong>Priority Recommendations:</strong> Top strategic actions ranked by importance for team development</li>
+                                            <li><strong>Action Items:</strong> Specific, actionable next steps requiring manager attention</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -6754,16 +6798,16 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Bias Detection Analysis</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-bias')" title="Learn more">?</button>
+                                    <button class="help-button" onclick="toggleHelp('help-bias', event)" title="Learn more">?</button>
                                     <div class="help-tooltip" id="help-bias">
                                         <button class="help-close" onclick="closeHelp('help-bias')">&times;</button>
                                         <h4>Bias Detection Analysis</h4>
-                                        <p>AI-powered analysis to identify potential biases in evaluation language and patterns.</p>
+                                        <p>Algorithmic analysis identifying potential evaluation biases to ensure fair and objective assessments.</p>
                                         <ul>
-                                            <li><strong>Risk Levels:</strong> High (red), Medium (gold), Low (blue)</li>
-                                            <li><strong>Common Biases:</strong> Easy/Hard rater, Gender, Recency, Halo effect</li>
-                                            <li><strong>Bias Score:</strong> Lower scores indicate more objective evaluations</li>
-                                            <li><strong>Instances:</strong> Number of times bias patterns were detected</li>
+                                            <li><strong>Risk Levels:</strong> High (red) = Critical attention needed, Medium (gold) = Monitor closely, Low (teal) = Acceptable levels</li>
+                                            <li><strong>Bias Types:</strong> Easy/Hard rater tendencies, recency effects, halo bias, and inconsistent rating patterns</li>
+                                            <li><strong>Instance Count:</strong> Number of detected bias occurrences across all team evaluations</li>
+                                            <li><strong>Overall Score:</strong> Team-wide bias risk assessment (0-100, lower scores indicate more objective evaluations)</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -6783,16 +6827,16 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Content Quality Trends</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-quality')" title="Learn more">?</button>
+                                    <button class="help-button" onclick="toggleHelp('help-quality', event)" title="Learn more">?</button>
                                     <div class="help-tooltip" id="help-quality">
                                         <button class="help-close" onclick="closeHelp('help-quality')">&times;</button>
-                                        <h4>Content Quality Trends</h4>
-                                        <p>Measures the quality and depth of evaluation content across different metrics.</p>
+                                        <h4>Content Quality Metrics</h4>
+                                        <p>Quantitative analysis of evaluation content quality across three key dimensions.</p>
                                         <ul>
-                                            <li><strong>Objectivity:</strong> How fact-based vs. opinion-based the evaluations are</li>
-                                            <li><strong>Specificity:</strong> Level of detail and concrete examples provided</li>
-                                            <li><strong>Completion Rate:</strong> Percentage of fully completed evaluation sections</li>
-                                            <li><strong>Trends:</strong> Arrows show improvement (↑) or decline (↓) over time</li>
+                                            <li><strong>Average Objectivity:</strong> Percentage of fact-based vs. subjective language across all evaluation sections</li>
+                                            <li><strong>Average Specificity:</strong> Measurement of detail depth and concrete examples provided in evaluations</li>
+                                            <li><strong>Completion Rate:</strong> Percentage of evaluation sections that are fully completed with substantive content</li>
+                                            <li><strong>Trend Indicators:</strong> Visual arrows showing performance improvement (↑) or decline (↓) patterns</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -6828,16 +6872,16 @@
                             <div class="insights-section">
                                 <div class="section-header">
                                     <h3>Anomaly Pattern Detection</h3>
-                                    <button class="help-button" onclick="toggleHelp('help-anomaly')" title="Learn more">?</button>
+                                    <button class="help-button" onclick="toggleHelp('help-anomaly', event)" title="Learn more">?</button>
                                     <div class="help-tooltip" id="help-anomaly">
                                         <button class="help-close" onclick="closeHelp('help-anomaly')">&times;</button>
                                         <h4>Anomaly Pattern Detection</h4>
-                                        <p>Identifies unusual patterns in evaluations that may indicate inconsistencies or areas needing attention.</p>
+                                        <p>Statistical analysis identifying unusual evaluation patterns that may require manager review or calibration.</p>
                                         <ul>
-                                            <li><strong>Severity Levels:</strong> High (urgent), Medium (moderate), Low (minor)</li>
-                                            <li><strong>Pattern Types:</strong> Rating inconsistencies, unusual language patterns, incomplete data</li>
-                                            <li><strong>Affected Count:</strong> Number of employees impacted by each anomaly</li>
-                                            <li><strong>Risk Score:</strong> Overall assessment of evaluation consistency (0-100)</li>
+                                            <li><strong>Severity Classification:</strong> High (red) = Immediate review needed, Medium (gold) = Monitor, Low (teal) = Informational</li>
+                                            <li><strong>Detected Patterns:</strong> Rating inconsistencies, outlier language patterns, completion anomalies, and statistical deviations</li>
+                                            <li><strong>Impact Scope:</strong> Number of team members affected by each identified anomaly pattern</li>
+                                            <li><strong>Risk Assessment:</strong> Overall team evaluation consistency score with recommended actions</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -6874,6 +6918,33 @@
             `;
             
             document.body.insertAdjacentHTML('beforeend', analyticsHTML);
+        }
+        
+        function handleAnalyticsModalClick(event) {
+            // Prevent the click from bubbling up to close the analytics modal
+            event.stopPropagation();
+            
+            // Check if any help tooltips are currently open
+            const openTooltips = document.querySelectorAll('.help-tooltip.show');
+            if (openTooltips.length === 0) return; // No tooltips open, nothing to do
+            
+            console.log('Click in Analytics modal detected, checking if should close tooltips');
+            console.log('Clicked element:', event.target);
+            console.log('Closest help-button:', event.target.closest('.help-button'));
+            console.log('Closest help-close:', event.target.closest('.help-close'));
+            console.log('Closest help-tooltip:', event.target.closest('.help-tooltip'));
+            
+            // Close all tooltips unless clicking help buttons, close buttons, or inside tooltips themselves
+            const isHelpButton = event.target.closest('.help-button');
+            const isHelpClose = event.target.closest('.help-close');
+            const isInsideTooltip = event.target.closest('.help-tooltip');
+            
+            if (!isHelpButton && !isHelpClose && !isInsideTooltip) {
+                console.log('Closing all tooltips from analytics modal click');
+                closeAllTooltips();
+            } else {
+                console.log('Not closing tooltips - clicked on help element');
+            }
         }
         
         function closeAnalytics(event) {
@@ -7093,9 +7164,9 @@
                 avgObjectivity,
                 avgSpecificity,
                 completionRate,
-                objectivityTrend: avgObjectivity > 70 ? '📈 Excellent' : avgObjectivity > 50 ? '📊 Good' : '📉 Needs Improvement',
-                specificityTrend: avgSpecificity > 70 ? '📈 Detailed' : avgSpecificity > 50 ? '📊 Adequate' : '📉 Too Generic',
-                completionTrend: completionRate > 80 ? '✅ Complete' : completionRate > 60 ? '⚠️ Partial' : '❌ Incomplete'
+                objectivityTrend: avgObjectivity > 70 ? 'Excellent' : avgObjectivity > 50 ? 'Good' : 'Needs Improvement',
+                specificityTrend: avgSpecificity > 70 ? 'Detailed' : avgSpecificity > 50 ? 'Adequate' : 'Too Generic',
+                completionTrend: completionRate > 80 ? 'Complete' : completionRate > 60 ? 'Partial' : 'Incomplete'
             };
         }
 
@@ -7111,7 +7182,7 @@
                 anomalies.push({
                     title: 'Easy Rater Pattern',
                     severity: 'high',
-                    icon: '🎯',
+                    icon: '',
                     description: 'Unusually high concentration of exemplary ratings may indicate rating inflation or lack of differentiation.',
                     affectedCount: ratingDistribution.exemplary.count,
                     recommendation: 'Review calibration standards and consider more detailed performance criteria.'
@@ -7124,7 +7195,7 @@
                 anomalies.push({
                     title: 'Harsh Rater Pattern',
                     severity: 'high',
-                    icon: '⚡',
+                    icon: '',
                     description: 'High percentage of opportunity ratings may indicate overly strict evaluation criteria.',
                     affectedCount: ratingDistribution.opportunity.count,
                     recommendation: 'Review rating standards and ensure fair, balanced evaluation approach.'
@@ -7168,7 +7239,7 @@
                 anomalies.push({
                     title: 'Minimal Feedback Pattern',
                     severity: 'medium',
-                    icon: '📝',
+                    icon: '',
                     description: 'Average feedback length is unusually short, potentially lacking sufficient detail for meaningful evaluation.',
                     affectedCount: Math.round(shortFeedbackCount / 5),
                     recommendation: 'Encourage more detailed, specific feedback with examples and actionable insights.'
@@ -7188,7 +7259,7 @@
                 anomalies.push({
                     title: 'Rush Completion Pattern',
                     severity: 'medium',
-                    icon: '🚀',
+                    icon: '',
                     description: 'Large number of evaluations completed in short timeframe may indicate rushed process.',
                     affectedCount: recentEvaluations.length,
                     recommendation: 'Consider spacing out evaluations for more thoughtful assessment.'
@@ -7202,7 +7273,7 @@
                 anomalies.push({
                     title: 'Low Rating Variance',
                     severity: 'low',
-                    icon: '📊',
+                    icon: '',
                     description: 'Very similar ratings across team members may indicate lack of differentiation.',
                     affectedCount: completedEmployees.length,
                     recommendation: 'Ensure evaluations capture individual performance differences and unique contributions.'
@@ -7229,7 +7300,7 @@
                 anomalies.push({
                     title: 'No Significant Anomalies',
                     severity: 'low',
-                    icon: '✅',
+                    icon: '',
                     description: 'Evaluation patterns appear normal and balanced across standard metrics.',
                     affectedCount: 0,
                     recommendation: 'Continue current evaluation practices and monitor for emerging patterns.'
@@ -7810,7 +7881,7 @@
                 doc.setPage(i);
                 doc.setFontSize(8);
                 doc.setTextColor(128, 128, 128);
-                doc.text(`Sam's Club Talent Evaluation Dashboard - All Evaluations Export`, marginX, doc.internal.pageSize.height - 15);
+                doc.text(`Sam's Club Calibration Discussion Prep Tool - All Evaluations Export`, marginX, doc.internal.pageSize.height - 15);
                 doc.text(`Page ${i} of ${pageCount}`, pageWidth - 40, doc.internal.pageSize.height - 15);
                 doc.text(`Generated: ${new Date().toLocaleString()}`, marginX, doc.internal.pageSize.height - 8);
             }
@@ -8411,8 +8482,12 @@
                 });
             }
             
-            // Sort managers alphabetically and remove duplicates
-            allManagers = [...new Set(allManagers)].sort();
+            // Sort managers alphabetically by last name and remove duplicates
+            allManagers = [...new Set(allManagers)].sort((a, b) => {
+                const lastNameA = a.split(' ').pop().toLowerCase();
+                const lastNameB = b.split(' ').pop().toLowerCase();
+                return lastNameA.localeCompare(lastNameB);
+            });
             
             console.log(`Loaded ${allManagers.length} managers with ${Object.values(organizationData).reduce((sum, team) => sum + team.length, 0)} total employees`);
         }
@@ -8455,7 +8530,11 @@
                     { id: 'emp5', name: 'Emily Brown', position: 'Marketing Manager', level: 'F', status: 'not-started' }
                 ]
             };
-            allManagers = Object.keys(organizationData).sort();
+            allManagers = Object.keys(organizationData).sort((a, b) => {
+                const lastNameA = a.split(' ').pop().toLowerCase();
+                const lastNameB = b.split(' ').pop().toLowerCase();
+                return lastNameA.localeCompare(lastNameB);
+            });
         }
 
         function showReviewerDropdown() {
@@ -8499,12 +8578,8 @@
             dropdown.innerHTML = filteredManagers.map((manager, index) => {
                 const teamSize = organizationData[manager] ? organizationData[manager].length : 0;
                 return `
-                    <div class="reviewer-option" data-manager="${manager}" onclick="selectReviewer('${manager}')">
+                    <div class="reviewer-option" data-manager="${manager}" onclick="selectReviewer('${manager}')" title="Team Size: ${teamSize} direct reports">
                         <div class="reviewer-name">${manager}</div>
-                        <div class="reviewer-info">
-                            Team Size: ${teamSize} direct reports
-                            <span class="team-size">${teamSize}</span>
-                        </div>
                     </div>
                 `;
             }).join('');
