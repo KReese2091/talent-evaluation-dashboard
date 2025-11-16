@@ -7960,80 +7960,39 @@
                     summary += `${evalData.lookingAhead.trim()}\n\n`;
                 }
 
-                // Calibration Discussion Points - specific to actual evaluation content
+                // Enhanced Calibration Discussion Points - Manager-Ready Framework
                 if (contentCount >= 4) {
-                    summary += `CALIBRATION DISCUSSION POINTS:\n`;
+                    summary += `CALIBRATION DISCUSSION POINTS:\n\n`;
                     
-                    // Rating justification with specific evidence
-                    if (hasContent.overallRating) {
-                        summary += `• "${evalData.overallRating.charAt(0).toUpperCase() + evalData.overallRating.slice(1)}" rating is ${hasContent.resultsImpact ? 'supported by measurable business outcomes' : hasContent.keyPriorities ? 'based on documented goal achievement' : 'justified by evaluation evidence'}\n`;
-                    }
+                    // 1. Evidence-Based Framework
+                    summary += `1. EVIDENCE-BASED DISCUSSION:\n`;
+                    summary += `• Provide 2-3 specific examples of how this associate exceeded, met, or did not meet expectations\n`;
+                    summary += `• What measurable impact did their work have on business outcomes?\n`;
+                    summary += `• Cite instances where they demonstrated leadership, collaboration, or development\n\n`;
                     
-                    // Key Priorities discussion points
-                    if (hasContent.keyPriorities) {
-                        const priorities = evalData.keyPriorities.trim();
-                        const keyTerms = [];
-                        if (priorities.includes('exceeded') || priorities.includes('surpassed')) keyTerms.push('exceeded expectations');
-                        if (priorities.includes('achieved') || priorities.includes('completed')) keyTerms.push('achieved objectives');
-                        if (priorities.includes('project') || priorities.includes('initiative')) keyTerms.push('project delivery');
-                        if (priorities.includes('team') || priorities.includes('leadership')) keyTerms.push('team leadership');
-                        if (priorities.includes('strategic') || priorities.includes('strategy')) keyTerms.push('strategic execution');
-                        
-                        const firstSentence = priorities.split('.')[0].substring(0, 80) + (priorities.length > 80 ? '...' : '');
-                        summary += `• Key Priorities evidence: "${firstSentence}"${keyTerms.length > 0 ? ` - demonstrates ${keyTerms.join(', ')}` : ''}\n`;
-                    }
+                    // 2. Comparative Calibration Prompts
+                    summary += `2. COMPARATIVE CALIBRATION:\n`;
+                    summary += `• Compared to others at this level, what differentiates this associate?\n`;
+                    summary += `• How does their performance stack against peers in similar roles?\n`;
+                    summary += `• What would need to change for them to move to the next performance tier?\n\n`;
                     
-                    // Results & Impact discussion points  
-                    if (hasContent.resultsImpact) {
-                        const results = evalData.resultsImpact.trim();
-                        const metrics = results.match(/\d+%|\$[\d,]+|\d+\.\d+|increased|improved|reduced|achieved|delivered/gi) || [];
-                        const firstSentence = results.split('.')[0].substring(0, 80) + (results.length > 80 ? '...' : '');
-                        summary += `• Business Impact evidence: "${firstSentence}"${metrics.length > 0 ? ` - contains ${metrics.length} measurable outcomes` : ' - qualitative achievements documented'}\n`;
-                    }
+                    // 3. Forward-Looking Development Focus
+                    summary += `3. DEVELOPMENT PLANNING:\n`;
+                    summary += `• What are the 2-3 most critical development areas for next year?\n`;
+                    summary += `• What stretch assignments would accelerate their growth?\n`;
+                    summary += `• What skills gap prevents them from promotion readiness?\n\n`;
                     
-                    // Collaboration discussion points
-                    if (hasContent.collaboration) {
-                        const collab = evalData.collaboration.trim();
-                        const collabTerms = [];
-                        if (collab.includes('cross-functional') || collab.includes('cross functional')) collabTerms.push('cross-functional partnerships');
-                        if (collab.includes('stakeholder') || collab.includes('partner')) collabTerms.push('stakeholder management');
-                        if (collab.includes('team') || collab.includes('colleague')) collabTerms.push('team collaboration');
-                        if (collab.includes('communication') || collab.includes('communicate')) collabTerms.push('communication skills');
-                        if (collab.includes('influence') || collab.includes('persuade')) collabTerms.push('influence capabilities');
-                        
-                        const firstSentence = collab.split('.')[0].substring(0, 80) + (collab.length > 80 ? '...' : '');
-                        summary += `• Collaboration evidence: "${firstSentence}"${collabTerms.length > 0 ? ` - highlights ${collabTerms.join(', ')}` : ''}\n`;
-                    }
+                    // 4. Bias Check Questions
+                    summary += `4. BIAS VALIDATION:\n`;
+                    summary += `• What assumptions might be influencing this rating?\n`;
+                    summary += `• How might this assessment differ if given by another manager?\n`;
+                    summary += `• What evidence contradicts this performance narrative?\n\n`;
                     
-                    // Growth & Development discussion points
-                    if (hasContent.growth) {
-                        const growth = evalData.growth.trim();
-                        const growthTerms = [];
-                        if (growth.includes('skill') || growth.includes('competency')) growthTerms.push('skill development');
-                        if (growth.includes('learn') || growth.includes('training')) growthTerms.push('learning initiatives');
-                        if (growth.includes('feedback') || growth.includes('coaching')) growthTerms.push('feedback integration');
-                        if (growth.includes('challenge') || growth.includes('stretch')) growthTerms.push('challenge-seeking');
-                        
-                        const firstSentence = growth.split('.')[0].substring(0, 80) + (growth.length > 80 ? '...' : '');
-                        summary += `• Development evidence: "${firstSentence}"${growthTerms.length > 0 ? ` - shows ${growthTerms.join(', ')}` : ''}\n`;
-                    }
-                    
-                    // Future development discussion points
-                    if (hasContent.lookingAhead) {
-                        const future = evalData.lookingAhead.trim();
-                        const futureTerms = [];
-                        if (future.includes('goal') || future.includes('objective')) futureTerms.push('clear goal-setting');
-                        if (future.includes('development') || future.includes('grow')) futureTerms.push('development focus');
-                        if (future.includes('opportunity') || future.includes('advancement')) futureTerms.push('advancement readiness');
-                        if (future.includes('responsibility') || future.includes('role')) futureTerms.push('expanded responsibilities');
-                        
-                        const firstSentence = future.split('.')[0].substring(0, 80) + (future.length > 80 ? '...' : '');
-                        summary += `• Future Development: "${firstSentence}"${futureTerms.length > 0 ? ` - indicates ${futureTerms.join(', ')}` : ''}\n`;
-                    }
-                    
-                    if (hasContent.overallRating) {
-                        summary += `• Performance trajectory supports ${evalData.overallRating === 'exemplary' ? 'accelerated development and increased responsibilities' : evalData.overallRating === 'successful' ? 'continued growth in current role with stretch opportunities' : 'focused development plan with clear milestones'}\n\n`;
-                    }
+                    // 5. Actionable Outcome Planning
+                    summary += `5. ACTION PLANNING:\n`;
+                    summary += `• What specific actions will support their development?\n`;
+                    summary += `• How will progress be measured over the next 6 months?\n`;
+                    summary += `• What role changes or projects align with their career goals?\n\n`;
 
                     summary += `RECOMMENDATION:\n`;
                     if (hasContent.overallRating) {
