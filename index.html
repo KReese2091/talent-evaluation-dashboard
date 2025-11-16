@@ -4172,6 +4172,13 @@
             console.log(`AI Coach: Analyzing ${fieldId} with ${text.length} characters`);
             coach.style.display = 'block';
             
+            // Extra debugging for slide 3
+            if (fieldId === 'growth') {
+                console.log('Growth slide coach should now be visible');
+                console.log('Coach element:', coach);
+                console.log('Coach display style:', coach.style.display);
+            }
+            
             coach.style.display = 'block';
             
             // Calculate metrics based on section type
@@ -4516,6 +4523,10 @@
                 
                 if (!hasMeasurable) {
                     alerts.push('� <strong>No Measurable Progress Expected:</strong> Question asks for "measurable progress...in the next six months" - specify concrete, trackable outcomes.');
+                }
+                
+                if (!hasMeasurable) {
+                    alerts.push('📊 <strong>No Measurable Progress Expected:</strong> Question asks for "measurable progress...in the next six months" - specify concrete, trackable outcomes.');
                 }
                 
                 if (!hasSupportActions) {
