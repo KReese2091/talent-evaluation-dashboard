@@ -7976,55 +7976,59 @@
                     summary += `${evalData.lookingAhead.trim()}\n\n`;
                 }
 
-                // Enhanced Calibration Discussion Points - Manager-Ready Framework
+                // Generate content-based calibration discussion points from actual evaluation inputs
                 if (contentCount >= 4) {
                     summary += `CALIBRATION DISCUSSION POINTS:\n\n`;
                     
-                    // 1. Evidence-Based Framework
-                    summary += `1. EVIDENCE-BASED DISCUSSION:\n`;
-                    summary += `• Provide 2-3 specific examples of how this associate exceeded, met, or did not meet expectations\n`;
-                    summary += `• What measurable impact did their work have on business outcomes?\n`;
-                    summary += `• Cite instances where they demonstrated leadership, collaboration, or development\n\n`;
+                    // Extract key discussion points from actual content
+                    const discussionPoints = [];
                     
-                    // 2. Comparative Calibration Prompts
-                    summary += `2. COMPARATIVE CALIBRATION:\n`;
-                    summary += `• Compared to others at this level, what differentiates this associate?\n`;
-                    summary += `• How does their performance stack against peers in similar roles?\n`;
-                    summary += `• What would need to change for them to move to the next performance tier?\n\n`;
-                    
-                    // 3. Forward-Looking Development Focus
-                    summary += `3. DEVELOPMENT PLANNING:\n`;
-                    summary += `• What are the 2-3 most critical development areas for next year?\n`;
-                    summary += `• What stretch assignments would accelerate their growth?\n`;
-                    summary += `• What skills gap prevents them from promotion readiness?\n\n`;
-                    
-                    // 4. Bias Check Questions
-                    summary += `4. BIAS VALIDATION:\n`;
-                    summary += `• What assumptions might be influencing this rating?\n`;
-                    summary += `• How might this assessment differ if given by another manager?\n`;
-                    summary += `• What evidence contradicts this performance narrative?\n\n`;
-                    
-                    // 5. Actionable Outcome Planning
-                    summary += `5. ACTION PLANNING:\n`;
-                    summary += `• What specific actions will support their development?\n`;
-                    summary += `• How will progress be measured over the next 6 months?\n`;
-                    summary += `• What role changes or projects align with their career goals?\n\n`;
-
-                    summary += `RECOMMENDATION:\n`;
-                    if (hasContent.overallRating) {
-                        if (evalData.overallRating === 'exemplary') {
-                            summary += `Strong candidate for advancement opportunities and increased scope of responsibility. Consider for high-visibility projects and leadership development programs.`;
-                        } else if (evalData.overallRating === 'successful') {
-                            summary += `Solid contributor who consistently meets expectations. Recommend continued development in identified growth areas with appropriate stretch assignments.`;
-                        } else {
-                            summary += `Focused development plan recommended to address performance gaps and build capabilities for sustained success in role.`;
+                    // Performance evidence from Key Priorities and Results
+                    if (hasContent.keyPriorities) {
+                        const achievements = extractAchievements(evalData.keyPriorities);
+                        if (achievements.length > 0) {
+                            discussionPoints.push(`Performance Evidence: ${achievements.join('; ')}`);
                         }
-                    } else {
-                        summary += `Complete overall performance rating to finalize calibration recommendations.`;
                     }
+                    
+                    // Collaboration strengths and challenges
+                    if (hasContent.collaboration) {
+                        const collabInsights = extractCollaborationInsights(evalData.collaboration);
+                        if (collabInsights) {
+                            discussionPoints.push(`Collaboration Profile: ${collabInsights}`);
+                        }
+                    }
+                    
+                    // Development priorities from Growth section
+                    if (hasContent.growth) {
+                        const devPriorities = extractDevelopmentPriorities(evalData.growth);
+                        if (devPriorities) {
+                            discussionPoints.push(`Development Focus: ${devPriorities}`);
+                        }
+                    }
+                    
+                    // Future potential from Looking Ahead
+                    if (hasContent.lookingAhead) {
+                        const potential = extractPotentialIndicators(evalData.lookingAhead);
+                        if (potential) {
+                            discussionPoints.push(`Future Potential: ${potential}`);
+                        }
+                    }
+                    
+                    // Rating justification
+                    if (hasContent.overallRating) {
+                        const ratingContext = getRatingContext(evalData.overallRating, evalData);
+                        discussionPoints.push(`Rating Rationale: ${ratingContext}`);
+                    }
+                    
+                    // Output discussion points
+                    discussionPoints.forEach((point, index) => {
+                        summary += `${index + 1}. ${point}\n\n`;
+                    });
+                    
                 } else {
                     summary += `CALIBRATION READINESS:\n`;
-                    summary += `Additional evaluation completion required before generating calibration discussion points and recommendations.`;
+                    summary += `Additional evaluation completion required before generating calibration discussion points.`;
                 }
             }
 
@@ -8036,6 +8040,99 @@
                 summaryTextarea.value = summary;
                 // Update stats
                 updateSummaryStats(summary, evalData.overallRating);
+            }
+        }
+
+        // Helper functions to extract meaningful discussion points from evaluation content
+        function extractAchievements(keyPrioritiesText) {
+            const achievements = [];
+            const text = keyPrioritiesText.toLowerCase();
+            
+            // Look for achievement indicators
+            if (text.includes('exceeded') || text.includes('surpassed')) {
+                achievements.push('Exceeded performance targets');
+            }
+            if (text.includes('delivered') || text.includes('completed')) {
+                achievements.push('Successfully delivered key objectives');
+            }
+            
+            // Extract specific metrics if present
+            const metrics = keyPrioritiesText.match(/\d+%|\$[\d,]+|\d+\.\d+/g);
+            if (metrics && metrics.length > 0) {
+                achievements.push(`Achieved measurable results (${metrics.slice(0, 2).join(', ')})`);
+            }
+            
+            return achievements;
+        }
+        
+        function extractCollaborationInsights(collaborationText) {
+            const text = collaborationText.toLowerCase();
+            const insights = [];
+            
+            if (text.includes('cross-functional') || text.includes('partnership')) {
+                insights.push('Strong cross-functional partnership capabilities');
+            }
+            if (text.includes('conflict') || text.includes('challenge')) {
+                insights.push('navigates collaboration challenges effectively');
+            }
+            if (text.includes('influence') || text.includes('stakeholder')) {
+                insights.push('demonstrates stakeholder influence and management skills');
+            }
+            
+            return insights.length > 0 ? insights.join(', ') : 'Documented collaboration effectiveness with multiple teams';
+        }
+        
+        function extractDevelopmentPriorities(growthText) {
+            const priorities = [];
+            
+            // Look for numbered priorities or key development areas
+            if (growthText.includes('(1)') || growthText.includes('first') || growthText.includes('priority')) {
+                const matches = growthText.match(/\(1\)[^(2)]*|\bfirst[^.]*\.|priority[^.]*\./gi);
+                if (matches) {
+                    priorities.push(matches[0].replace(/^\(1\)\s*|first\s*|priority\s*/i, '').trim());
+                }
+            }
+            
+            // Extract key development themes
+            if (growthText.toLowerCase().includes('leadership')) {
+                priorities.push('Leadership development identified as key area');
+            }
+            if (growthText.toLowerCase().includes('strategic') || growthText.toLowerCase().includes('strategy')) {
+                priorities.push('Strategic thinking enhancement needed');
+            }
+            
+            return priorities.length > 0 ? priorities.join('; ') : 'Specific development areas identified for targeted growth';
+        }
+        
+        function extractPotentialIndicators(lookingAheadText) {
+            const text = lookingAheadText.toLowerCase();
+            
+            if (text.includes('advancement') || text.includes('promotion')) {
+                return 'Ready for advancement opportunities and increased scope';
+            }
+            if (text.includes('director') || text.includes('senior') || text.includes('lead')) {
+                return 'Positioned for senior role progression within organization';
+            }
+            if (text.includes('development') && text.includes('support')) {
+                return 'Requires targeted development support for continued growth';
+            }
+            
+            return 'Clear development pathway and future growth potential identified';
+        }
+        
+        function getRatingContext(rating, evalData) {
+            const hasQuantitativeData = /\d+%|\$[\d,]+/.test(evalData.keyPriorities || '') || /\d+%|\$[\d,]+/.test(evalData.collaboration || '');
+            
+            if (rating === 'exemplary') {
+                return hasQuantitativeData ? 
+                    'Exceptional performance with documented quantitative impact and leadership demonstration' :
+                    'Exceptional performance demonstrated through strategic contributions and leadership excellence';
+            } else if (rating === 'successful') {
+                return hasQuantitativeData ?
+                    'Consistent performance meeting expectations with measurable business contributions' :
+                    'Solid performance consistently meeting role expectations and organizational standards';
+            } else {
+                return 'Developing performance with identified areas for improvement and targeted support needs';
             }
         }
 
