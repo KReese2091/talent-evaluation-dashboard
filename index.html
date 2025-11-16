@@ -3624,7 +3624,17 @@
 
         function showReviewerLogin() {
             document.querySelector('.container').innerHTML = `
-                <div class="login-container">
+                <!-- Landing Page Sidebar -->
+                <div class="sidebar" style="display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; color: white; opacity: 0.7;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">👥</div>
+                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Team Performance</div>
+                        <div style="font-size: 14px; line-height: 1.4;">Objective evaluation and calibration discussions</div>
+                    </div>
+                </div>
+                
+                <!-- Main Content Area -->
+                <div class="main-content" style="display: flex; align-items: center; justify-content: center; padding: 40px;">
                     <div class="login-card">
                         <div class="form-group">
                             <div class="reviewer-search-container">
