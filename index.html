@@ -7576,82 +7576,99 @@
             addText(`Current Rating: ${rating}`, 11, 'bold', ratingColor);
             addSpace(8);
             
-            // Performance areas with updated questions
-            addText('PERFORMANCE SUMMARY', 12, 'bold');
-            addSpace(3);
+            // PDF now matches slide 6 structure exactly
             
-            const areas = [
-                { 
-                    label: 'Key Priorities & Results', 
-                    content: data.keyPriorities,
-                    question: 'What were the most significant priorities this associate achieved?'
-                },
-                { 
-                    label: 'Results & Impact', 
-                    content: data.resultsImpact,
-                    question: 'What impact did this associate have on the business and their team?'
-                },
-                { 
-                    label: 'Collaboration & Influence', 
-                    content: data.collaboration,
-                    question: 'How effectively did this associate collaborate and influence outcomes?'
-                },
-                { 
-                    label: 'Growth & Development', 
-                    content: data.growth,
-                    question: 'What development priorities should this associate focus on?'
-                },
-                { 
-                    label: 'Looking Ahead', 
-                    content: data.lookingAhead,
-                    question: 'What are this associate\'s career aspirations and advancement potential?'
-                }
-            ];
-            
-            areas.forEach(area => {
-                if (area.content && area.content.trim()) {
-                    // Section header
-                    addText(`${area.label}:`, 10, 'bold', [0, 80, 160]);
-                    
-                    // Content - keep it concise for calibration
-                    let content = area.content.trim();
-                    if (content.length > 200) {
-                        content = content.substring(0, 200) + '...';
-                    }
-                    
-                    addText(content, 9, 'normal', [40, 40, 40], 3);
-                    addSpace(4);
-                }
-            });
-            
-            // Enhanced Calibration section with discussion points
-            addSpace(5);
-            addText('CALIBRATION DISCUSSION POINTS', 12, 'bold');
-            addSpace(3);
-            
-            // Generate calibration points using the enhanced function
+            // Generate the same comprehensive summary as slide 6
             const hasContent = {
                 keyPriorities: data.keyPriorities && data.keyPriorities.trim().length > 0,
+                resultsImpact: data.resultsImpact && data.resultsImpact.trim().length > 0,
                 collaboration: data.collaboration && data.collaboration.trim().length > 0,
                 growth: data.growth && data.growth.trim().length > 0,
-                lookingAhead: data.lookingAhead && data.lookingAhead.trim().length > 0
+                lookingAhead: data.lookingAhead && data.lookingAhead.trim().length > 0,
+                overallRating: data.overallRating && data.overallRating.trim().length > 0
             };
             
-            const calibrationPoints = generateSpecificCalibrationPoints(data, hasContent);
+            const contentCount = Object.values(hasContent).filter(Boolean).length;
             
-            if (calibrationPoints.length > 0) {
-                calibrationPoints.forEach(point => {
-                    addText(`• ${point}`, 9, 'normal', [20, 20, 20], 3);
-                    addSpace(2);
+            // Only show calibration points if we have sufficient content (matching slide 6 logic)
+            if (contentCount >= 4) {
+                addText('CALIBRATION DISCUSSION POINTS', 12, 'bold');
+                addSpace(3);
+                
+                const calibrationPoints = generateSpecificCalibrationPoints(data, hasContent);
+                
+                calibrationPoints.forEach((point, index) => {
+                    addText(`${index + 1}. ${point}`, 9, 'normal', [20, 20, 20]);
+                    addSpace(3);
                 });
+                
+                addSpace(5);
+            }
+            
+            // Executive Summary (matching slide 6)
+            addText('EXECUTIVE SUMMARY', 12, 'bold');
+            addSpace(3);
+            
+            let execSummary = '';
+            if (hasContent.overallRating) {
+                execSummary += `${employee.name} has demonstrated ${data.overallRating === 'exemplary' ? 'exceptional' : data.overallRating === 'successful' ? 'solid and consistent' : 'developing'} performance during the ${data.reviewPeriod || 'current review period'}. `;
             } else {
-                addText('• Complete evaluation sections to generate specific discussion points', 9, 'italic', [100, 100, 100], 3);
+                execSummary += `${employee.name} performance review is in progress for the ${data.reviewPeriod || 'current review period'}. `;
+            }
+            
+            if (hasContent.keyPriorities) {
+                const prioritiesPreview = data.keyPriorities.substring(0, 150);
+                execSummary += `Their focus on key priorities ${prioritiesPreview.includes('achieved') || prioritiesPreview.includes('delivered') ? 'resulted in successful delivery of assigned objectives' : 'has been documented and assessed'}. `;
+            }
+
+            if (hasContent.resultsImpact) {
+                const hasNumbers = /\d+%|\$[\d,]+|\d+\.\d+/.test(data.resultsImpact);
+                execSummary += `${hasNumbers ? 'Measurable business impact was achieved' : 'Business contributions were documented'} across key performance areas. `;
+            }
+            
+            addText(execSummary, 9, 'normal', [40, 40, 40]);
+            addSpace(8);
+            
+            // Detailed sections with exact manager inputs (matching slide 6 structure)
+            if (hasContent.keyPriorities) {
+                addText('KEY PRIORITIES & OBJECTIVES:', 11, 'bold', [0, 80, 160]);
+                addSpace(2);
+                addText(data.keyPriorities.trim(), 9, 'normal', [40, 40, 40]);
+                addSpace(6);
+            }
+
+            if (hasContent.resultsImpact) {
+                addText('RESULTS & BUSINESS IMPACT:', 11, 'bold', [0, 80, 160]);
+                addSpace(2);
+                addText(data.resultsImpact.trim(), 9, 'normal', [40, 40, 40]);
+                addSpace(6);
+            }
+
+            if (hasContent.collaboration) {
+                addText('COLLABORATION & INFLUENCE:', 11, 'bold', [0, 80, 160]);
+                addSpace(2);
+                addText(data.collaboration.trim(), 9, 'normal', [40, 40, 40]);
+                addSpace(6);
+            }
+
+            if (hasContent.growth) {
+                addText('GROWTH & DEVELOPMENT:', 11, 'bold', [0, 80, 160]);
+                addSpace(2);
+                addText(data.growth.trim(), 9, 'normal', [40, 40, 40]);
+                addSpace(6);
+            }
+
+            if (hasContent.lookingAhead) {
+                addText('LOOKING AHEAD:', 11, 'bold', [0, 80, 160]);
+                addSpace(2);
+                addText(data.lookingAhead.trim(), 9, 'normal', [40, 40, 40]);
+                addSpace(6);
             }
             
             addSpace(8);
             
-            // Notes area for manager's handwritten notes
-            addText('Additional Discussion Notes:', 10, 'bold');
+            // Notes area for additional calibration discussion
+            addText('CALIBRATION NOTES:', 10, 'bold');
             addSpace(2);
             for (let i = 0; i < 4; i++) {
                 pdf.setDrawColor(200, 200, 200);
