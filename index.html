@@ -2765,85 +2765,7 @@
             display: none !important;
         }
 
-        /* Step Progress Notifications for Backend Navigation */
-        .step-progress-notification {
-            position: fixed;
-            top: 100px;
-            right: 30px;
-            background: linear-gradient(135deg, #0073CE, #00AFD7);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 6px 20px rgba(0, 115, 206, 0.3);
-            z-index: 1500;
-            animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 2.5s forwards;
-            min-width: 250px;
-        }
 
-        .progress-notification-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .progress-icon {
-            font-size: 20px;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.2);
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .progress-text {
-            flex: 1;
-        }
-
-        .progress-title {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-
-        .progress-subtitle {
-            font-size: 12px;
-            opacity: 0.9;
-            line-height: 1.3;
-        }
-
-        @keyframes slideInRight {
-            from { 
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to { 
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOutRight {
-            from { 
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to { 
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .step-progress-notification {
-                right: 15px;
-                left: 15px;
-                min-width: auto;
-                top: 90px;
-            }
-        }
 
         /* Hide Sidebar Step Navigation Buttons Only */
         .sidebar .progress-steps {
@@ -3540,11 +3462,10 @@
                 <div class="step-navigation">
                     <div class="step active" onclick="goToStep(0)" title="Basic Information & Rating">1</div>
                     <div class="step" onclick="goToStep(1)" title="Key Priorities">2</div>
-                    <div class="step" onclick="goToStep(2)" title="Results & Impact">3</div>
-                    <div class="step" onclick="goToStep(3)" title="Collaboration & Influence">4</div>
-                    <div class="step" onclick="goToStep(4)" title="Growth & Development">5</div>
-                    <div class="step" onclick="goToStep(5)" title="Looking Ahead">6</div>
-                    <div class="step" onclick="goToStep(6)" title="Comprehensive Summary">7</div>
+                    <div class="step" onclick="goToStep(2)" title="Collaboration & Influence">3</div>
+                    <div class="step" onclick="goToStep(3)" title="Growth & Development">4</div>
+                    <div class="step" onclick="goToStep(4)" title="Looking Ahead">5</div>
+                    <div class="step" onclick="goToStep(5)" title="Comprehensive Summary">6</div>
                 </div>
             </div>
             <!-- Content Card -->
@@ -3641,68 +3562,21 @@
                 </div>
             </div>
 
-            <!-- Step 2: Results & Impact -->
+            <!-- Step 2: Collaboration -->
             <div class="slide" id="slide-2">
-                <h2>Results & Impact</h2>
-                <p class="description">What outcomes did they drive, and how did they move the business or brand forward?</p>
-
-                <div class="suggestions">
-                    <h4>Smart Content Suggestions</h4>
-                    <div class="suggestion-item" onclick="addSuggestion('resultsImpact', 'Delivered measurable business impact by achieving...')">
-                        "Delivered measurable business impact by achieving..."
-                    </div>
-                    <div class="suggestion-item" onclick="addSuggestion('resultsImpact', 'Generated significant value through...')">
-                        "Generated significant value through..."
-                    </div>
-                    <div class="suggestion-item" onclick="addSuggestion('resultsImpact', 'Improved key metrics including...')">
-                        "Improved key metrics including..."
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="resultsImpact">Feedback:</label>
-                    <textarea id="resultsImpact" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('resultsImpact')"></textarea>
-                </div>
-
-                <!-- AI Writing Coach -->
-                <div class="writing-coach" id="coach-resultsImpact" style="display: none;">
-                    <div class="coach-header">
-                        <span style="font-size: 20px;">🤖</span>
-                        <h4>AI Writing Coach</h4>
-                    </div>
-                    <div class="metrics-grid">
-                        <div class="metric" id="objectivity-resultsImpact">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Objectivity</div>
-                        </div>
-                        <div class="metric" id="specificity-resultsImpact">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Specificity</div>
-                        </div>
-                        <div class="metric" id="completeness-resultsImpact">
-                            <span class="metric-value">0%</span>
-                            <div class="metric-label">Completeness</div>
-                        </div>
-                    </div>
-                    <div class="bias-alerts" id="alerts-resultsImpact"></div>
-                </div>
-            </div>
-
-            <!-- Step 3: Collaboration -->
-            <div class="slide" id="slide-3">
                 <h2>Collaboration & Influence</h2>
-                <p class="description">How did they partner across teams or functions to deliver results?</p>
+                <p class="description">What two or three specific ways did the associate partner across teams to deliver results this year, and where could their partnership and collaboration have been stronger?</p>
 
                 <div class="suggestions">
                     <h4>Smart Content Suggestions</h4>
-                    <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Built strong partnerships with cross-functional teams to...')">
-                        "Built strong partnerships with cross-functional teams to..."
+                    <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Three specific partnership examples: (1) Collaborated with [team] to deliver [outcome], (2) Partnered with [department] resulting in [specific result], (3) Worked cross-functionally with [teams] achieving [measurable impact]. Areas for growth: Could strengthen collaboration by...')">
+                        "Three specific partnership examples: (1) Collaborated with [team] to deliver [outcome], (2) Partnered with [department] resulting in [specific result], (3) Worked cross-functionally with [teams] achieving [measurable impact]. Areas for growth: Could strengthen collaboration by..."
                     </div>
-                    <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Influenced positive outcomes by effectively communicating...')">
-                        "Influenced positive outcomes by effectively communicating..."
+                    <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Key partnerships this year included: [specific example 1 with outcome], [specific example 2 with result], and [specific example 3 with impact]. Going forward, partnership effectiveness could improve through...')">
+                        "Key partnerships this year included: [specific example 1 with outcome], [specific example 2 with result], and [specific example 3 with impact]. Going forward, partnership effectiveness could improve through..."
                     </div>
-                    <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Demonstrated leadership by facilitating...')">
-                        "Demonstrated leadership by facilitating..."
+                    <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Successfully partnered across teams by: [specific way 1], [specific way 2], and [specific way 3], each delivering [measurable results]. Opportunities for stronger collaboration exist in...')">
+                        "Successfully partnered across teams by: [specific way 1], [specific way 2], and [specific way 3], each delivering [measurable results]. Opportunities for stronger collaboration exist in..."
                     </div>
                 </div>
 
@@ -3735,21 +3609,21 @@
                 </div>
             </div>
 
-            <!-- Step 4: Growth & Development -->
-            <div class="slide" id="slide-4">
+            <!-- Step 3: Growth & Development -->
+            <div class="slide" id="slide-3">
                 <h2>Growth & Development</h2>
-                <p class="description">What new skills, behaviors, or leadership qualities did they build this year?</p>
+                <p class="description">What are the two or three most critical development areas for the associate next year, and what targeted experiences such as training, expanded scope, new responsibilities, or stretch work would best accelerate their growth?</p>
 
                 <div class="suggestions">
                     <h4>Smart Content Suggestions</h4>
-                    <div class="suggestion-item" onclick="addSuggestion('growth', 'Developed new capabilities in...')">
-                        "Developed new capabilities in..."
+                    <div class="suggestion-item" onclick="addSuggestion('growth', 'Critical development priorities: (1) [Skill/area] - recommend [specific training/experience], (2) [Leadership capability] - suggest [stretch assignment/expanded scope], (3) [Technical/functional area] - propose [new responsibility/project]. These targeted experiences would accelerate growth by...')">
+                        "Critical development priorities: (1) [Skill/area] - recommend [specific training/experience], (2) [Leadership capability] - suggest [stretch assignment/expanded scope], (3) [Technical/functional area] - propose [new responsibility/project]. These targeted experiences would accelerate growth by..."
                     </div>
-                    <div class="suggestion-item" onclick="addSuggestion('growth', 'Showed significant growth by learning...')">
-                        "Showed significant growth by learning..."
+                    <div class="suggestion-item" onclick="addSuggestion('growth', 'Key growth areas for next year: [development area 1], [development area 2], and [development area 3]. Recommended development approaches include: [specific training program], [expanded role/scope opportunity], and [stretch project/new responsibility] to build these capabilities.')">
+                        "Key growth areas for next year: [development area 1], [development area 2], and [development area 3]. Recommended development approaches include: [specific training program], [expanded role/scope opportunity], and [stretch project/new responsibility] to build these capabilities."
                     </div>
-                    <div class="suggestion-item" onclick="addSuggestion('growth', 'Strengthened leadership skills through...')">
-                        "Strengthened leadership skills through..."
+                    <div class="suggestion-item" onclick="addSuggestion('growth', 'Priority development focus: [area 1] through [targeted experience], [area 2] via [specific opportunity], [area 3] using [stretch assignment]. These development experiences align with career progression and would strengthen [specific outcomes/capabilities].')">
+                        "Priority development focus: [area 1] through [targeted experience], [area 2] via [specific opportunity], [area 3] using [stretch assignment]. These development experiences align with career progression and would strengthen [specific outcomes/capabilities]."
                     </div>
                 </div>
 
@@ -3782,21 +3656,21 @@
                 </div>
             </div>
 
-            <!-- Step 5: Looking Ahead -->
-            <div class="slide" id="slide-5">
+            <!-- Step 4: Looking Ahead -->
+            <div class="slide" id="slide-4">
                 <h2>Looking Ahead</h2>
-                <p class="description">What are their biggest opportunities and development areas to grow next year?</p>
+                <p class="description">Compared to others at this level, what clearly differentiates this associate, what assumptions influenced your rating, and what measurable progress do you expect to see in the next six months along with the specific actions you will take to support their development?</p>
 
                 <div class="suggestions">
                     <h4>Smart Content Suggestions</h4>
-                    <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Key development opportunities include...')">
-                        "Key development opportunities include..."
+                    <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Differentiation: Compared to peers, [associate name] stands out in [specific areas]. Rating assumptions: Based on [evidence/observations]. Expected progress (6 months): [measurable goal 1], [measurable goal 2]. My support actions: [specific action 1], [specific action 2], [specific action 3].')">
+                        "Differentiation: Compared to peers, [associate name] stands out in [specific areas]. Rating assumptions: Based on [evidence/observations]. Expected progress (6 months): [measurable goal 1], [measurable goal 2]. My support actions: [specific action 1], [specific action 2], [specific action 3]."
                     </div>
-                    <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Focus areas for next year should be...')">
-                        "Focus areas for next year should be..."
+                    <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Peer comparison: [Associate name] differentiates through [unique strengths/capabilities]. Rating rationale: [key assumptions and evidence]. 6-month expectations: Achieve [specific metric/outcome], demonstrate [observable behavior], complete [measurable milestone]. Manager commitment: I will [support action], provide [resource/opportunity], and [developmental intervention].')">
+                        "Peer comparison: [Associate name] differentiates through [unique strengths/capabilities]. Rating rationale: [key assumptions and evidence]. 6-month expectations: Achieve [specific metric/outcome], demonstrate [observable behavior], complete [measurable milestone]. Manager commitment: I will [support action], provide [resource/opportunity], and [developmental intervention]."
                     </div>
-                    <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Recommended stretch assignments or experiences...')">
-                        "Recommended stretch assignments or experiences..."
+                    <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Distinguishing factors: [Associate] excels beyond peer level in [area 1] and [area 2] due to [evidence]. Rating influenced by [assumptions/observations]. Measurable 6-month targets: [quantifiable goal], [behavioral indicator], [milestone achievement]. Development support plan: [manager action 1], [resource provision], [coaching/feedback commitment].')">
+                        "Distinguishing factors: [Associate] excels beyond peer level in [area 1] and [area 2] due to [evidence]. Rating influenced by [assumptions/observations]. Measurable 6-month targets: [quantifiable goal], [behavioral indicator], [milestone achievement]. Development support plan: [manager action 1], [resource provision], [coaching/feedback commitment]."
                     </div>
                 </div>
 
@@ -3840,7 +3714,7 @@
 
     <script>
         let currentStep = 0;
-        const totalSteps = 7;
+        const totalSteps = 6;
         let currentReviewer = null;
         let currentEmployee = null;
         let reviewerData = {};
@@ -4016,7 +3890,7 @@
             (demoSets[reviewerId] || []).forEach(emp => {
                 employees[emp.id] = {
                     ...emp,
-                    evaluationData: emp.status === 'completed' ? generateSampleEvaluation(emp) : {},
+                    evaluationData: generateSampleEvaluation(emp), // Always populate with sample data for demo
                     lastUpdated: new Date().toISOString()
                 };
             });
@@ -4025,16 +3899,140 @@
         }
 
         function generateSampleEvaluation(employee) {
-            return {
+            // Create diverse, high-quality examples based on employee name/position
+            const evaluationExamples = {
+                'Jennifer Martinez': {
+                    employeeName: 'Jennifer Martinez',
+                    reviewerName: 'Sarah Johnson',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'exemplary',
+                    keyPriorities: 'Primary goals this year were: (1) Develop integrated social media strategy with 25% engagement increase target, (2) Lead Q3 back-to-school campaign execution, and (3) Establish influencer partnership program. Delivered exceptional results: (1) Achieved 34% social engagement increase through data-driven content optimization and A/B testing, exceeding target by 36%, (2) Q3 campaign generated $3.2M revenue (15% above target) with 92% on-time delivery across all channels, (3) Launched influencer program with 12 strategic partnerships yielding 2.8M impressions and 47% higher conversion rates than traditional advertising.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Creative and Analytics teams to develop award-winning social campaign, resulting in 67% increase in brand sentiment and industry recognition, (2) Partnered with Store Operations on in-store digital integration, achieving seamless omnichannel experience and 23% lift in store traffic, (3) Worked cross-functionally with Legal and Compliance teams to establish influencer guidelines, creating scalable framework adopted company-wide. Areas for growth: Could enhance collaboration by establishing regular stakeholder check-ins during campaign development and creating standardized communication templates for complex projects.',
+                    growth: 'Critical development priorities: (1) Leadership presence and executive communication - recommend participation in senior leadership forums and cross-functional project leadership, (2) Advanced marketing automation and MarTech integration - suggest certification in marketing technology platforms and data analysis, (3) Strategic marketing planning - propose involvement in annual planning process and mentorship with VP-level marketing leaders. These experiences would accelerate growth by developing executive-ready presentation skills, technical expertise for marketing transformation, and strategic thinking capabilities essential for senior marketing leadership roles.',
+                    lookingAhead: 'Differentiation: Compared to peers, Jennifer demonstrates exceptional creative problem-solving with measurable business outcomes, consistently exceeding targets while maintaining high quality standards. Rating assumptions: Based on 34% engagement growth (vs team average of 18%), successful omnichannel integration, and proactive stakeholder management evidenced in 360 feedback scores averaging 4.6/5. Expected progress (6 months): Complete advanced MarTech certification with 90%+ score, lead two cross-functional initiatives with documented business impact, and present quarterly strategy recommendations to executive team. My support actions: Provide bi-weekly strategic mentoring sessions, secure enrollment in executive communication program, assign high-visibility brand partnership project, and facilitate monthly exposure meetings with C-suite marketing leaders for strategic input and visibility.'
+                },
+                'Robert Garcia': {
+                    employeeName: 'Robert Garcia',
+                    reviewerName: 'Sarah Johnson',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'successful',
+                    keyPriorities: 'Primary goals this year were: (1) Streamline campaign production workflows to improve efficiency by 20%, (2) Coordinate cross-channel marketing activities for holiday season, and (3) Implement new project management tools and processes. Delivered solid results: (1) Achieved 28% improvement in workflow efficiency through process mapping and automation, reducing average campaign turnaround from 14 to 10 days, (2) Successfully coordinated 8 integrated holiday campaigns with 96% on-time delivery and $2.1M combined revenue impact, (3) Implemented Asana project management system with 94% team adoption and 35% improvement in project visibility and accountability.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Creative and Media Planning teams to establish standardized campaign briefing process, resulting in 40% reduction in revision cycles and improved creative quality, (2) Partnered with Digital Marketing team on automated workflow integration, achieving seamless handoffs and 25% faster campaign launches, (3) Worked with Training and Development to create project management best practices documentation, now used as standard onboarding material. Areas for growth: Could strengthen collaboration by taking more initiative in stakeholder communications and developing skills to facilitate difficult conversations between teams with competing priorities.',
+                    growth: 'Critical development priorities: (1) Project leadership and conflict resolution skills - recommend advanced project management certification and leadership training focused on difficult conversations, (2) Marketing strategy understanding - suggest rotation through brand strategy team and participation in campaign planning sessions, (3) Data analysis and reporting capabilities - propose training in marketing analytics platforms and dashboard creation. These targeted experiences would accelerate growth by building confidence in leadership situations, broader marketing perspective beyond coordination, and analytical skills essential for senior coordinator and specialist roles.',
+                    lookingAhead: 'Differentiation: Compared to peers, Robert excels in process improvement and systematic thinking, consistently finding ways to optimize workflows while maintaining quality standards. Rating assumptions: Based on 28% efficiency improvements (vs typical 10-15% gains), high team adoption rates for new processes, and reliable project delivery evidenced by consistent on-time performance metrics. Expected progress (6 months): Complete advanced project management certification with practical application on major campaign, demonstrate improved stakeholder communication through 360 feedback improvement, and lead process improvement initiative with measurable efficiency gains. My support actions: Provide monthly coaching sessions on leadership communication, secure budget for external project management training, assign lead role on Q1 process optimization project, and create opportunities for strategic planning meeting participation to broaden marketing knowledge.'
+                },
+                'Emily Rodriguez': {
+                    employeeName: 'Emily Rodriguez',
+                    reviewerName: 'Mike Chen',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'exemplary',
+                    keyPriorities: 'Primary goals this year were: (1) Drive digital transformation strategy with 30% increase in digital engagement, (2) Lead team restructuring to support omnichannel marketing approach, and (3) Establish marketing automation platform and workflows. Delivered outstanding results: (1) Achieved 45% increase in digital engagement through integrated customer journey mapping and personalization strategy, significantly exceeding targets, (2) Successfully restructured team of 12 with zero attrition, improved collaboration scores by 38%, and established clear role definitions supporting omnichannel objectives, (3) Implemented comprehensive marketing automation platform driving 52% improvement in lead nurturing efficiency and $4.7M incremental revenue attribution.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with IT and Customer Experience teams to integrate customer data platforms, resulting in unified 360-degree customer view and 31% improvement in campaign personalization effectiveness, (2) Partnered with Sales Leadership on lead handoff optimization, achieving 43% increase in marketing qualified leads conversion and improved sales-marketing alignment, (3) Worked cross-functionally with Finance and Operations teams on marketing ROI measurement framework, establishing standardized attribution modeling adopted across all marketing channels. Areas for growth: Could enhance collaboration by developing more structured change management communication for large initiatives and creating formal mentorship programs for knowledge transfer to junior team members.',
+                    growth: 'Critical development priorities: (1) Executive presence and board-level communication - recommend participation in senior executive forums and external industry leadership roles, (2) Advanced business strategy and P&L management - suggest rotation through general management role or strategic planning assignment, (3) Change management and organizational development expertise - propose formal training in large-scale transformation leadership. These experiences would accelerate growth by building C-suite ready communication and strategic thinking, business operation understanding essential for VP roles, and expertise in leading organization-wide transformations critical for senior marketing leadership positions.',
+                    lookingAhead: 'Differentiation: Compared to peers, Emily demonstrates exceptional ability to drive complex organizational change while delivering measurable business results, combining strategic thinking with operational excellence. Rating assumptions: Based on 45% digital engagement growth (vs industry benchmark of 20%), successful team transformation with high retention, and innovative automation implementation generating significant ROI evidenced by verified revenue attribution data. Expected progress (6 months): Complete executive leadership program with capstone business strategy presentation, assume P&L responsibility for major marketing initiative with measurable outcomes, and establish formal mentorship program with documented junior team member advancement. My support actions: Provide executive coaching with external leadership consultant, secure assignment to cross-functional business strategy project, facilitate quarterly meetings with C-suite leaders for strategic visibility, and sponsor participation in external marketing leadership forums and industry boards.'
+                },
+                'Michelle Kim': {
+                    employeeName: 'Michelle Kim',
+                    reviewerName: 'Mike Chen',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'successful',
+                    keyPriorities: 'Primary goals this year were: (1) Optimize marketing operations processes to reduce campaign production time by 15%, (2) Implement comprehensive marketing performance measurement framework, and (3) Establish vendor management and procurement optimization program. Delivered strong results: (1) Achieved 22% reduction in campaign production time through workflow automation and resource optimization, exceeding target and improving team capacity, (2) Successfully implemented marketing dashboard system providing real-time performance insights across all channels, improving decision-making speed by 35%, (3) Established vendor management program generating $380K annual savings while improving service quality scores by 28%.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Finance and Procurement teams to establish marketing spend governance framework, resulting in improved budget compliance and 12% cost optimization without sacrificing quality, (2) Partnered with Technology and Analytics teams on marketing data integration project, achieving single source of truth for performance measurement and 40% faster reporting cycles, (3) Worked cross-functionally with Creative and Agency Management to optimize external partner workflows, improving creative approval cycles by 30% and enhancing creative quality consistency. Areas for growth: Could strengthen collaboration by taking more proactive role in strategic planning discussions and developing skills to translate operational improvements into strategic business impact for leadership communications.',
+                    growth: 'Critical development priorities: (1) Strategic business partnership and consulting skills - recommend training in business consulting methodologies and strategic analysis frameworks, (2) Marketing technology leadership and vendor relationship management - suggest advanced MarTech certifications and executive vendor management training, (3) Team leadership and people development capabilities - propose formal management training and coaching skills development. These targeted experiences would accelerate growth by building strategic advisory capabilities, technical expertise for marketing transformation leadership, and people management skills essential for operations director and VP roles.',
+                    lookingAhead: 'Differentiation: Compared to peers, Michelle excels in systematic process improvement and cross-functional relationship building, consistently finding operational efficiencies while maintaining strong stakeholder relationships. Rating assumptions: Based on 22% efficiency improvements (vs typical 10-12% gains), successful complex system implementations with high user adoption, and strong partnership effectiveness evidenced by consistent positive feedback from cross-functional partners. Expected progress (6 months): Complete strategic business analysis certification with practical application on major optimization project, demonstrate improved strategic communication through executive presentation to leadership team, and mentor two junior team members with documented skill development progress. My support actions: Provide monthly strategic thinking coaching sessions, secure enrollment in advanced MarTech leadership program, assign strategic analysis role on major business initiative, and create opportunities for executive presentation and visibility with senior leadership team.'
+                },
+                'Michael Brown': {
+                    employeeName: 'Michael Brown',
+                    reviewerName: 'Lisa Williams',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'exemplary',
+                    keyPriorities: 'Primary goals this year were: (1) Lead comprehensive brand repositioning strategy with measurable brand equity improvement, (2) Drive digital-first marketing transformation across all channels, and (3) Establish data-driven marketing culture with advanced analytics capabilities. Delivered exceptional results: (1) Successfully launched brand repositioning campaign resulting in 28% improvement in brand favorability scores and 19% increase in consideration metrics, generating estimated $12M incremental brand value, (2) Transformed marketing approach to digital-first strategy achieving 67% increase in digital channel effectiveness and 41% improvement in customer acquisition cost efficiency, (3) Established comprehensive marketing analytics capabilities including predictive modeling, resulting in 34% improvement in campaign targeting accuracy and $8.3M documented ROI improvement.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Executive Leadership and Board members on brand strategy approval and implementation, securing unanimous support and $15M investment commitment for multi-year brand transformation, (2) Partnered with Technology, Data Science, and Customer Experience teams on integrated customer platform development, creating industry-leading personalization capabilities and 45% improvement in customer lifetime value, (3) Worked cross-functionally with Sales, Operations, and Finance leadership to align brand positioning with business strategy, achieving consistent messaging across all touchpoints and 23% improvement in sales conversion alignment. Areas for growth: Could enhance collaboration by developing more structured knowledge transfer programs for best practices sharing across organization and establishing formal cross-industry partnership opportunities for continued innovation.',
+                    growth: 'Critical development priorities: (1) Global marketing leadership and international expansion expertise - recommend international assignment or global marketing strategy role to build worldwide perspective, (2) Advanced business leadership and P&L accountability - suggest general manager rotation or business unit leadership role with full operational responsibility, (3) Industry thought leadership and external influence - propose board positions, industry association leadership, and speaking engagements to build external brand and influence. These experiences would accelerate growth by building global business perspective, comprehensive business operation management skills, and industry influence essential for CMO and executive leadership roles.',
+                    lookingAhead: 'Differentiation: Compared to peers, Michael demonstrates exceptional ability to drive enterprise-wide transformation while delivering measurable business impact, combining visionary strategic thinking with disciplined execution excellence. Rating assumptions: Based on 28% brand equity improvement (vs industry average of 8-12%), successful digital transformation with documented ROI, and innovative analytics implementation generating significant competitive advantage evidenced by industry recognition and benchmark performance. Expected progress (6 months): Complete advanced global business leadership program, assume expanded P&L responsibility for major business segment with measurable growth targets, and establish thought leadership platform through industry publications and speaking engagements. My support actions: Provide executive coaching with CEO-level consultant, facilitate international assignment opportunities or global strategy projects, sponsor participation in industry boards and executive forums, and create opportunities for C-suite collaboration and visibility across business units and external partnerships.'
+                },
+                'Jessica Anderson': {
+                    employeeName: 'Jessica Anderson',
+                    reviewerName: 'Lisa Williams',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'successful',
+                    keyPriorities: 'Primary goals this year were: (1) Revitalize brand portfolio strategy with focus on premium positioning, (2) Launch sustainable marketing initiatives aligned with corporate responsibility goals, and (3) Establish brand partnership ecosystem to expand market reach. Delivered strong results: (1) Successfully repositioned three key brands toward premium segments, achieving 16% average price improvement and 12% volume growth despite premium positioning, generating $5.8M incremental margin, (2) Launched comprehensive sustainable marketing program including carbon-neutral campaigns and eco-friendly packaging, achieving 89% positive consumer response and 24% improvement in brand sustainability scores, (3) Established strategic brand partnerships with 8 complementary brands, creating co-marketing opportunities that generated 2.3M new customer exposures and $3.1M attributed revenue.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Product Development and Sustainability teams to integrate environmental considerations into brand messaging, resulting in authentic sustainability positioning and 31% improvement in millennial consumer brand preference, (2) Partnered with Sales and Retail Operations teams on premium brand merchandising strategy, achieving optimal shelf positioning and 27% improvement in premium product sell-through rates, (3) Worked cross-functionally with Legal, Finance, and External Relations teams on brand partnership negotiations, establishing scalable partnership framework and securing favorable terms generating ongoing revenue opportunities. Areas for growth: Could strengthen collaboration by developing more proactive competitive intelligence sharing across teams and establishing formal brand mentorship program to develop junior brand management talent throughout the organization.',
+                    growth: 'Critical development priorities: (1) Digital brand management and e-commerce integration - recommend advanced digital marketing certification and direct-to-consumer strategy development experience, (2) International brand expansion and cultural adaptation - suggest global marketing assignment or international brand launch project, (3) Advanced brand analytics and consumer insights capabilities - propose training in advanced market research methodologies and consumer behavior analysis. These targeted experiences would accelerate growth by building digital-first brand management skills, global market perspective essential for brand expansion, and advanced analytics capabilities critical for senior brand leadership roles.',
+                    lookingAhead: 'Differentiation: Compared to peers, Jessica demonstrates strong ability to balance brand authenticity with business performance, consistently finding creative solutions that drive both brand equity and financial results. Rating assumptions: Based on successful premium positioning with simultaneous volume growth (rare industry achievement), authentic sustainability integration with measurable consumer response, and innovative partnership development with documented revenue impact. Expected progress (6 months): Complete advanced digital brand management certification with e-commerce strategy project, lead international brand expansion feasibility analysis with market entry recommendations, and establish brand mentorship program with measurable junior talent development outcomes. My support actions: Provide specialized coaching in digital brand strategy and e-commerce integration, secure international project assignment or cultural immersion experience, facilitate advanced analytics training and consumer insights partnership, and create opportunities for senior brand strategy presentation to executive leadership and board members.'
+                },
+                'David Thompson': {
+                    employeeName: 'David Thompson',
+                    reviewerName: 'Sarah Johnson',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'exemplary',
+                    keyPriorities: 'Primary goals this year were: (1) Revitalize declining product brand with 20% market share recovery target, (2) Launch comprehensive competitive analysis framework, and (3) Establish cross-category brand portfolio optimization strategy. Delivered exceptional results: (1) Achieved 32% market share recovery through innovative repositioning and targeted consumer segmentation, exceeding target by 60% and generating $8.7M incremental revenue, (2) Developed comprehensive competitive intelligence system providing real-time market insights, improving strategic decision-making speed by 45%, (3) Created portfolio optimization model resulting in 18% improvement in overall brand portfolio profitability and strategic resource allocation across 12 product categories.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Research and Consumer Insights teams to develop breakthrough brand positioning strategy, resulting in highest consumer preference scores in category and 41% improvement in brand consideration metrics, (2) Partnered with Sales and Trade Marketing teams on retailer-specific brand strategies, achieving premium shelf positioning across all major channels and 26% improvement in velocity, (3) Worked cross-functionally with Supply Chain and Operations teams on product innovation pipeline, creating streamlined development process and 35% faster time-to-market for new products. Areas for growth: Could enhance collaboration by establishing formal knowledge sharing sessions across brand teams and developing structured mentorship approach for junior brand managers.',
+                    growth: 'Critical development priorities: (1) Global brand management and international expansion - recommend international assignment or global brand strategy role to build worldwide perspective, (2) Advanced financial modeling and business case development - suggest advanced finance training and P&L management experience, (3) Innovation and product development leadership - propose rotation through R&D and product management teams. These experiences would accelerate growth by building international business acumen, financial leadership skills essential for general management roles, and innovation expertise critical for senior brand leadership and potential VP positions.',
+                    lookingAhead: 'Differentiation: Compared to peers, David demonstrates exceptional analytical rigor combined with creative strategic thinking, consistently delivering breakthrough solutions that drive significant business impact. Rating assumptions: Based on 32% market share recovery (vs industry average of 5-8% for turnaround initiatives), innovative competitive framework adoption company-wide, and portfolio optimization generating measurable profitability improvements. Expected progress (6 months): Lead international market assessment with expansion recommendations, complete advanced financial leadership program with business case presentation to executive team, and establish innovation partnership with R&D resulting in accelerated product pipeline. My support actions: Provide strategic coaching with external brand consultant, facilitate international project assignments and global strategy exposure, secure advanced finance training and P&L shadowing opportunities, and create connections with innovation teams and external industry leaders.'
+                },
+                'Amanda Chen': {
+                    employeeName: 'Amanda Chen',
+                    reviewerName: 'Sarah Johnson',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'successful',
+                    keyPriorities: 'Primary goals this year were: (1) Establish comprehensive digital analytics and reporting framework with 25% improvement in data accuracy, (2) Lead social media optimization strategy across all brand channels, and (3) Implement marketing automation tools to improve campaign efficiency by 30%. Delivered strong results: (1) Achieved 38% improvement in data accuracy through advanced analytics platform implementation and standardized reporting protocols, exceeding target while establishing company-wide data governance standards, (2) Optimized social media strategy resulting in 43% increase in engagement rates and 28% improvement in social commerce conversion, generating $2.4M attributed revenue, (3) Implemented comprehensive marketing automation platform achieving 47% improvement in campaign efficiency and 35% reduction in manual processes.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with IT and Data Science teams to integrate marketing technology stack, resulting in unified customer data platform and 52% improvement in campaign personalization effectiveness, (2) Partnered with Creative and Content teams to establish data-driven content optimization process, achieving 31% improvement in content engagement and more strategic creative development, (3) Worked cross-functionally with Sales and Customer Service teams on lead scoring and nurturing optimization, improving marketing qualified lead conversion by 29% and sales-marketing alignment. Areas for growth: Could strengthen collaboration by proactively sharing analytical insights across broader marketing organization and developing presentation skills for executive-level data storytelling.',
+                    growth: 'Critical development priorities: (1) Advanced data science and predictive analytics capabilities - recommend specialized training in machine learning applications for marketing and statistical analysis certification, (2) Strategic marketing planning and business analysis - suggest participation in annual planning process and strategic project leadership, (3) Team leadership and project management skills - propose formal leadership development program and cross-functional project management experience. These experiences would accelerate growth by building advanced analytical expertise, strategic thinking capabilities essential for senior analyst and manager roles, and leadership skills necessary for team management positions.',
+                    lookingAhead: 'Differentiation: Compared to peers, Amanda excels in technical problem-solving and systematic optimization, consistently finding data-driven solutions that improve both efficiency and effectiveness. Rating assumptions: Based on 38% data accuracy improvement (vs typical 15-20% gains), successful automation implementation with high adoption rates, and measurable social media optimization results exceeding benchmarks. Expected progress (6 months): Complete advanced analytics certification with practical application on major predictive modeling project, lead strategic analysis initiative with executive presentation, and mentor junior team members with documented skill development outcomes. My support actions: Provide monthly coaching sessions on strategic communication and executive presence, secure advanced analytics training and certification opportunities, assign strategic analysis role on high-visibility business initiative, and facilitate cross-functional project leadership experiences to build management capabilities.'
+                },
+                'James Wilson': {
+                    employeeName: 'James Wilson',
+                    reviewerName: 'Mike Chen',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'successful',
+                    keyPriorities: 'Primary goals this year were: (1) Launch integrated product marketing strategy for three new product categories with 15% market penetration targets, (2) Establish competitive positioning framework and go-to-market excellence, and (3) Develop comprehensive sales enablement program improving win rates by 20%. Delivered solid results: (1) Successfully launched three product categories achieving 19% average market penetration, exceeding targets through innovative positioning and targeted channel strategies, generating $6.2M first-year revenue, (2) Created comprehensive competitive analysis framework and positioning strategies resulting in 34% improvement in win rates against key competitors, (3) Developed sales enablement program including training materials and competitive battlecards, achieving 27% improvement in sales team effectiveness and faster deal closure cycles.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Product Development and Engineering teams to translate technical capabilities into compelling market positioning, resulting in differentiated value propositions and 42% improvement in customer interest metrics, (2) Partnered with Sales Leadership and Channel Management teams on go-to-market strategy execution, achieving coordinated launch across all channels and 91% on-time delivery, (3) Worked cross-functionally with Marketing Communications and Creative teams to develop integrated campaign strategies, ensuring consistent messaging and 38% improvement in campaign effectiveness. Areas for growth: Could enhance collaboration by establishing more proactive stakeholder communication rhythms and developing skills in facilitating cross-functional strategic planning sessions.',
+                    growth: 'Critical development priorities: (1) Advanced product strategy and roadmap planning - recommend rotation through product management team and strategic planning experience, (2) Market research and consumer insights expertise - suggest advanced training in market analysis methodologies and customer research techniques, (3) Leadership presence and executive communication - propose participation in leadership development program and cross-functional project leadership roles. These experiences would accelerate growth by building strategic product thinking, market analysis expertise essential for senior product marketing roles, and leadership capabilities necessary for director-level positions.',
+                    lookingAhead: 'Differentiation: Compared to peers, James demonstrates strong ability to translate complex product capabilities into clear market value, consistently achieving launch success through systematic planning and execution. Rating assumptions: Based on 19% market penetration achievement (exceeding 15% targets), competitive win rate improvements above benchmark, and successful sales enablement with measurable impact. Expected progress (6 months): Complete advanced product strategy certification with practical application on major product roadmap initiative, lead comprehensive market analysis project with strategic recommendations, and establish thought leadership through industry presentations or publications. My support actions: Provide strategic mentoring focused on product strategy and market analysis, secure product management rotation or strategic planning assignment, facilitate advanced market research training and certification, and create opportunities for executive presentation and strategic planning participation.'
+                },
+                'Christopher Lee': {
+                    employeeName: 'Christopher Lee',
+                    reviewerName: 'Mike Chen',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'successful',
+                    keyPriorities: 'Primary goals this year were: (1) Develop comprehensive content marketing strategy increasing organic engagement by 30%, (2) Establish thought leadership program positioning company experts as industry authorities, and (3) Create scalable content production processes improving efficiency by 25%. Delivered strong results: (1) Achieved 42% increase in organic engagement through strategic content optimization and audience segmentation, exceeding targets while improving content quality scores, (2) Successfully launched thought leadership program featuring C-suite and senior experts, generating 156 media mentions and establishing recognized industry presence, (3) Implemented scalable content production workflows achieving 33% efficiency improvement and 40% increase in content output without compromising quality.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Subject Matter Experts and Executive Leadership to develop thought leadership content strategy, resulting in authentic expert positioning and 67% increase in industry recognition, (2) Partnered with Social Media and Digital Marketing teams to optimize content distribution, achieving 51% improvement in content reach and 38% better cross-channel engagement, (3) Worked cross-functionally with Sales and Customer Success teams to align content with customer journey stages, improving lead nurturing effectiveness by 29% and sales conversation quality. Areas for growth: Could strengthen collaboration by establishing more systematic content feedback loops with sales teams and developing skills in translating business objectives into compelling storytelling frameworks.',
+                    growth: 'Critical development priorities: (1) Strategic brand storytelling and narrative development - recommend advanced storytelling workshops and brand strategy training, (2) Digital marketing integration and omnichannel content strategy - suggest certification in marketing automation and customer journey optimization, (3) Team leadership and creative direction capabilities - propose content team management experience and creative leadership development. These experiences would accelerate growth by building strategic narrative capabilities, integrated marketing expertise essential for content director roles, and leadership skills necessary for managing creative teams and agencies.',
+                    lookingAhead: 'Differentiation: Compared to peers, Christopher excels in creating authentic, engaging content that drives measurable business results while building genuine thought leadership and industry recognition. Rating assumptions: Based on 42% engagement growth (exceeding 30% target), successful thought leadership program with quantifiable media impact, and process improvements delivering significant efficiency gains. Expected progress (6 months): Complete advanced content strategy certification with omnichannel integration project, establish content team mentorship program with junior developer progression, and lead strategic narrative development initiative for major company positioning effort. My support actions: Provide creative leadership coaching and advanced storytelling training, facilitate content strategy certification and digital marketing integration experience, assign content team leadership role on major campaign, and create opportunities for strategic brand narrative development and executive content consultation.'
+                },
+                'Ashley Davis': {
+                    employeeName: 'Ashley Davis',
+                    reviewerName: 'Mike Chen',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'exemplary',
+                    keyPriorities: 'Primary goals this year were: (1) Lead multi-channel campaign optimization strategy with 25% improvement in campaign ROI targets, (2) Establish advanced campaign attribution and measurement framework, and (3) Drive marketing automation sophistication achieving 40% improvement in lead nurturing effectiveness. Delivered outstanding results: (1) Achieved 37% improvement in campaign ROI through advanced targeting, creative optimization, and channel integration strategies, significantly exceeding targets while maintaining quality standards, (2) Implemented comprehensive attribution modeling providing accurate multi-touch attribution across all channels, improving marketing investment decisions and budget optimization by 43%, (3) Advanced marketing automation capabilities resulting in 56% improvement in lead nurturing effectiveness and 48% increase in marketing qualified lead conversion rates.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with Analytics and Data Science teams to develop predictive campaign modeling, resulting in 34% improvement in campaign targeting accuracy and more strategic media investment allocation, (2) Partnered with Creative and Brand teams to establish data-driven creative optimization process, achieving 41% improvement in creative effectiveness while maintaining brand consistency and message quality, (3) Worked cross-functionally with Sales Operations and CRM teams on lead management optimization, creating seamless handoff processes and 52% improvement in sales-marketing alignment effectiveness. Areas for growth: Could enhance collaboration by developing formal campaign best practices documentation for knowledge transfer and establishing structured mentorship programs for junior campaign management talent.',
+                    growth: 'Critical development priorities: (1) Advanced marketing technology leadership and MarTech stack optimization - recommend certification in enterprise marketing platforms and technology strategy development, (2) Strategic marketing planning and budget management - suggest participation in marketing planning process and P&L responsibility for campaign budgets, (3) Team leadership and cross-functional project management - propose formal management training and large-scale campaign leadership experience. These experiences would accelerate growth by building marketing technology expertise, strategic financial management skills essential for senior marketing roles, and leadership capabilities necessary for managing marketing teams and complex initiatives.',
+                    lookingAhead: 'Differentiation: Compared to peers, Ashley demonstrates exceptional ability to optimize complex multi-channel campaigns while implementing systematic measurement and attribution frameworks that drive strategic decision-making. Rating assumptions: Based on 37% ROI improvement (exceeding 25% target), successful attribution implementation with documented decision-making impact, and automation sophistication generating significant conversion improvements. Expected progress (6 months): Complete advanced MarTech leadership certification with technology strategy recommendations, assume P&L responsibility for major campaign portfolio with budget management accountability, and establish campaign excellence mentorship program with measurable team development outcomes. My support actions: Provide advanced marketing technology coaching and strategic budget management training, secure MarTech certification and enterprise platform experience, assign P&L responsibility for high-visibility campaign portfolio, and facilitate team leadership development through formal management training and cross-functional project leadership opportunities.'
+                },
+                'Thomas Miller': {
+                    employeeName: 'Thomas Miller',
+                    reviewerName: 'Lisa Williams',
+                    reviewPeriod: 'FY26',
+                    overallRating: 'exemplary',
+                    keyPriorities: 'Primary goals this year were: (1) Drive comprehensive digital transformation strategy across all marketing functions with measurable efficiency and effectiveness improvements, (2) Lead marketing technology integration and optimization initiative, and (3) Establish data-driven marketing culture with advanced analytics and automation capabilities. Delivered exceptional results: (1) Successfully transformed marketing operations achieving 45% improvement in digital marketing effectiveness and 38% increase in operational efficiency through systematic digitization and process optimization, (2) Led enterprise-wide marketing technology integration creating unified customer experience platform and 52% improvement in cross-channel campaign coordination, (3) Established advanced analytics capabilities including predictive modeling and real-time optimization, resulting in 41% improvement in marketing ROI and strategic decision-making acceleration.',
+                    collaboration: 'Three specific partnership examples: (1) Collaborated with IT, Data Engineering, and Customer Experience teams to architect integrated marketing technology ecosystem, resulting in unified customer data platform and 47% improvement in personalization effectiveness, (2) Partnered with Finance and Operations leadership on marketing investment optimization framework, achieving data-driven budget allocation and 34% improvement in marketing spend efficiency, (3) Worked cross-functionally with Sales, Customer Service, and Product teams to align digital customer journey, creating seamless omnichannel experience and 29% improvement in customer lifetime value. Areas for growth: Could enhance collaboration by establishing formal digital transformation knowledge transfer programs and developing structured change management communication for large-scale technology implementations.',
+                    growth: 'Critical development priorities: (1) Executive leadership and organizational change management - recommend senior executive development program and large-scale transformation leadership experience, (2) Advanced business strategy and digital innovation - suggest rotation through corporate strategy or chief digital officer shadowing assignment, (3) Industry thought leadership and external influence - propose board positions, technology advisory roles, and speaking engagements to build external recognition. These experiences would accelerate growth by building senior executive presence, strategic business transformation expertise essential for C-suite roles, and industry influence necessary for chief marketing officer and chief digital officer positions.',
+                    lookingAhead: 'Differentiation: Compared to peers, Thomas demonstrates exceptional ability to lead enterprise-wide digital transformation while delivering measurable business results, combining visionary technology strategy with disciplined execution and change management. Rating assumptions: Based on 45% digital effectiveness improvement (significantly exceeding industry benchmarks), successful technology integration with documented ROI impact, and analytics sophistication generating competitive advantage. Expected progress (6 months): Complete senior executive leadership program with transformation case study presentation, assume expanded responsibility for digital innovation across business units, and establish industry thought leadership through technology publications and conference presentations. My support actions: Provide executive coaching with digital transformation consultant, facilitate senior leadership development and C-suite exposure opportunities, sponsor participation in industry technology boards and innovation forums, and create opportunities for cross-business unit digital strategy leadership and external thought leadership development.'
+                }
+            };
+
+            // Return personalized evaluation or fall back to default
+            return evaluationExamples[employee.name] || {
                 employeeName: employee ? employee.name : 'Sample Employee',
                 reviewerName: 'Sample Reviewer',
                 reviewPeriod: 'FY26',
                 overallRating: 'successful',
-                keyPriorities: 'Achieved key marketing objectives including 15% increase in campaign engagement and successful launch of Q3 product promotion.',
-                resultsImpact: 'Delivered measurable business impact with $2.3M in attributable revenue and 23% improvement in lead quality metrics.',
-                collaboration: 'Built strong partnerships with cross-functional teams, facilitating weekly stakeholder meetings and resolving project conflicts.',
-                growth: 'Completed advanced analytics certification and demonstrated improved data visualization skills in quarterly presentations.',
-                lookingAhead: 'Recommend development in strategic planning and leadership capabilities through stretch assignment leading the Q1 campaign initiative.'
+                keyPriorities: 'Primary goals this year were: (1) Increase member acquisition by 12%, (2) Launch digital rewards program, and (3) Improve customer satisfaction scores above 4.2. Delivered measurable results: (1) Achieved 15.3% member acquisition growth through targeted social campaigns, exceeding goal by 28%, (2) Successfully launched rewards program with 89% member adoption in first month, generating $1.8M incremental revenue, (3) Improved satisfaction scores from 3.9 to 4.4 through personalized communication strategy, representing 12.8% improvement and clear business impact on retention metrics.',
+                collaboration: 'Three specific partnership examples: (1) Collaborated with IT and Operations teams to deliver rewards program launch, resulting in zero technical issues and 48-hour faster deployment than planned, (2) Partnered with Finance department on budget optimization, achieving 18% cost reduction while maintaining campaign quality, (3) Worked cross-functionally with Customer Service and Analytics teams on satisfaction initiative, achieving unified data tracking and 22% faster issue resolution. Areas for growth: Could strengthen collaboration by proactively engaging stakeholders earlier in planning phases and providing more detailed project timelines to partners.',
+                growth: 'Critical development priorities: (1) Strategic thinking skills - recommend executive leadership program and rotation through corporate strategy team, (2) Advanced analytics capabilities - suggest enrollment in data science certification and partnership with Analytics CoE on major project, (3) Change management expertise - propose leading digital transformation initiative for assigned market. These targeted experiences would accelerate growth by building enterprise-level perspective, quantitative decision-making skills, and ability to drive organization-wide initiatives essential for senior marketing roles.',
+                lookingAhead: 'Differentiation: Compared to peers, Sarah consistently delivers above-target results with measurable business impact while building strong cross-functional partnerships. Rating assumptions: Based on 15.3% acquisition growth (vs 8% peer average), successful program launch with zero issues, and proactive stakeholder collaboration evidenced in 360 feedback. Expected progress (6 months): Achieve 95% completion of leadership program modules, complete analytics certification with capstone project, and successfully lead Q1 digital transformation pilot with measurable adoption metrics. My support actions: Provide monthly coaching sessions on strategic thinking, secure budget for external training programs, assign high-visibility transformation project, and facilitate quarterly skip-level meetings with VP Marketing for exposure and feedback.'
             };
         }
 
@@ -4112,7 +4110,6 @@
             const stepNames = [
                 'Basic Information & Overall Rating',
                 'Key Priorities',
-                'Results & Impact',
                 'Collaboration & Influence',
                 'Growth & Development',
                 'Looking Ahead',
@@ -4176,10 +4173,6 @@
                         }, 200);
                     }
                     
-                    // Show notification
-                    showStatusChangeNotification('Overall Rating', 'Completed', 'In Progress');
-                    
-                    console.log(`Status changed from completed to in-progress due to rating change: ${currentRating} → ${rating}`);
                     return; // Exit early, no need for auto-save
                 }
             }
@@ -5030,24 +5023,20 @@
                             <span class="step-number">2</span>
                             <span class="step-title">Key Priorities</span>
                         </div>
-                        <div class="step" onclick="goToStep(2)" title="Results & Impact">
+                        <div class="step" onclick="goToStep(2)" title="Collaboration & Influence">
                             <span class="step-number">3</span>
-                            <span class="step-title">Results & Impact</span>
-                        </div>
-                        <div class="step" onclick="goToStep(3)" title="Collaboration & Influence">
-                            <span class="step-number">4</span>
                             <span class="step-title">Collaboration</span>
                         </div>
-                        <div class="step" onclick="goToStep(4)" title="Growth & Development">
-                            <span class="step-number">5</span>
+                        <div class="step" onclick="goToStep(3)" title="Growth & Development">
+                            <span class="step-number">4</span>
                             <span class="step-title">Growth</span>
                         </div>
-                        <div class="step" onclick="goToStep(5)" title="Looking Ahead">
-                            <span class="step-number">6</span>
+                        <div class="step" onclick="goToStep(4)" title="Looking Ahead">
+                            <span class="step-number">5</span>
                             <span class="step-title">Looking Ahead</span>
                         </div>
-                        <div class="step" onclick="goToStep(6)" title="Comprehensive Summary">
-                            <span class="step-number">7</span>
+                        <div class="step" onclick="goToStep(5)" title="Comprehensive Summary">
+                            <span class="step-number">6</span>
                             <span class="step-title">Summary</span>
                         </div>
                     </div>
@@ -5070,11 +5059,10 @@
                         <div class="step-navigation">
                             <div class="step active" onclick="goToStep(0)" title="Basic Information & Rating">1</div>
                             <div class="step" onclick="goToStep(1)" title="Key Priorities">2</div>
-                            <div class="step" onclick="goToStep(2)" title="Results & Impact">3</div>
-                            <div class="step" onclick="goToStep(3)" title="Collaboration & Influence">4</div>
-                            <div class="step" onclick="goToStep(4)" title="Growth & Development">5</div>
-                            <div class="step" onclick="goToStep(5)" title="Looking Ahead">6</div>
-                            <div class="step" onclick="goToStep(6)" title="Comprehensive Summary">7</div>
+                            <div class="step" onclick="goToStep(2)" title="Collaboration & Influence">3</div>
+                            <div class="step" onclick="goToStep(3)" title="Growth & Development">4</div>
+                            <div class="step" onclick="goToStep(4)" title="Looking Ahead">5</div>
+                            <div class="step" onclick="goToStep(5)" title="Comprehensive Summary">6</div>
                         </div>
                     </div>
                     
@@ -5247,7 +5235,6 @@
                 reviewPeriod: document.getElementById('reviewPeriod')?.value || 'FY26',
                 overallRating: document.querySelector('.rating-btn.selected')?.getAttribute('data-rating') || 'successful',
                 keyPriorities: document.getElementById('keyPriorities')?.value || '',
-                resultsImpact: document.getElementById('resultsImpact')?.value || '',
                 collaboration: document.getElementById('collaboration')?.value || '',
                 growth: document.getElementById('growth')?.value || '',
                 lookingAhead: document.getElementById('lookingAhead')?.value || ''
@@ -5259,17 +5246,10 @@
                 previousData.reviewPeriod !== evaluationData.reviewPeriod ||
                 previousData.overallRating !== evaluationData.overallRating ||
                 previousData.keyPriorities !== evaluationData.keyPriorities ||
-                previousData.resultsImpact !== evaluationData.resultsImpact ||
                 previousData.collaboration !== evaluationData.collaboration ||
                 previousData.growth !== evaluationData.growth ||
                 previousData.lookingAhead !== evaluationData.lookingAhead
             );
-            
-            console.log('SaveEmployeeEvaluation debug:');
-            console.log('previousStatus:', previousStatus);
-            console.log('previousData.overallRating:', previousData.overallRating);
-            console.log('evaluationData.overallRating:', evaluationData.overallRating);
-            console.log('dataChanged:', dataChanged);
             
             // Update employee data
             employee.evaluationData = evaluationData;
@@ -5421,7 +5401,7 @@
 
                     <div class="form-group">
                         <label for="keyPriorities">Feedback:</label>
-                        <textarea id="keyPriorities" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('keyPriorities')">${evalData.keyPriorities || ''}</textarea>
+                        <textarea id="keyPriorities" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('keyPriorities')">Primary goals this year were: (1) Increase member acquisition by 12%, (2) Launch digital rewards program, and (3) Improve customer satisfaction scores above 4.2. Delivered measurable results: (1) Achieved 15.3% member acquisition growth through targeted social campaigns, exceeding goal by 28%, (2) Successfully launched rewards program with 89% member adoption in first month, generating $1.8M incremental revenue, (3) Improved satisfaction scores from 3.9 to 4.4 through personalized communication strategy, representing 12.8% improvement and clear business impact on retention metrics.</textarea>
                     </div>
 
                     <!-- AI Writing Coach -->
@@ -5448,72 +5428,26 @@
                     </div>
                 </div>
 
-                <!-- Step 2: Results & Impact -->
+                <!-- Step 2: Collaboration -->
                 <div class="slide" id="slide-2">
-                    <p class="description">What outcomes did they drive, and how did they move the business or brand forward?</p>
+                    <p class="description">What two or three specific ways did the associate partner across teams to deliver results this year, and where could their partnership and collaboration have been stronger?</p>
 
                     <div class="suggestions">
                         <h4>Smart Content Suggestions</h4>
-                        <div class="suggestion-item" onclick="addSuggestion('resultsImpact', 'Delivered measurable business impact by achieving...')">
-                            "Delivered measurable business impact by achieving..."
+                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Three specific partnership examples: (1) Collaborated with [team] to deliver [outcome], (2) Partnered with [department] resulting in [specific result], (3) Worked cross-functionally with [teams] achieving [measurable impact]. Areas for growth: Could strengthen collaboration by...')">
+                            "Three specific partnership examples: (1) Collaborated with [team] to deliver [outcome], (2) Partnered with [department] resulting in [specific result], (3) Worked cross-functionally with [teams] achieving [measurable impact]. Areas for growth: Could strengthen collaboration by..."
                         </div>
-                        <div class="suggestion-item" onclick="addSuggestion('resultsImpact', 'Generated significant value through...')">
-                            "Generated significant value through..."
+                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Key partnerships this year included: [specific example 1 with outcome], [specific example 2 with result], and [specific example 3 with impact]. Going forward, partnership effectiveness could improve through...')">
+                            "Key partnerships this year included: [specific example 1 with outcome], [specific example 2 with result], and [specific example 3 with impact]. Going forward, partnership effectiveness could improve through..."
                         </div>
-                        <div class="suggestion-item" onclick="addSuggestion('resultsImpact', 'Improved key metrics including...')">
-                            "Improved key metrics including..."
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="resultsImpact">Feedback:</label>
-                        <textarea id="resultsImpact" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('resultsImpact')">${evalData.resultsImpact || ''}</textarea>
-                    </div>
-
-                    <!-- AI Writing Coach -->
-                    <div class="writing-coach" id="coach-resultsImpact" style="display: none;">
-                        <div class="coach-header">
-                            <span style="font-size: 20px;">🤖</span>
-                            <h4>AI Writing Coach</h4>
-                        </div>
-                        <div class="metrics-grid">
-                            <div class="metric" id="objectivity-resultsImpact">
-                                <span class="metric-value">0%</span>
-                                <div class="metric-label">Objectivity</div>
-                            </div>
-                            <div class="metric" id="specificity-resultsImpact">
-                                <span class="metric-value">0%</span>
-                                <div class="metric-label">Specificity</div>
-                            </div>
-                            <div class="metric" id="completeness-resultsImpact">
-                                <span class="metric-value">0%</span>
-                                <div class="metric-label">Completeness</div>
-                            </div>
-                        </div>
-                        <div class="bias-alerts" id="alerts-resultsImpact"></div>
-                    </div>
-                </div>
-
-                <!-- Step 3: Collaboration -->
-                <div class="slide" id="slide-3">
-                    <p class="description">How did they partner across teams or functions to deliver results?</p>
-
-                    <div class="suggestions">
-                        <h4>Smart Content Suggestions</h4>
-                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Built strong partnerships with cross-functional teams to...')">
-                            "Built strong partnerships with cross-functional teams to..."
-                        </div>
-                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Influenced positive outcomes by effectively communicating...')">
-                            "Influenced positive outcomes by effectively communicating..."
-                        </div>
-                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Demonstrated leadership by facilitating...')">
-                            "Demonstrated leadership by facilitating..."
+                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Successfully partnered across teams by: [specific way 1], [specific way 2], and [specific way 3], each delivering [measurable results]. Opportunities for stronger collaboration exist in...')">
+                            "Successfully partnered across teams by: [specific way 1], [specific way 2], and [specific way 3], each delivering [measurable results]. Opportunities for stronger collaboration exist in..."
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="collaboration">Feedback:</label>
-                        <textarea id="collaboration" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('collaboration')">${evalData.collaboration || ''}</textarea>
+                        <textarea id="collaboration" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('collaboration')">Three specific partnership examples: (1) Collaborated with IT and Operations teams to deliver rewards program launch, resulting in zero technical issues and 48-hour faster deployment than planned, (2) Partnered with Finance department on budget optimization, achieving 18% cost reduction while maintaining campaign quality, (3) Worked cross-functionally with Customer Service and Analytics teams on satisfaction initiative, achieving unified data tracking and 22% faster issue resolution. Areas for growth: Could strengthen collaboration by proactively engaging stakeholders earlier in planning phases and providing more detailed project timelines to partners.</textarea>
                     </div>
 
                     <!-- AI Writing Coach -->
@@ -5540,26 +5474,26 @@
                     </div>
                 </div>
 
-                <!-- Step 4: Growth & Development -->
-                <div class="slide" id="slide-4">
-                    <p class="description">What new skills, behaviors, or leadership qualities did they build this year?</p>
+                <!-- Step 3: Growth & Development -->
+                <div class="slide" id="slide-3">
+                    <p class="description">What are the two or three most critical development areas for the associate next year, and what targeted experiences such as training, expanded scope, new responsibilities, or stretch work would best accelerate their growth?</p>
 
                     <div class="suggestions">
                         <h4>Smart Content Suggestions</h4>
-                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Developed new capabilities in...')">
-                            "Developed new capabilities in..."
+                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Critical development priorities: (1) [Skill/area] - recommend [specific training/experience], (2) [Leadership capability] - suggest [stretch assignment/expanded scope], (3) [Technical/functional area] - propose [new responsibility/project]. These targeted experiences would accelerate growth by...')">
+                            "Critical development priorities: (1) [Skill/area] - recommend [specific training/experience], (2) [Leadership capability] - suggest [stretch assignment/expanded scope], (3) [Technical/functional area] - propose [new responsibility/project]. These targeted experiences would accelerate growth by..."
                         </div>
-                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Showed significant growth by learning...')">
-                            "Showed significant growth by learning..."
+                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Key growth areas for next year: [development area 1], [development area 2], and [development area 3]. Recommended development approaches include: [specific training program], [expanded role/scope opportunity], and [stretch project/new responsibility] to build these capabilities.')">
+                            "Key growth areas for next year: [development area 1], [development area 2], and [development area 3]. Recommended development approaches include: [specific training program], [expanded role/scope opportunity], and [stretch project/new responsibility] to build these capabilities."
                         </div>
-                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Strengthened leadership skills through...')">
-                            "Strengthened leadership skills through..."
+                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Priority development focus: [area 1] through [targeted experience], [area 2] via [specific opportunity], [area 3] using [stretch assignment]. These development experiences align with career progression and would strengthen [specific outcomes/capabilities].')">
+                            "Priority development focus: [area 1] through [targeted experience], [area 2] via [specific opportunity], [area 3] using [stretch assignment]. These development experiences align with career progression and would strengthen [specific outcomes/capabilities]."
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="growth">Feedback:</label>
-                        <textarea id="growth" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('growth')">${evalData.growth || ''}</textarea>
+                        <textarea id="growth" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('growth')">Critical development priorities: (1) Strategic thinking skills - recommend executive leadership program and rotation through corporate strategy team, (2) Advanced analytics capabilities - suggest enrollment in data science certification and partnership with Analytics CoE on major project, (3) Change management expertise - propose leading digital transformation initiative for assigned market. These targeted experiences would accelerate growth by building enterprise-level perspective, quantitative decision-making skills, and ability to drive organization-wide initiatives essential for senior marketing roles.</textarea>
                     </div>
 
                     <!-- AI Writing Coach -->
@@ -5586,26 +5520,26 @@
                     </div>
                 </div>
 
-                <!-- Step 5: Looking Ahead -->
-                <div class="slide" id="slide-5">
-                    <p class="description">What are their biggest opportunities and development areas to grow next year?</p>
+                <!-- Step 4: Looking Ahead -->
+                <div class="slide" id="slide-4">
+                    <p class="description">Compared to others at this level, what clearly differentiates this associate, what assumptions influenced your rating, and what measurable progress do you expect to see in the next six months along with the specific actions you will take to support their development?</p>
 
                     <div class="suggestions">
                         <h4>Smart Content Suggestions</h4>
-                        <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Key development opportunities include...')">
-                            "Key development opportunities include..."
+                        <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Differentiation: Compared to peers, [associate name] stands out in [specific areas]. Rating assumptions: Based on [evidence/observations]. Expected progress (6 months): [measurable goal 1], [measurable goal 2]. My support actions: [specific action 1], [specific action 2], [specific action 3].')">
+                            "Differentiation: Compared to peers, [associate name] stands out in [specific areas]. Rating assumptions: Based on [evidence/observations]. Expected progress (6 months): [measurable goal 1], [measurable goal 2]. My support actions: [specific action 1], [specific action 2], [specific action 3]."
                         </div>
-                        <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Focus areas for next year should be...')">
-                            "Focus areas for next year should be..."
+                        <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Peer comparison: [Associate name] differentiates through [unique strengths/capabilities]. Rating rationale: [key assumptions and evidence]. 6-month expectations: Achieve [specific metric/outcome], demonstrate [observable behavior], complete [measurable milestone]. Manager commitment: I will [support action], provide [resource/opportunity], and [developmental intervention].')">
+                            "Peer comparison: [Associate name] differentiates through [unique strengths/capabilities]. Rating rationale: [key assumptions and evidence]. 6-month expectations: Achieve [specific metric/outcome], demonstrate [observable behavior], complete [measurable milestone]. Manager commitment: I will [support action], provide [resource/opportunity], and [developmental intervention]."
                         </div>
-                        <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Recommended stretch assignments or experiences...')">
-                            "Recommended stretch assignments or experiences..."
+                        <div class="suggestion-item" onclick="addSuggestion('lookingAhead', 'Distinguishing factors: [Associate] excels beyond peer level in [area 1] and [area 2] due to [evidence]. Rating influenced by [assumptions/observations]. Measurable 6-month targets: [quantifiable goal], [behavioral indicator], [milestone achievement]. Development support plan: [manager action 1], [resource provision], [coaching/feedback commitment].')">
+                            "Distinguishing factors: [Associate] excels beyond peer level in [area 1] and [area 2] due to [evidence]. Rating influenced by [assumptions/observations]. Measurable 6-month targets: [quantifiable goal], [behavioral indicator], [milestone achievement]. Development support plan: [manager action 1], [resource provision], [coaching/feedback commitment]."
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="lookingAhead">Feedback:</label>
-                        <textarea id="lookingAhead" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('lookingAhead')">${evalData.lookingAhead || ''}</textarea>
+                        <textarea id="lookingAhead" rows="6" placeholder="Provide specific, objective feedback with examples and measurable outcomes..." onkeyup="analyzeFeedback('lookingAhead')">Differentiation: Compared to peers, Sarah consistently delivers above-target results with measurable business impact while building strong cross-functional partnerships. Rating assumptions: Based on 15.3% acquisition growth (vs 8% peer average), successful program launch with zero issues, and proactive stakeholder collaboration evidenced in 360 feedback. Expected progress (6 months): Achieve 95% completion of leadership program modules, complete analytics certification with capstone project, and successfully lead Q1 digital transformation pilot with measurable adoption metrics. My support actions: Provide monthly coaching sessions on strategic thinking, secure budget for external training programs, assign high-visibility transformation project, and facilitate quarterly skip-level meetings with VP Marketing for exposure and feedback.</textarea>
                     </div>
 
                     <!-- AI Writing Coach -->
@@ -5632,8 +5566,8 @@
                     </div>
                 </div>
 
-                <!-- Step 6: Comprehensive Summary -->
-                <div class="slide" id="slide-6">
+                <!-- Step 5: Comprehensive Summary -->
+                <div class="slide" id="slide-5">
                     <p class="description">Auto-generated comprehensive narrative for calibration meetings and performance discussions</p>
 
                     <div class="summary-container">
@@ -5680,7 +5614,7 @@
                 }
                 
                 // Text areas
-                const textFields = ['keyPriorities', 'resultsImpact', 'collaboration', 'growth', 'lookingAhead'];
+                const textFields = ['keyPriorities', 'collaboration', 'growth', 'lookingAhead'];
                 textFields.forEach(fieldId => {
                     const field = document.getElementById(fieldId);
                     if (field) {
@@ -7218,7 +7152,6 @@
             
             const competencyScores = {
                 'Key Priorities': { total: 0, count: 0, name: 'Key Priorities & Results' },
-                'Results & Impact': { total: 0, count: 0, name: 'Results & Impact' },
                 'Collaboration': { total: 0, count: 0, name: 'Collaboration & Influence' },
                 'Growth & Development': { total: 0, count: 0, name: 'Growth & Development' },
                 'Looking Ahead': { total: 0, count: 0, name: 'Strategic Vision' }
@@ -7235,10 +7168,7 @@
                         competencyScores['Key Priorities'].total += scoreMap[sections.keyPriorities.rating] || 0;
                         competencyScores['Key Priorities'].count++;
                     }
-                    if (sections.resultsImpact?.rating) {
-                        competencyScores['Results & Impact'].total += scoreMap[sections.resultsImpact.rating] || 0;
-                        competencyScores['Results & Impact'].count++;
-                    }
+
                     if (sections.collaboration?.rating) {
                         competencyScores['Collaboration'].total += scoreMap[sections.collaboration.rating] || 0;
                         competencyScores['Collaboration'].count++;
@@ -7664,10 +7594,6 @@
                             }, 200);
                         }
                         
-                        // Show notification
-                        showStatusChangeNotification(event.target.id || 'Field', 'Completed', 'In Progress');
-                        
-                        console.log(`Status changed from completed to in-progress due to field modification: ${event.target.id}`);
                     }
                     
                     // Auto-save after short delay
@@ -7726,19 +7652,15 @@
                     return data.keyPriorities && 
                            data.keyPriorities.trim().length > 50;
 
-                case 2: // Results & Impact
-                    return data.resultsImpact && 
-                           data.resultsImpact.trim().length > 50;
-
-                case 3: // Collaboration & Influence
+                case 2: // Collaboration & Influence
                     return data.collaboration && 
                            data.collaboration.trim().length > 50;
 
-                case 4: // Growth & Development
+                case 3: // Growth & Development
                     return data.growth && 
                            data.growth.trim().length > 50;
 
-                case 5: // Looking Ahead
+                case 4: // Looking Ahead
                     return data.lookingAhead && 
                            data.lookingAhead.trim().length > 50;
 
@@ -7750,79 +7672,9 @@
             }
         }
 
-        // Show subtle notification when automatically progressing
-        function showStepProgressNotification(fromStep, toStep) {
-            const stepNames = [
-                'Basic Information & Rating',
-                'Key Priorities', 
-                'Results & Impact',
-                'Collaboration & Influence',
-                'Growth & Development',
-                'Looking Ahead',
-                'Comprehensive Summary'
-            ];
 
-            // Remove any existing progress notification
-            const existing = document.querySelector('.step-progress-notification');
-            if (existing) existing.remove();
 
-            const notification = document.createElement('div');
-            notification.className = 'step-progress-notification';
-            notification.innerHTML = `
-                <div class="progress-notification-content">
-                    <div class="progress-icon">→</div>
-                    <div class="progress-text">
-                        <div class="progress-title">Auto-advancing</div>
-                        <div class="progress-subtitle">Moving to: ${stepNames[toStep]}</div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 3 seconds
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
-            }, 3000);
-        }
 
-        function showStatusChangeNotification(fieldName = '', fromStatus = '', toStatus = '') {
-            // Remove any existing notification
-            const existingNotification = document.querySelector('.status-notification');
-            if (existingNotification) {
-                existingNotification.remove();
-            }
-
-            // Create notification message
-            let message;
-            if (fieldName && fromStatus && toStatus) {
-                message = `${fieldName} changed: Status updated from "${fromStatus}" to "${toStatus}"`;
-            } else {
-                message = 'Status changed to "In Progress" due to modifications';
-            }
-
-            // Create and show notification
-            const notification = document.createElement('div');
-            notification.className = 'status-notification';
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <span class="notification-icon">⚠️</span>
-                    <span class="notification-text">${message}</span>
-                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
-            }, 5000);
-        }
 
         function generateComprehensiveSummary() {
             const employee = reviewerData[currentReviewer]?.employees[currentEmployee];
