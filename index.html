@@ -4739,12 +4739,12 @@
                 alerts.push('<strong>Potential Bias Language:</strong> Review for unconscious bias. Focus on specific behaviors and measurable outcomes instead of personality traits.');
             }
             
-            // Recency Bias Detection (Enhanced)
+            // Timeline Balance Detection (Enhanced)
             const recentWords = ['recently', 'last week', 'yesterday', 'just completed', 'latest', 'this month', 'just finished', 'currently'];
             const recentCount = recentWords.filter(word => lowerText.includes(word)).length;
             
             if (recentCount >= 2) {
-                alerts.push('📅 <strong>Recency Bias:</strong> Ensure feedback represents the entire review period, not just recent events.');
+                alerts.push('📅 <strong>Timeline Balance:</strong> Ensure feedback represents the entire review period, not just recent events.');
             }
             
             // Attribution Accuracy (Completeness)
@@ -7204,12 +7204,12 @@
                                     <div class="help-tooltip" id="help-bias">
                                         <button class="help-close" onclick="closeHelp('help-bias')">&times;</button>
                                         <h4>Writing Quality Analyzer</h4>
-                                        <p>Intelligent analysis identifying potential evaluation biases and quality issues to ensure fair and objective assessments.</p>
+                                        <p>Intelligent analysis identifying potential evaluation quality issues to ensure fair and objective assessments.</p>
                                         <ul>
                                             <li><strong>Risk Levels:</strong> High (red) = Critical attention needed, Medium (gold) = Monitor closely, Low (teal) = Acceptable levels</li>
-                                            <li><strong>Bias Types:</strong> Easy/Hard rater tendencies, recency effects, halo bias, and inconsistent rating patterns</li>
-                                            <li><strong>Instance Count:</strong> Number of detected bias occurrences across all team evaluations</li>
-                                            <li><strong>Overall Score:</strong> Team-wide bias risk assessment (0-100, lower scores indicate more objective evaluations)</li>
+                                            <li><strong>Quality Issues:</strong> Content depth, timeline balance, subjective language, and inconsistent rating patterns</li>
+                                            <li><strong>Instance Count:</strong> Number of detected quality issues across all team evaluations</li>
+                                            <li><strong>Overall Score:</strong> Team-wide quality assessment (0-100, lower scores indicate more objective evaluations)</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -7487,8 +7487,8 @@
         
         function analyzeBiasPatterns(employees) {
             const biasTypes = {
-                'Length Bias': 0,
-                'Recency Bias': 0,
+                'Content Quality': 0,
+                'Timeline Balance': 0,
                 'Subjective Language': 0,
                 'Generic Feedback': 0
             };
@@ -7501,8 +7501,8 @@
                     const content = emp.evaluationData[section];
                     if (!content) return;
                     
-                    // Length bias (too short/long)
-                    if (content.length < 50 || content.length > 1000) biasTypes['Length Bias']++;
+                    // Content quality (too short/long)
+                    if (content.length < 50 || content.length > 1000) biasTypes['Content Quality']++;
                     
                     // Subjective language
                     const subjectiveWords = ['good', 'bad', 'great', 'poor', 'nice', 'awesome', 'terrible', 'amazing'];
