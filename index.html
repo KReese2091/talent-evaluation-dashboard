@@ -5053,7 +5053,7 @@
             const alertsContainer = document.getElementById(alertsId);
             
             if (alerts.length === 0) {
-                alertsContainer.innerHTML = '<div class="bias-alert" style="color: #28a745;"><strong>No bias patterns detected. Great objective feedback!</strong></div>';
+                alertsContainer.innerHTML = '<div class="bias-alert" style="color: #28a745;"><strong>No quality issues detected. Excellent objective feedback!</strong></div>';
             } else {
                 alertsContainer.innerHTML = alerts.map(alert => `<div class="bias-alert">${alert}</div>`).join('');
             }
@@ -7196,15 +7196,15 @@
                                 </div>
                             </div>
 
-                            <!-- Bias Detection Heatmap -->
+                            <!-- Writing Quality Analyzer -->
                             <div class="insights-section">
                                 <div class="section-header">
-                                    <h3>Bias Detection Analysis</h3>
+                                    <h3>Writing Quality Analyzer</h3>
                                     <button class="help-button" onclick="toggleHelp('help-bias', event)" title="Learn more">?</button>
                                     <div class="help-tooltip" id="help-bias">
                                         <button class="help-close" onclick="closeHelp('help-bias')">&times;</button>
-                                        <h4>Bias Detection Analysis</h4>
-                                        <p>Algorithmic analysis identifying potential evaluation biases to ensure fair and objective assessments.</p>
+                                        <h4>Writing Quality Analyzer</h4>
+                                        <p>Intelligent analysis identifying potential evaluation biases and quality issues to ensure fair and objective assessments.</p>
                                         <ul>
                                             <li><strong>Risk Levels:</strong> High (red) = Critical attention needed, Medium (gold) = Monitor closely, Low (teal) = Acceptable levels</li>
                                             <li><strong>Bias Types:</strong> Easy/Hard rater tendencies, recency effects, halo bias, and inconsistent rating patterns</li>
@@ -7687,10 +7687,10 @@
             const highBiasCount = biasAnalysis.filter(bias => bias.score > 70).length;
             if (highBiasCount > 2) {
                 anomalies.push({
-                    title: 'Multiple Bias Patterns',
+                    title: 'Multiple Quality Issues',
                     severity: 'high',
                     icon: '⚖️',
-                    description: 'Multiple types of evaluation bias detected, potentially compromising assessment fairness.',
+                    description: 'Multiple types of evaluation quality issues detected, potentially compromising assessment fairness.',
                     affectedCount: highBiasCount,
                     recommendation: 'Review evaluation training and implement structured assessment guidelines.'
                 });
@@ -7873,8 +7873,8 @@
             if (highBiasCount > 0) {
                 recommendations.push({
                     priority: '2',
-                    title: 'Address Evaluation Bias',
-                    description: 'High bias detected in multiple areas. Review feedback for objectivity and add specific examples with measurable outcomes.'
+                    title: 'Improve Writing Quality',
+                    description: 'Quality issues detected in multiple areas. Review feedback for objectivity and add specific examples with measurable outcomes.'
                 });
             }
             
