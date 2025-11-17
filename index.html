@@ -4120,14 +4120,30 @@
             console.log(`AI Coach: Analyzing ${fieldId} with ${text.length} characters`);
             coach.style.display = 'block';
             
+            // Update coach header with context information
+            const employeeContext = getEmployeeEvaluationContext();
+            const coachHeader = coach.querySelector('.coach-header h4');
+            if (coachHeader && (fieldId === 'collaboration' || fieldId === 'growth')) {
+                const contextLabels = {
+                    'marketing': '📢 Marketing Context',
+                    'sales': '💼 Sales Context', 
+                    'analytics': '📊 Analytics Context',
+                    'operations': '⚙️ Operations Context',
+                    'design': '🎨 Design Context',
+                    'technology': '💻 Technology Context',
+                    'management': '👥 Management Context',
+                    'general': 'Standard'
+                };
+                
+                coachHeader.innerHTML = `AI Writing Coach (${contextLabels[employeeContext] || 'Standard'})`;
+            }
+            
             // Extra debugging for slide 3
             if (fieldId === 'growth') {
                 console.log('Growth slide coach should now be visible');
                 console.log('Coach element:', coach);
                 console.log('Coach display style:', coach.style.display);
             }
-            
-            coach.style.display = 'block';
             
             // Calculate metrics based on section type
             const objectivity = calculateObjectivity(text, fieldId);
@@ -4139,8 +4155,18 @@
             updateMetric(`specificity-${fieldId}`, specificity);
             updateMetric(`completeness-${fieldId}`, completeness);
             
-            // Detect bias patterns specific to section
-            const biasAlerts = detectBias(text, fieldId);
+            // Detect bias patterns - use context-aware analysis for collaboration and growth
+            let biasAlerts;
+            const employeeRole = getEmployeeEvaluationContext();
+            
+            if (fieldId === 'collaboration') {
+                biasAlerts = analyzeCollaborationByContext(text, employeeRole, fieldId);
+            } else if (fieldId === 'growth') {
+                biasAlerts = analyzeGrowthByContext(text, employeeRole, fieldId);
+            } else {
+                biasAlerts = detectBias(text, fieldId);
+            }
+            
             displayBiasAlerts(`alerts-${fieldId}`, biasAlerts);
         }
         
@@ -4407,6 +4433,46 @@
             else score += 5;
             
             return Math.min(100, score);
+        }
+        
+        // Role/Context Detection for Fair Evaluation
+        function detectEvaluationContext(positionTitle) {
+            if (!positionTitle) return 'general';
+            
+            const title = positionTitle.toLowerCase();
+            const contextMappings = {
+                marketing: /marketing|brand|campaign|content|creative|advertising|communications|digital marketing/i,
+                sales: /sales|account|business development|revenue|quota|territory/i,
+                operations: /operations|process|logistics|supply|fulfillment|warehouse/i,
+                analytics: /analytics|data|insights|reporting|business intelligence|analyst/i,
+                design: /design|ux|ui|creative|visual|user experience/i,
+                technology: /engineer|developer|tech|software|systems|IT|programming/i,
+                management: /manager|director|leader|supervisor|executive|sr\.|senior/i,
+                finance: /finance|accounting|budget|financial|controller|treasurer/i,
+                hr: /hr|human resources|people|talent|recruiting|compensation/i
+            };
+            
+            for (const [context, pattern] of Object.entries(contextMappings)) {
+                if (pattern.test(title)) return context;
+            }
+            return 'general'; // fallback
+        }
+        
+        function getEmployeeEvaluationContext() {
+            const employee = reviewerData[currentReviewer]?.employees[currentEmployee];
+            if (!employee) return 'general';
+            
+            // Check for manual override (if we add it later)
+            if (employee.evaluationContext) {
+                return employee.evaluationContext;
+            }
+            
+            // Auto-detect from position
+            const autoDetected = detectEvaluationContext(employee.position);
+            
+            // Store for consistency during this session
+            employee.evaluationContext = autoDetected;
+            return autoDetected;
         }
         
         function detectBias(text, fieldId) {
@@ -4698,6 +4764,133 @@
             }
             
             return alerts;
+        }
+        
+        // Context-Aware Analysis Functions for Collaboration & Growth Sections
+        
+        function analyzeCollaborationByContext(text, context, fieldId) {
+            const baseAlerts = detectBias(text, fieldId);
+            const contextAlerts = [];
+            
+            if (context === 'marketing') {
+                // Marketing collaboration: enablement, alignment, cross-functional coordination
+                const inappropriateAttribution = /single-handedly.*\$|solely generated.*revenue|I closed.*\$[\d,]+/i.test(text);
+                if (inappropriateAttribution) {
+                    contextAlerts.push('📢 <strong>Marketing Attribution:</strong> Consider collaborative framing - marketing typically enables revenue rather than directly generating it. Try: "Enhanced process that enabled sales team to achieve..."');
+                }
+                
+                // Look for appropriate marketing collaboration patterns
+                const hasEnablementLanguage = /enabled|facilitated|aligned|coordinated|built consensus|drove adoption/i.test(text);
+                const hasCrossFunctionalExamples = /sales.*team|finance|IT|operations|customer.*service|analytics/i.test(text);
+                
+                if (text.length > 50 && !hasEnablementLanguage && !hasCrossFunctionalExamples) {
+                    contextAlerts.push('📢 <strong>Marketing Collaboration Focus:</strong> Include examples of enabling other teams, facilitating alignment, or coordinating cross-functional initiatives.');
+                }
+                
+            } else if (context === 'sales') {
+                // Sales collaboration: direct partnership for measurable outcomes
+                const tooVague = /contributed to|helped team|supported/.test(text) && !/specific.*metrics|revenue|\$[\d,]+|quota|deals/.test(text);
+                if (tooVague && text.length > 50) {
+                    contextAlerts.push('💼 <strong>Sales Collaboration Clarity:</strong> Include specific metrics from partnerships - revenue generated, deals closed, quota impact from collaboration.');
+                }
+                
+                // Look for direct business impact from partnerships
+                const hasDirectImpact = /revenue.*generated|deals.*closed|quota.*achieved|pipeline.*built/i.test(text);
+                const hasPartnership = /partnered|collaborated|worked.*with/i.test(text);
+                
+                if (hasPartnership && !hasDirectImpact && text.length > 50) {
+                    contextAlerts.push('💼 <strong>Sales Partnership Impact:</strong> Connect collaborations to business results - how did partnerships help achieve quota, close deals, or generate revenue?');
+                }
+            }
+            
+            // Filter base alerts that may not apply in this context
+            let filteredAlerts = baseAlerts.filter(alert => {
+                if (context === 'marketing') {
+                    // Don't flag collaborative language as "Easy Rater" for marketing
+                    return !alert.includes('collaborative impact') && !alert.includes('team contribution');
+                }
+                return true;
+            });
+            
+            return [...filteredAlerts, ...contextAlerts];
+        }
+        
+        function analyzeGrowthByContext(text, context, fieldId) {
+            const baseAlerts = detectBias(text, fieldId);
+            const contextAlerts = [];
+            
+            if (context === 'marketing') {
+                // Marketing growth: strategic thinking, cross-functional leadership, analytics
+                const marketingSkills = /strategic.*thinking|cross.*functional|stakeholder.*management|analytics|process.*improvement|brand.*strategy|customer.*insight/i;
+                const marketingExperiences = /rotation|P&L|general.*management|customer.*facing|analytics.*certification|strategy.*team/i;
+                
+                if (text.length > 50 && !marketingSkills.test(text) && !marketingExperiences.test(text)) {
+                    contextAlerts.push('📢 <strong>Marketing Development Focus:</strong> Consider areas like strategic thinking, cross-functional leadership, analytics capabilities, or customer insight skills for marketing growth.');
+                }
+                
+                // Look for appropriate development experiences
+                const hasStrategicExperience = /P&L.*exposure|strategy.*project|cross.*functional.*lead|analytics.*training/i.test(text);
+                if (text.includes('training') && !hasStrategicExperience) {
+                    contextAlerts.push('📢 <strong>Marketing Growth Acceleration:</strong> Consider strategic experiences like P&L exposure, cross-functional project leadership, or analytics capabilities to accelerate marketing career growth.');
+                }
+                
+            } else if (context === 'sales') {
+                // Sales growth: sales methodology, account management, territory expansion
+                const salesSkills = /negotiation|account.*management|sales.*methodology|territory.*management|pipeline.*development|customer.*relationship/i;
+                const salesExperiences = /key.*account|territory.*expansion|mentor.*reps|sales.*training|quota.*responsibility/i;
+                
+                if (text.length > 50 && !salesSkills.test(text) && !salesExperiences.test(text)) {
+                    contextAlerts.push('💼 <strong>Sales Development Focus:</strong> Consider core sales competencies like negotiation, account management, sales methodology, or territory expansion for sales growth.');
+                }
+                
+                // Look for sales-specific development paths
+                const hasDirectSalesExperience = /larger.*territory|key.*account|mentor.*new.*reps|advanced.*sales.*training/i.test(text);
+                if (text.includes('develop') && !hasDirectSalesExperience) {
+                    contextAlerts.push('💼 <strong>Sales Growth Acceleration:</strong> Consider sales-specific experiences like larger territory management, key account ownership, or mentoring new representatives.');
+                }
+            }
+            
+            return [...baseAlerts, ...contextAlerts];
+        }
+        
+        function generateContextualSuggestions(text, context, fieldId) {
+            const suggestions = [];
+            
+            if (fieldId === 'collaboration') {
+                if (context === 'marketing') {
+                    suggestions.push(
+                        "Enhanced campaign processes that enabled sales team to exceed targets by 15%...",
+                        "Facilitated alignment between IT and Operations, resulting in 25% faster deployment...",
+                        "Coordinated cross-functional initiative across Sales, Finance, and Operations teams...",
+                        "Built stakeholder consensus for new brand strategy, driving 30% higher adoption..."
+                    );
+                } else if (context === 'sales') {
+                    suggestions.push(
+                        "Partnered with Marketing to generate $500K in qualified pipeline...",
+                        "Collaborated with Product team to close $1.2M enterprise deal...",
+                        "Worked with Customer Success to expand account revenue by 40%...",
+                        "Teamed with Sales Engineering to win competitive $800K opportunity..."
+                    );
+                }
+            } else if (fieldId === 'growth') {
+                if (context === 'marketing') {
+                    suggestions.push(
+                        "Strategic thinking development through P&L exposure and cross-functional project leadership...",
+                        "Analytics capabilities enhancement via certification and partnership with Analytics CoE...",
+                        "Stakeholder influence skills through executive presentation training and board exposure...",
+                        "Customer insight expertise via rotation through Customer Research and field visits..."
+                    );
+                } else if (context === 'sales') {
+                    suggestions.push(
+                        "Advanced negotiation skills through enterprise sales methodology training...",
+                        "Territory management expertise via expansion to larger, more complex accounts...",
+                        "Leadership development through mentoring 3 new sales representatives...",
+                        "Account management capabilities via assignment to strategic key accounts..."
+                    );
+                }
+            }
+            
+            return suggestions;
         }
         
         function updateMetric(metricId, value) {
@@ -5194,6 +5387,30 @@
             
             // Load existing data if available
             loadEmployeeData(employee);
+            
+            // Add context indicator for role-aware evaluation
+            const context = getEmployeeEvaluationContext();
+            const contextDisplay = {
+                'marketing': '📢 Marketing Role - Optimized for collaborative impact and process improvements',
+                'sales': '💼 Sales Role - Optimized for direct results and revenue attribution',
+                'analytics': '📊 Analytics Role - Optimized for data-driven insights and process optimization',
+                'operations': '⚙️ Operations Role - Optimized for process efficiency and cross-functional coordination',
+                'design': '🎨 Design Role - Optimized for user experience and creative collaboration',
+                'technology': '💻 Technology Role - Optimized for technical achievements and system improvements',
+                'management': '👥 Management Role - Optimized for team development and strategic leadership',
+                'general': '📝 Standard Evaluation - Using general evaluation criteria'
+            };
+            
+            if (context !== 'general') {
+                // Add context indicator to the employee info section
+                const employeeInfo = document.querySelector('.employee-info');
+                if (employeeInfo) {
+                    const contextIndicator = document.createElement('div');
+                    contextIndicator.style.cssText = 'background: #e3f2fd; border: 1px solid #0073CE; border-radius: 6px; padding: 8px; margin: 8px 0; font-size: 12px; color: #0073CE; font-weight: 500;';
+                    contextIndicator.innerHTML = contextDisplay[context] || contextDisplay.general;
+                    employeeInfo.appendChild(contextIndicator);
+                }
+            }
             
             // Initialize AI Writing Coach for all textareas (with delay to ensure DOM is ready)
             setTimeout(() => {
