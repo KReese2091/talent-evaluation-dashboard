@@ -4853,43 +4853,96 @@
             return [...baseAlerts, ...contextAlerts];
         }
         
-        function generateContextualSuggestions(text, context, fieldId) {
-            const suggestions = [];
-            
-            if (fieldId === 'collaboration') {
-                if (context === 'marketing') {
-                    suggestions.push(
-                        "Enhanced campaign processes that enabled sales team to exceed targets by 15%...",
-                        "Facilitated alignment between IT and Operations, resulting in 25% faster deployment...",
-                        "Coordinated cross-functional initiative across Sales, Finance, and Operations teams...",
-                        "Built stakeholder consensus for new brand strategy, driving 30% higher adoption..."
-                    );
-                } else if (context === 'sales') {
-                    suggestions.push(
-                        "Partnered with Marketing to generate $500K in qualified pipeline...",
-                        "Collaborated with Product team to close $1.2M enterprise deal...",
-                        "Worked with Customer Success to expand account revenue by 40%...",
-                        "Teamed with Sales Engineering to win competitive $800K opportunity..."
-                    );
-                }
-            } else if (fieldId === 'growth') {
-                if (context === 'marketing') {
-                    suggestions.push(
-                        "Strategic thinking development through P&L exposure and cross-functional project leadership...",
-                        "Analytics capabilities enhancement via certification and partnership with Analytics CoE...",
-                        "Stakeholder influence skills through executive presentation training and board exposure...",
-                        "Customer insight expertise via rotation through Customer Research and field visits..."
-                    );
-                } else if (context === 'sales') {
-                    suggestions.push(
-                        "Advanced negotiation skills through enterprise sales methodology training...",
-                        "Territory management expertise via expansion to larger, more complex accounts...",
-                        "Leadership development through mentoring 3 new sales representatives...",
-                        "Account management capabilities via assignment to strategic key accounts..."
-                    );
-                }
+        // Comprehensive Context-Aware Suggestion Libraries
+        const CONTEXTUAL_SUGGESTIONS = {
+            collaboration: {
+                marketing: [
+                    "Enhanced campaign processes that enabled sales team to exceed Q3 targets by 18%, facilitated alignment between IT and Operations resulting in 25% faster product launches, and coordinated cross-functional brand initiative across 4 departments achieving 95% stakeholder buy-in and $2M incremental revenue impact.",
+                    "Built consensus across Finance, Operations, and Sales teams for new customer acquisition strategy, resulting in 22% increase in conversion rates and 15% reduction in cost-per-acquisition through streamlined processes and aligned messaging frameworks.",
+                    "Partnered with Analytics and Customer Service teams to implement feedback loop system, enabling real-time campaign optimization that improved customer satisfaction scores by 0.8 points and reduced churn rate by 12% across key demographics."
+                ],
+                sales: [
+                    "Partnered with Marketing to develop targeted campaign generating $750K in qualified pipeline, collaborated with Product team providing customer feedback that shaped roadmap leading to $1.4M in closed deals, and worked with Customer Success to expand 5 key accounts by average 35% revenue growth.",
+                    "Teamed with Sales Engineering on complex enterprise deals worth $2.1M total, coordinated with Finance on custom pricing structures that maintained 18% margins, and collaborated with Implementation team ensuring seamless onboarding for 3 major clients.",
+                    "Worked cross-functionally with Marketing and Product teams to launch industry solution, resulting in 12 new enterprise prospects, 6 closed deals worth $980K, and establishment of new market segment contributing 8% of territory revenue."
+                ],
+                operations: [
+                    "Streamlined fulfillment processes with IT and Warehouse teams reducing order cycle time by 35%, coordinated with Finance on inventory optimization saving $340K annually, and partnered with Customer Service implementing tracking system that improved satisfaction scores by 0.9 points.",
+                    "Collaborated with Procurement and Quality teams to implement supplier scorecard system, resulting in 15% cost reduction and 98% on-time delivery rates, while working with Sales to improve customer communication about delivery timelines.",
+                    "Led cross-functional process improvement initiative with Finance, IT, and Logistics teams, eliminating 3 manual touchpoints and reducing processing errors by 28% while improving throughput capacity by 22%."
+                ],
+                analytics: [
+                    "Partnered with Marketing and Sales teams to develop predictive model increasing lead scoring accuracy by 40%, collaborated with Operations on demand forecasting system reducing inventory costs by $200K, and worked with Finance on automated reporting eliminating 15 hours weekly manual work.",
+                    "Built cross-functional data governance framework with IT, Legal, and Business teams, ensuring compliance while enabling self-service analytics that increased report usage by 65% and reduced data request turnaround from 5 days to 2 hours.",
+                    "Collaborated with Product and Engineering teams on customer behavior analysis, leading to 3 feature enhancements that improved user engagement by 25% and contributed to 12% increase in customer lifetime value."
+                ],
+                technology: [
+                    "Partnered with Operations and Finance teams to implement automation platform reducing manual processes by 40%, collaborated with Security team on compliance framework enabling faster development cycles, and worked with Business teams ensuring 95% user adoption of new systems.",
+                    "Led cross-functional architecture review with Product, Operations, and Infrastructure teams, resulting in 50% performance improvement and 30% cost reduction while maintaining 99.9% uptime across all critical systems.",
+                    "Collaborated with Data and Analytics teams on real-time processing pipeline, enabling instant reporting capabilities that improved decision-making speed by 60% and supported $1.2M in additional revenue through faster market response."
+                ],
+                design: [
+                    "Partnered with Product and Engineering teams on user experience redesign increasing conversion rates by 28%, collaborated with Marketing on brand consistency initiative improving brand recognition scores by 35%, and worked with Customer Success on interface improvements reducing support tickets by 22%.",
+                    "Led cross-functional design system implementation with Engineering, Product, and Marketing teams, reducing development time by 40% while ensuring consistent user experience across 12 product touchpoints and improving accessibility compliance to 95%.",
+                    "Collaborated with Research and Analytics teams on user behavior studies, resulting in 4 interface optimizations that improved task completion rates by 33% and contributed to 18% increase in customer satisfaction scores."
+                ],
+                management: [
+                    "Facilitated strategic alignment across Sales, Marketing, and Operations teams during Q2 planning, resulting in coordinated execution that exceeded revenue targets by 12% while maintaining 94% employee engagement scores across all departments.",
+                    "Led cross-functional crisis response team with IT, Communications, and Operations, ensuring business continuity during system outage while maintaining customer satisfaction and recovering full operations 30% faster than incident response plan projected.",
+                    "Partnered with HR and Finance teams on organizational restructuring initiative, successfully integrating 2 departments while reducing operational costs by 15% and improving team productivity metrics by 25% within 90 days."
+                ],
+                general: [
+                    "Collaborated effectively across multiple departments to deliver key project milestones, partnered with stakeholders to achieve measurable business outcomes, and facilitated cross-functional initiatives that improved operational efficiency and team performance.",
+                    "Built strong working relationships with internal partners, coordinated resources and priorities across teams, and contributed to collaborative efforts that delivered significant results for customers and the organization.",
+                    "Worked cross-functionally to solve complex challenges, supported team initiatives through active partnership, and demonstrated ability to influence outcomes through effective collaboration and relationship building."
+                ]
+            },
+            growth: {
+                marketing: [
+                    "Strategic thinking development through P&L ownership of $5M product line and cross-functional project leadership on market expansion initiative, analytics capabilities enhancement via advanced certification and 6-month partnership with Analytics CoE on predictive modeling project, executive presence building through board presentation opportunities and external industry speaking engagements.",
+                    "Customer insight expertise development through field rotation with Sales team and direct customer advisory board participation, digital marketing skills advancement via certification in marketing automation and AI-driven campaign optimization, brand strategy capabilities through ownership of brand positioning project and competitive analysis framework development.",
+                    "Cross-functional leadership growth via assignment as transformation lead for customer experience initiative spanning 5 departments, data-driven decision making enhancement through advanced analytics training and partnership on attribution modeling project, stakeholder influence skills through executive communication coaching and C-suite presentation development."
+                ],
+                sales: [
+                    "Advanced negotiation and deal structuring skills through enterprise sales methodology certification and complex deal coaching, territory and account management expertise via expansion to strategic accounts portfolio worth $3M+ annual recurring revenue, sales leadership development through formal mentoring of 4 new representatives and quota achievement coaching responsibilities.",
+                    "Customer relationship management enhancement through key account executive training and strategic customer advisory board participation, sales process optimization capabilities via CRM advanced certification and sales enablement platform leadership, competitive positioning expertise through industry analyst relationships and competitive intelligence framework development.",
+                    "Revenue operations and forecasting skills development through partnership with Finance on predictive modeling and pipeline management system ownership, sales technology proficiency advancement via sales automation platform implementation and team training leadership, executive presence building through customer executive relationship management and C-suite presentation opportunities."
+                ],
+                operations: [
+                    "Process optimization and lean management expertise development through Six Sigma certification and continuous improvement project leadership, supply chain and logistics advancement via cross-functional rotation through Procurement and Distribution teams, technology and automation skills enhancement through partnership with IT on workflow automation and system integration projects.",
+                    "Project management and change leadership capabilities building through formal PMP certification and organizational transformation initiative ownership, data analysis and performance metrics expertise via advanced Excel and analytics training with direct application to operational KPI development, vendor and contract management skills through strategic supplier relationship ownership and negotiation training.",
+                    "Quality management and compliance expertise development through ISO certification process leadership and regulatory framework implementation, cross-functional leadership growth via matrix team management of process improvement initiatives spanning multiple departments, strategic planning capabilities through business case development training and operational budget ownership responsibilities."
+                ],
+                analytics: [
+                    "Advanced statistical modeling and machine learning expertise development through graduate-level coursework and applied project leadership on predictive analytics initiatives, data visualization and storytelling enhancement via advanced Tableau certification and executive presentation skill building, business intelligence architecture capabilities through partnership with IT on enterprise data platform design.",
+                    "Industry domain expertise deepening through cross-functional rotation with Business teams and customer-facing analytics project ownership, programming and technical skills advancement via Python/R certification and cloud computing platform training with direct application to analytics infrastructure optimization, strategic consulting capabilities development through external client project participation and business case methodology training.",
+                    "Data governance and ethics framework expertise building through privacy compliance certification and cross-functional policy development leadership, advanced analytics product management skills via ownership of self-service analytics platform implementation and user adoption strategy, executive communication and influence enhancement through data-driven decision making training and C-suite analytics advisory role."
+                ],
+                technology: [
+                    "Cloud architecture and DevOps expertise advancement through AWS/Azure certification and infrastructure migration project leadership, software engineering and development capabilities enhancement via advanced programming bootcamp and full-stack development project ownership, cybersecurity and compliance skills building through security certification and enterprise security framework implementation.",
+                    "Technical leadership and mentoring capabilities development through formal engineering management training and team lead responsibilities for 6-person development team, system design and scalability expertise via high-availability architecture project and performance optimization initiative ownership, emerging technology evaluation skills through innovation lab participation and proof-of-concept development leadership.",
+                    "Product technical strategy and roadmap development capabilities building through product management certification and cross-functional collaboration with Business and Design teams, API design and integration expertise advancement via microservices architecture project and third-party platform integration leadership, agile methodology and project delivery optimization through Scrum Master certification and development process improvement initiative."
+                ],
+                design: [
+                    "User research and design thinking methodology advancement through formal UX research certification and customer journey mapping project leadership, design system and brand consistency expertise building via cross-functional design standards development and implementation across 8 product lines, accessibility and inclusive design capabilities enhancement through WCAG compliance training and universal design project ownership.",
+                    "Product design strategy and vision development skills via design leadership role on major product redesign affecting 100K+ users, prototyping and design technology proficiency advancement through advanced Figma/Sketch certification and design automation workflow development, cross-functional collaboration and influence building through partnership with Engineering and Product teams on design-development process optimization.",
+                    "Creative direction and brand strategy capabilities development through brand refresh project leadership and external agency collaboration management, design team leadership and mentoring skills via formal design management training and junior designer development responsibility, business impact and metrics-driven design expertise through conversion optimization project ownership and A/B testing methodology training."
+                ],
+                management: [
+                    "Strategic leadership and vision development capabilities building through executive MBA program and cross-functional business transformation project ownership spanning 3 departments, people development and coaching expertise enhancement via formal management training and direct report career development responsibility for 8-person team, financial acumen and P&L management skills advancement through budget ownership and business case development training.",
+                    "Change management and organizational development capabilities via certified change management training and cultural transformation initiative leadership, stakeholder management and executive presence building through board presentation opportunities and external partnership development, industry expertise and market intelligence advancement through executive education program and competitive analysis framework ownership.",
+                    "Innovation and digital transformation leadership skills development through emerging technology evaluation and digital strategy project ownership, talent acquisition and team building expertise via hiring manager certification and organizational design project participation, performance management and employee engagement capabilities enhancement through advanced HR training and retention strategy development responsibility."
+                ],
+                general: [
+                    "Professional skills advancement through targeted training programs and stretch assignments that build capabilities relevant to career progression goals, cross-functional experience development via project leadership opportunities and collaboration with diverse teams, leadership and communication enhancement through formal development programs and increased responsibility for team initiatives and stakeholder management.",
+                    "Technical and domain expertise deepening through certification programs and applied project work that demonstrates mastery of core competencies, strategic thinking and business acumen development via exposure to senior leadership decision-making and business case development opportunities, mentoring and knowledge sharing capabilities building through formal or informal coaching responsibilities and team development initiatives.",
+                    "Innovation and continuous improvement mindset development through process optimization projects and creative problem-solving challenges, industry knowledge and external perspective building via conference participation and professional network expansion, adaptability and change management skills enhancement through experience with organizational transformation initiatives and new technology adoption."
+                ]
             }
-            
+        };
+        
+        function generateContextualSuggestions(text, context, fieldId) {
+            const suggestions = CONTEXTUAL_SUGGESTIONS[context]?.[fieldId] || CONTEXTUAL_SUGGESTIONS.general?.[fieldId] || [];
             return suggestions;
         }
         
@@ -5412,6 +5465,11 @@
                 }
             }
             
+            // Populate dynamic suggestions based on detected context
+            setTimeout(() => {
+                populateDynamicSuggestions(employee);
+            }, 100);
+            
             // Initialize AI Writing Coach for all textareas (with delay to ensure DOM is ready)
             setTimeout(() => {
                 initializeAIWritingCoach();
@@ -5706,8 +5764,36 @@
             showReviewerLogin();
         }
 
+        function generateDynamicSuggestions(fieldId, context) {
+            const suggestions = generateContextualSuggestions('', context, fieldId);
+            return suggestions.map(suggestion => 
+                `<div class="suggestion-item" onclick="addSuggestion('${fieldId}', '${suggestion.replace(/'/g, "\\'")}')">
+                    "${suggestion}"
+                </div>`
+            ).join('');
+        }
+
+        function populateDynamicSuggestions(employee) {
+            const context = detectEvaluationContext(employee.position);
+            
+            // Populate collaboration suggestions
+            const collaborationContainer = document.getElementById('suggestions-collaboration');
+            if (collaborationContainer) {
+                const collaborationSuggestions = generateDynamicSuggestions('collaboration', context);
+                collaborationContainer.innerHTML = '<h4>Smart Content Suggestions</h4>' + collaborationSuggestions;
+            }
+            
+            // Populate growth suggestions  
+            const growthContainer = document.getElementById('suggestions-growth');
+            if (growthContainer) {
+                const growthSuggestions = generateDynamicSuggestions('growth', context);
+                growthContainer.innerHTML = '<h4>Smart Content Suggestions</h4>' + growthSuggestions;
+            }
+        }
+
         function getEvaluationFormContent(employee) {
             const evalData = employee.evaluationData || {};
+            const context = detectEvaluationContext(employee.position);
             
             return `
                 <!-- Step 0: Basic Information -->
@@ -5804,17 +5890,9 @@
                 <div class="slide" id="slide-2">
                     <p class="description">What two or three specific ways did the associate partner across teams to deliver results this year, and where could their partnership and collaboration have been stronger?</p>
 
-                    <div class="suggestions">
+                    <div class="suggestions" id="suggestions-collaboration">
                         <h4>Smart Content Suggestions</h4>
-                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Three specific partnership examples: (1) Collaborated with [team] to deliver [outcome], (2) Partnered with [department] resulting in [specific result], (3) Worked cross-functionally with [teams] achieving [measurable impact]. Areas for growth: Could strengthen collaboration by...')">
-                            "Three specific partnership examples: (1) Collaborated with [team] to deliver [outcome], (2) Partnered with [department] resulting in [specific result], (3) Worked cross-functionally with [teams] achieving [measurable impact]. Areas for growth: Could strengthen collaboration by..."
-                        </div>
-                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Key partnerships this year included: [specific example 1 with outcome], [specific example 2 with result], and [specific example 3 with impact]. Going forward, partnership effectiveness could improve through...')">
-                            "Key partnerships this year included: [specific example 1 with outcome], [specific example 2 with result], and [specific example 3 with impact]. Going forward, partnership effectiveness could improve through..."
-                        </div>
-                        <div class="suggestion-item" onclick="addSuggestion('collaboration', 'Successfully partnered across teams by: [specific way 1], [specific way 2], and [specific way 3], each delivering [measurable results]. Opportunities for stronger collaboration exist in...')">
-                            "Successfully partnered across teams by: [specific way 1], [specific way 2], and [specific way 3], each delivering [measurable results]. Opportunities for stronger collaboration exist in..."
-                        </div>
+                        <!-- Dynamic suggestions will be populated here -->
                     </div>
 
                     <div class="form-group">
@@ -5850,17 +5928,9 @@
                 <div class="slide" id="slide-3">
                     <p class="description">What are the two or three most critical development areas for the associate next year, and what targeted experiences such as training, expanded scope, new responsibilities, or stretch work would best accelerate their growth?</p>
 
-                    <div class="suggestions">
+                    <div class="suggestions" id="suggestions-growth">
                         <h4>Smart Content Suggestions</h4>
-                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Critical development priorities: (1) [Skill/area] - recommend [specific training/experience], (2) [Leadership capability] - suggest [stretch assignment/expanded scope], (3) [Technical/functional area] - propose [new responsibility/project]. These targeted experiences would accelerate growth by...')">
-                            "Critical development priorities: (1) [Skill/area] - recommend [specific training/experience], (2) [Leadership capability] - suggest [stretch assignment/expanded scope], (3) [Technical/functional area] - propose [new responsibility/project]. These targeted experiences would accelerate growth by..."
-                        </div>
-                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Key growth areas for next year: [development area 1], [development area 2], and [development area 3]. Recommended development approaches include: [specific training program], [expanded role/scope opportunity], and [stretch project/new responsibility] to build these capabilities.')">
-                            "Key growth areas for next year: [development area 1], [development area 2], and [development area 3]. Recommended development approaches include: [specific training program], [expanded role/scope opportunity], and [stretch project/new responsibility] to build these capabilities."
-                        </div>
-                        <div class="suggestion-item" onclick="addSuggestion('growth', 'Priority development focus: [area 1] through [targeted experience], [area 2] via [specific opportunity], [area 3] using [stretch assignment]. These development experiences align with career progression and would strengthen [specific outcomes/capabilities].')">
-                            "Priority development focus: [area 1] through [targeted experience], [area 2] via [specific opportunity], [area 3] using [stretch assignment]. These development experiences align with career progression and would strengthen [specific outcomes/capabilities]."
-                        </div>
+                        <!-- Dynamic suggestions will be populated here -->
                     </div>
 
                     <div class="form-group">
