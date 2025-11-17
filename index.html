@@ -5026,7 +5026,9 @@
         };
         
         function generateContextualSuggestions(text, context, fieldId) {
-            const suggestions = CONTEXTUAL_SUGGESTIONS[context]?.[fieldId] || CONTEXTUAL_SUGGESTIONS.general?.[fieldId] || [];
+            console.log(`🔍 Looking for suggestions: fieldId=${fieldId}, context=${context}`);
+            const suggestions = CONTEXTUAL_SUGGESTIONS[fieldId]?.[context] || CONTEXTUAL_SUGGESTIONS[fieldId]?.['general'] || [];
+            console.log(`🔍 Found suggestions:`, suggestions.length, 'items');
             return suggestions;
         }
         
@@ -5849,44 +5851,63 @@
         }
 
         function generateDynamicSuggestions(fieldId, context) {
+            console.log(`🔧 Generating suggestions for fieldId: ${fieldId}, context: ${context}`);
             const suggestions = generateContextualSuggestions('', context, fieldId);
-            return suggestions.map(suggestion => 
+            console.log(`🔧 Raw suggestions found:`, suggestions.length, 'items');
+            console.log(`🔧 First suggestion preview:`, suggestions[0]?.substring(0, 50) + '...');
+            
+            const html = suggestions.map(suggestion => 
                 `<div class="suggestion-item" onclick="addSuggestion('${fieldId}', '${suggestion.replace(/'/g, "\\'")}')">
                     "${suggestion}"
                 </div>`
             ).join('');
+            
+            console.log(`🔧 Generated HTML length:`, html.length, 'chars');
+            return html;
         }
 
         function populateDynamicSuggestions(employee) {
+            console.log('🔄 Populating dynamic suggestions for employee:', employee.name, employee.position);
             const context = detectEvaluationContext(employee.position);
+            console.log('🎯 Detected context:', context);
             
             // Populate key priorities suggestions
             const keyPrioritiesContainer = document.getElementById('suggestions-keyPriorities');
+            console.log('📋 Key priorities container found:', !!keyPrioritiesContainer);
             if (keyPrioritiesContainer) {
                 const keyPrioritiesSuggestions = generateDynamicSuggestions('keyPriorities', context);
+                console.log('📋 Generated key priorities suggestions:', keyPrioritiesSuggestions.length, 'chars');
                 keyPrioritiesContainer.innerHTML = '<h4>Smart Content Suggestions</h4>' + keyPrioritiesSuggestions;
             }
             
             // Populate collaboration suggestions
             const collaborationContainer = document.getElementById('suggestions-collaboration');
+            console.log('🤝 Collaboration container found:', !!collaborationContainer);
             if (collaborationContainer) {
                 const collaborationSuggestions = generateDynamicSuggestions('collaboration', context);
+                console.log('🤝 Generated collaboration suggestions:', collaborationSuggestions.length, 'chars');
                 collaborationContainer.innerHTML = '<h4>Smart Content Suggestions</h4>' + collaborationSuggestions;
             }
             
             // Populate growth suggestions  
             const growthContainer = document.getElementById('suggestions-growth');
+            console.log('📈 Growth container found:', !!growthContainer);
             if (growthContainer) {
                 const growthSuggestions = generateDynamicSuggestions('growth', context);
+                console.log('📈 Generated growth suggestions:', growthSuggestions.length, 'chars');
                 growthContainer.innerHTML = '<h4>Smart Content Suggestions</h4>' + growthSuggestions;
             }
             
             // Populate looking ahead suggestions
             const lookingAheadContainer = document.getElementById('suggestions-lookingAhead');
+            console.log('🔮 Looking ahead container found:', !!lookingAheadContainer);
             if (lookingAheadContainer) {
                 const lookingAheadSuggestions = generateDynamicSuggestions('lookingAhead', context);
+                console.log('🔮 Generated looking ahead suggestions:', lookingAheadSuggestions.length, 'chars');
                 lookingAheadContainer.innerHTML = '<h4>Smart Content Suggestions</h4>' + lookingAheadSuggestions;
             }
+            
+            console.log('✅ Dynamic suggestions population complete');
         }
 
         function getEvaluationFormContent(employee) {
