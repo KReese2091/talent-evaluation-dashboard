@@ -2117,10 +2117,11 @@
             padding: 24px;
             border-radius: 8px;
             border: 1px solid #e9ecef;
-            height: 180px;
+            min-height: 180px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
+            overflow: hidden;
         }
 
         .anomaly-card.high {
@@ -2156,6 +2157,9 @@
             color: #212529;
             margin-bottom: 4px;
             font-size: 14px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.2;
         }
 
         .anomaly-severity {
@@ -2187,34 +2191,32 @@
             font-size: 12px;
             line-height: 1.4;
             flex-grow: 1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            margin-bottom: 12px;
         }
 
         .anomaly-details {
-            margin-top: 8px;
-        }
-
-        .anomaly-count {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 4px;
-        }
-
-        .anomaly-recommendation {
-            font-size: 12px;
-            color: #495057;
-            font-weight: 500;
+            margin-top: auto;
+            padding-top: 8px;
         }
 
         .anomaly-count {
             font-size: 12px;
             color: #6c757d;
             font-weight: 500;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .anomaly-recommendation {
             font-size: 13px;
             color: #0073CE;
             font-style: italic;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.3;
         }
 
         .anomaly-summary {
